@@ -1,9 +1,1 @@
-# Ignore all files
-*
 
-# Except for the following
-!**/.py
-!.gitignore
-!.python-version
-!SilverScreen/__init__.py
-!SilverScreen/*.py
