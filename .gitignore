@@ -1,7 +1,2 @@
-# ignore everything
-*
-
-# except the following
-!.gitignore
-!.python-version
-!**/*.py
+# Ignore database files
+db.*
