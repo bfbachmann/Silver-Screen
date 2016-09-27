@@ -35,3 +35,8 @@ numpy
 # Python wrapper for Twitter API. > pip install python-twitter
 
 python-twitter
+
+# json Python package for handling Twitter and IMDB responses
+# > pip install json
+
+json
