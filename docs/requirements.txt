@@ -40,3 +40,8 @@ python-twitter
 # > pip install json
 
 json
+
+# PyYaml for parsing YAML config files (like api_keys.yml)
+# > pip install PyYaml
+
+PyYaml
