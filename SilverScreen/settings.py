@@ -76,11 +76,9 @@ WSGI_APPLICATION = 'SilverScreen.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'silverscreendatabase',
-        'USER': 'silverscreendatabaseuser',
-        'PASSWORD': 'mypassword',
-        'HOST': '127.0.0.1',
-        'PORT': '8000',
+        'NAME': 'silverscreen',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

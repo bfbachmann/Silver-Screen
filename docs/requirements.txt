@@ -28,11 +28,13 @@ pyenv 1.0.2
 
 NLTK
 
-# Numpy for Python data processing (its an NLTK dependency). > pip install numpy
+# Numpy for Python data processing (its an NLTK dependency).
+# > pip install numpy
 
 numpy
 
-# Python wrapper for Twitter API. > pip install python-twitter
+# Python wrapper for Twitter API.
+# > pip install python-twitter
 
 python-twitter
 
@@ -45,3 +47,8 @@ json
 # > pip install PyYaml
 
 PyYaml
+
+# psycopg2 (2.6.2) for postgresql database
+# > pip install psycopg2
+
+psycopg2 (2.6.2)
