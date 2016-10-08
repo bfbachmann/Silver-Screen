@@ -3,7 +3,7 @@
 # run this script using > bash install_dependencies.sh
 # this script will use pip to install all Python dependencies for the project
 
-declare -a dependencies=("Django" "nltk" "numpy" "psycopg2" "python-twitter" "PyYaml")
+declare -a dependencies=("Django" "nltk" "numpy" "psycopg2" "python-twitter" "PyYAML")
 response="$(pip list)"
 install=""
 
@@ -17,4 +17,8 @@ do
     fi
 done
 
-eval "pip install $install"
+if [ "$install" != "" ]
+then
+    echo "Installing dependencies: $install"
+    eval "pip install $install"
+fi
