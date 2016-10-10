@@ -6,3 +6,7 @@ db.*
 
 # Ignore .pyc files
 **.pyc
+
+# Ignore .DS_Store files because if one of those ends up in this repo I might
+# literally commit suicide
+**.DS_Store
