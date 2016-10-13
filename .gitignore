@@ -4,14 +4,5 @@ db.*
 # Ingore api keys
 /scripts/twitter_api/api_keys.yml
 
-
 # Ignore pyc files
 *.pyc
-
-
-
-
-
-
-
-
