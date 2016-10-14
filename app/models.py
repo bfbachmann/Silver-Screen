@@ -1,3 +1,5 @@
 from django.db import models
+from django import forms
 
-# Create your models here.
+class QueryForm(forms.Form):
+    query = forms.CharField(label='Movie Title', max_length=100)
