@@ -1,1 +1,16 @@
-<p> hey we did it! </p>
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript TODO: add jQuery #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<head>
+    <title> SilverScreen </title>
+</head>
+
+<body>
+    <p> Showing results for: </p>
+
+    {{ form.query.value }}
+</body>

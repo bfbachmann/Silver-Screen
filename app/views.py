@@ -12,7 +12,7 @@ def index(request):
         # check whether it's valid:
         if query_form.is_valid():
             # redirect to a new URL:
-            return HttpResponseRedirect('/results/')
+            return render(request, 'results.html', {'form': query_form})
 
      # if a GET (or any other method) we'll create a blank form
     else:
@@ -21,4 +21,7 @@ def index(request):
     return render(request, 'index.html', {'form': query_form})
 
 def results(request):
-    return render(request, 'results.html')
+    if request.method == 'POST':
+        return render(request, 'results.html', {'form': QueryForm(request.POST)})
+    else:
+        return HttpResponseRedirect('/index/')

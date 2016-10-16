@@ -1,23 +1,39 @@
-<!DOCTYPE html>
-<html>
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript TODO: add jQuery #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
 <head>
     <title> SilverScreen </title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        .align-center {
+            text-align: center;
+        }
+
+        .align-left {
+            text-align: left;
+        }
+    </style>
 </head>
 
 <body>
-    <h1 class="jumbotron"> SilverScreen </h1>
-    <h4> Search Twitter for a Movie: </h4>
-    <form action="/index/" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Search" />
-    </form>
+    <div class="align-center">
+        <div class="jumbotron align-left">
+            <h1 style="padding-left: 40px;"> SilverScreen </h1>
+            <h2 style="padding-left: 40px;"> Twitter Sentiment Analysis Tool </h2>
+        </div>
+        <div class="align-left" style="margin: 50px;">
+            <h4> Search Twitter for a Movie: </h4>
+            <form action="/results/" method="post" class="form">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
 </body>
-
-</html>
