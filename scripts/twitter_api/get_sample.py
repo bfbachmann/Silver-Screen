@@ -44,7 +44,7 @@ def main(argv):
 	f = open(filename, 'w')
 
 	for tweet in tweets:
-		f.write(tweet.__str__() + "\n")
+		f.write(tweet.AsJsonString() + "\n")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
