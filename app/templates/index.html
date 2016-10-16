@@ -5,18 +5,12 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
+{# Load stylesheets #}
+{% load static %}
+
 <head>
     <title> SilverScreen </title>
-
-    <style>
-        .align-center {
-            text-align: center;
-        }
-
-        .align-left {
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
 </head>
 
 <body>

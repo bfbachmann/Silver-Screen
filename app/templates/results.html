@@ -5,12 +5,27 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
+{# Load stylesheets #}
+{% load static %}
+
 <head>
     <title> SilverScreen </title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
 </head>
 
 <body>
-    <p> Showing results for: </p>
+    <div class="align-center" style="width: 60%; margin: auto;">
+        <h2> Showing results for: {{ form.query.value }}</h2>
 
-    {{ form.query.value }}
+        {% for tweet in tweets %}
+            <hr>
+            <p><strong> By: </strong></p> {{ tweet.contributors }} <br>
+            <p><strong> Body: </strong></p> {{ tweet.text }} <br>
+            <p><strong> Geo: </strong></p> {{ tweet.geo }} <br>
+            <p><strong> Hashtags: </strong></p> {{ tweet.hashtags }} <br>
+            <p><strong> Location: </strong></p> {{ tweet.location }} <br>
+            <p><strong> Retweet count: </strong></p> {{ tweet.retweet_count }} <br>
+            <p><strong> User mentions: </strong></p> {{ tweet.user_mentions }} <br>
+        {% endfor %}
+    </div>
 </body>
