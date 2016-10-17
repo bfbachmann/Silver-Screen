@@ -9,3 +9,6 @@ db.*
 
 # Ignore data produced by Twitter api wrapper
 /scripts/twitter_api/*.json
+
+# Ignore UML Diagrams
+/docs/*.mdj
