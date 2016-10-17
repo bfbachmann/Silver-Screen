@@ -3,6 +3,8 @@
 
 CPEN 321 Project Sept 2016 - Nov 2016
 
+See https://github.com/bear/python-twitter for python-twitter documentation.
+
 ### Setting up the database
 Make sure you have Postgres installed
 ```shell
