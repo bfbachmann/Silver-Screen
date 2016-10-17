@@ -1,0 +1,67 @@
+---
+title: "twitter_exploration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo = FALSE}
+## ==== Setup ====
+setwd("~/Engineering/Third Year/silverscreen/scripts/twitter_api")
+
+## Libraries
+library(ndjson)
+library(ggplot2)
+library(dplyr)
+
+## Choose the sample file to look at
+sample_file = "martian.json"
+
+## Parse json to dataframe
+tweets <- stream_in(sample_file)
+
+## Choose whether to echo hidden chunks:
+NOECHO = FALSE
+
+```
+
+## Tweet Data
+
+When we make Twitter API requests using the python-twitter package, we recieve quite a bit of information back. However, most of this information is probably not useful to us and the most useful column will be the one that contains the text of the tweet that we will use for our natural language processing.
+
+```{r}
+## Number of Columns
+print(ncol(tweets))
+
+## Column Names
+colnames(tweets)
+```
+
+A summary of the dataframe:
+
+```{r, echo = FALSE}
+summary(tweets)
+```
+
+My initial assesment is that we can drop a number of columns immediatly since they will probably have no value to us for either natural language processing or other data analysis. 
+
+The columns that we should keep are:
+```{r}
+keep <- c('created_at', 'favorite_count', 'lang', 'retweet_count', 
+          'source', 'text', 'user.name', 'user.screen_name', 'user.time_zone', 
+          'user.verified'
+          )
+remove <- subset( colnames(tweets), !( colnames(tweets) %in% keep ) )
+#print(remove)
+
+reduced_tweets <- subset(tweets, select = keep)
+```
+
+The columns that were choosen to be dropped either contain uninteresting or most likely unuseful information about the user or whether the tweet was retweeted. Looking into the retweet information could potentially be interesting but is likely beyond the scope of this project. Once removing these columns we are left with ```r ncol(reduced_tweets)``` columns of information which will be easier to work with and store. If the 'hashtags' column was not consistently empty it would also be interesting to keeep around. It will have to be looked into further to determine if the hashtags are not returned with an API request or if there is something we can do to obtain this information.
+
+```{r}
+head(reduced_tweets)
+```
