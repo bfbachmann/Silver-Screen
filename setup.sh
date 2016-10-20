@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# type "bash setup.sh" to execute this script
+echo "CREATING DATABASE (will not work without a Postgres installation)"
+eval "createdb -h localhost -p 5432 silverscreen"
+
+echo "INSTALLING REQUIREMENTS (will not work without pip3 installation)"
+eval "pip3 install requirements.txt"
+
+echo "INSTALLING Python 3.4.0"
+eval "pyenv install 3.4.0"
+
+echo "SETTING LOCAL PYTHON VERSION TO 3.4.0 (will not work without Python 3.4.0 installed)"
+eval "pyenv local 3.4.0"
+
+eval "python manage.py runserver"

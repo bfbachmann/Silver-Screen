@@ -1,2 +1,15 @@
 # Ignore database files
 db.*
+
+# Ingore api keys
+/scripts/twitter_api/api_keys.yml
+
+# Ignore pyc files
+*.pyc
+
+# Ignore data produced by Twitter api wrapper
+/scripts/twitter_api/*.json
+
+# Ignore UML Diagrams
+/docs/*.mdj
+/docs/UML\ System\ Diagram.png

@@ -1,0 +1,8 @@
+Django==1.10.1
+nltk==3.2.1
+numpy==1.11.1
+python-twitter==3.1
+PyYAML==3.12
+psycopg2==2.6.2
+pyenv==1.0.2
+django-bootstrap3==7.1.0
