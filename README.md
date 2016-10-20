@@ -26,6 +26,7 @@ Run setup script
 ```shell
 $ bash setup.sh
 ```
+Get Twitter API keys and place them in scripts/twitter_api/api_keys.yml
 
 ## Running the Server
 You can run the server locally by doing:

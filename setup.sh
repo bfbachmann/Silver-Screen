@@ -9,6 +9,7 @@ eval "pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log st
 
 echo "INSTALLING REQUIREMENTS (will not work without pip3 installation)"
 eval "pip3 install -r requirements.txt"
+eval "pip install -r requirements.txt"
 
 echo "INSTALLING Python 3.4.0"
 eval "pyenv install 3.4.0"

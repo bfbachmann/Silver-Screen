@@ -8,7 +8,8 @@ def main(argv):
 	## Default arg values
 	searchTerm = "test"
 	ntweets = 10
-	filename = "testSample.json"
+	filename_yaml = "testSample.yml"
+	filename_json = "testSample.json"
 
 	## Get command line arguments for search param, count, filename
 	try:
@@ -36,15 +37,23 @@ def main(argv):
 
 	api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'])
 
-	## Note: so far, can only get 100 tweets (measured by output line count), even when setting the 
+	## Note: so far, can only get 100 tweets (measured by output line count), even when setting the
 	## count to a number greater than 100. Setting the number less than 100 still gives the appropriate
 	## number of returned tweets.
 	tweets = api.GetSearch(term=searchTerm, count=ntweets)
 
-	f = open(filename, 'w')
+	output_file_yaml = open(filename_yaml, 'w')
+	output_file_json = open(filename_json, 'w')
 
 	for tweet in tweets:
-		f.write(tweet.AsJsonString() + "\n")
+		yaml.dump(tweet, output_file_yaml, allow_unicode=True)
+		output_file_json.write(tweet.AsJsonString() + "\n")
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
+
+
+# Remove unwanted fields from each of the Tweet objects
+def filter_tweets(tweets):
+	for tweet in tweets:
+		tw
