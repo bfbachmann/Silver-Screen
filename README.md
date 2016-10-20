@@ -12,22 +12,16 @@ Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlV
 
 Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
 
-### Setting up the database
+## Setup
 Make sure you have Postgres installed
 ```shell
 which postgres
 ```
-Create the database
+Make sure you have pip3 installed
 ```shell
-bash createdb.sh
+which pip3
 ```
-
-### Installing Python dependencies
+Run setup script
 ```shell
-pip3 install requirements.txt
-```
-
-### Running the server
-```shell
-python manage.py runserver
+bash setup.sh
 ```
