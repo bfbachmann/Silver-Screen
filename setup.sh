@@ -5,7 +5,7 @@ echo "CREATING DATABASE (will not work without a Postgres installation)"
 eval "createdb -h localhost -p 5432 silverscreen"
 
 echo "INSTALLING REQUIREMENTS (will not work without pip3 installation)"
-eval "pip3 install requirements.txt"
+eval "pip3 install -r requirements.txt"
 
 echo "INSTALLING Python 3.4.0"
 eval "pyenv install 3.4.0"
