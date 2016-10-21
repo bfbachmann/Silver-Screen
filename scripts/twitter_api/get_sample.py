@@ -3,6 +3,13 @@
 import twitter
 import yaml
 import sys, getopt
+import pprint
+
+# Remove unwanted fields from each of the Tweet objects
+def filter_tweets(tweets):
+	pp = pprint.PrettyPrinter(indent=4)
+	pp.pprint(tweets)
+
 
 def main(argv):
 	## Default arg values
@@ -28,7 +35,7 @@ def main(argv):
 		elif opt in ("-f","--file"):
 			filename = arg
 
-	# load the API keys from api_keys.txt
+	# load the API keys from api_keys.yml
 	with open("api_keys.yml", 'r') as stream:
 		try:
 			keys = yaml.load(stream)
@@ -51,9 +58,3 @@ def main(argv):
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
-
-
-# Remove unwanted fields from each of the Tweet objects
-def filter_tweets(tweets):
-	for tweet in tweets:
-		tw
