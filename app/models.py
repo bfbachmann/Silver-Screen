@@ -2,12 +2,16 @@ from django.db import models
 from django import forms
 import twitter
 import yaml
+import omdb
+
+
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
 
 
-class TwitterAPIWrapper(object):
+
+class TwitterAPI(object):
 
     def __init__(self):
         # load the API keys from api_keys.txt
@@ -25,3 +29,49 @@ class TwitterAPIWrapper(object):
     def search(self, search_term, since=None, until=None, geocode=None):
         tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode)
         return tweets
+
+
+
+class Movie(object):
+
+    def __init__(self,**kwargs):
+        self.param_defaults = {
+             'Title':None,
+             'Year':None,
+             'YomatoURL':None,
+             'Actors':None,
+             'BoxOffice':None,
+             'Genres':None,
+             'Director':None,
+             'imdbRating':None,
+             'tomatoRating':None,
+             'tomatoUserRating':None,
+             'plot':None,
+             'tomatoConsensus':None
+        }
+
+        for (param, default) in self.param_defaults.items():
+            setattr(self, param, kwargs.get(param, default))
+
+
+    def fillWithJsonObject(self, jsonObject):
+        for (key, value) in jsonObject.items():
+            if key in self.param_defaults.keys():
+                print('setting attribute: ' + key + ' with ' + value)
+                setattr(self, key, value)
+
+
+
+class OMDbAPI(object):
+
+    def __init__(self):
+        self.recentSearches = {}
+
+    def search(self, title, year=None):
+        # search for all movies with similar titles
+        matching_movies = omdb.search_movie(title)
+        self.recentSearches.update({title:matching_movies})
+
+        for movie in matching_movies:
+            response = omdb.request(t=movie.title, y=year, tomatoes=True, type='movie').json()
+            movieObj = Movie().fillWithJsonObject(response)

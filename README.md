@@ -3,9 +3,11 @@
 
 CPEN 321 Project Sept 2016 - Nov 2016
 
-See https://github.com/bear/python-twitter for python-twitter documentation.
-
 ## Documentation Links
+See https://github.com/bear/python-twitter for Python-twitter documentation.
+
+See https://github.com/dgilland/omdb.py for OMDb documentation.
+
 Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
 
 Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlVRYyGUr6k0v0zUYX_COgLFxeTlp4fbnfA/edit#gid=0)
