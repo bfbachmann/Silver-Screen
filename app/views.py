@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import QueryForm
-from .models import TwitterAPIWrapper
+from .models import TwitterAPI
 
 # Render the front page of the website with the query form
 # TODO: upadte this once we have analysis working
@@ -31,5 +31,5 @@ def results(request):
 
 
 def search_twitter(search_term):
-    wrapper = TwitterAPIWrapper()
+    wrapper = TwitterAPI()
     return wrapper.search(search_term)
