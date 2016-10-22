@@ -37,7 +37,7 @@ $ python manage.py startserver
 ```
 or
 ```shell
-bash run.sh
+$ bash run.sh
 ```
 Note: If you get the following error:
 ```shell
