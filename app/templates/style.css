@@ -5,3 +5,12 @@
 .align-left {
     text-align: left;
 }
+
+#movieinfo img{
+vertical-align: middle;
+}
+
+#movieinfo {
+text-align: left;
+background-color: gray;
+}

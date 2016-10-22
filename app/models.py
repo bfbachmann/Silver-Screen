@@ -47,7 +47,8 @@ class Movie(object):
              'tomatoRating':None,
              'tomatoUserRating':None,
              'plot':None,
-             'tomatoConsensus':None
+             'tomatoConsensus':None,
+             'Poster':None
         }
 
         for (param, default) in self.param_defaults.items():
@@ -59,6 +60,7 @@ class Movie(object):
             if key in self.param_defaults.keys():
                 print('setting attribute: ' + key + ' with ' + value)
                 setattr(self, key, value)
+        return self
 
 
 
@@ -72,6 +74,14 @@ class OMDbAPI(object):
         matching_movies = omdb.search_movie(title)
         self.recentSearches.update({title:matching_movies})
 
-        for movie in matching_movies:
-            response = omdb.request(t=movie.title, y=year, tomatoes=True, type='movie').json()
+        #For now, only return most popular movie
+
+        highestIMDB = 0
+
+        if matching_movies:
+            movie = matching_movies.pop(0)
+
+            response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
             movieObj = Movie().fillWithJsonObject(response)
+
+        return movieObj

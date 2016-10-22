@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import QueryForm
 from .models import TwitterAPI
+from .models import OMDbAPI
 
 # Render the front page of the website with the query form
 # TODO: upadte this once we have analysis working
@@ -25,7 +26,8 @@ def index(request):
 def results(request):
     if request.method == 'POST':
         tweets = search_twitter(request.POST['query'])
-        return render(request, 'results.html', {'form': QueryForm(request.POST), 'tweets': tweets})
+        omdbdata = search_omdb(request.POST['query'])
+        return render(request, 'results.html', {'form': QueryForm(request.POST), 'tweets': tweets, 'movie': omdbdata})
     else:
         return HttpResponseRedirect('/index/')
 
@@ -33,3 +35,8 @@ def results(request):
 def search_twitter(search_term):
     wrapper = TwitterAPI()
     return wrapper.search(search_term)
+
+def search_omdb(search_term):
+    wrapper = OMDbAPI()
+    return wrapper.search(search_term)
+
