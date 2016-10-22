@@ -10,12 +10,29 @@
 
 <head>
     <title> SilverScreen </title>
-    <link rel="stylesheet" type="text/css" href="{% static 'app/templates/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
 </head>
 
 <body>
-    <div class="align-center" style="width: 60%; margin: auto;">
-        <h2> Showing results for: {{ form.query.value }}</h2>
+    <div class="align-left" style="width: 60%; margin: auto;">
+        <h2> Showing results for: {{ movie.Title }}</h2>
+
+        <hr>
+
+        <div class="well full-width clearfix">
+
+            {% if movie.Poster %}
+                <img src="{{ movie.Poster }}" class ="pull-left img-responsive" style="max-height:300px; margin-right:25px;"/>
+            {% endif %}
+
+
+                <h3>IMDB Rating: {{movie.imdbRating}}</h3>
+                <h3>Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3> <br />
+
+
+        </div>
+
+
 
         {% for tweet in tweets %}
             <hr>
