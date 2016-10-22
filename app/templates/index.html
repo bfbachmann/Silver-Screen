@@ -1,16 +1,15 @@
-{# Load the tag library #}
-{% load bootstrap3 %}
-
-{# Load CSS and JavaScript TODO: add jQuery #}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{# Load stylesheets #}
-{% load static %}
-
 <head>
     <title> SilverScreen </title>
+
+    {# Load stylesheets #}
+    {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+    {# Load the tag library #}
+    {% load bootstrap3 %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 
 <body>

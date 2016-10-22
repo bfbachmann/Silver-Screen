@@ -7,3 +7,4 @@ psycopg2==2.6.2
 pyenv
 django
 django-bootstrap3
+django-jquery

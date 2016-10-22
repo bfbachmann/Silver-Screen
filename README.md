@@ -4,9 +4,11 @@
 CPEN 321 Project Sept 2016 - Nov 2016
 
 ## Documentation Links
-See https://github.com/bear/python-twitter for Python-twitter documentation.
+[Python-twitter documentation](https://github.com/bear/python-twitter)
 
-See https://github.com/dgilland/omdb.py for OMDb documentation.
+[OMDb documentation](https://github.com/dgilland/omdb.py)
+
+[Chart.js documentation](http://www.chartjs.org/docs/#bubble-chart-introduction)
 
 Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
 
