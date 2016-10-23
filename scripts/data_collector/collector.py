@@ -2,6 +2,7 @@ import omdb
 import yaml
 import twitter
 
+
 class TwitterAPI(object):
 
     def __init__(self):
@@ -18,8 +19,8 @@ class TwitterAPI(object):
     # Searches Twitter for search_term and returns List<twitter.models.Status>
     # See https://github.com/bear/python-twitter/blob/master/twitter/api.py for docs on arguments
     def search(self, search_term, since=None, until=None, geocode=None):
-        tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode)
-        return tweets
+        tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode, count=100, lang='en', result_type='popular')
+        return tweets # twitter.Status
 
 
 
@@ -49,7 +50,6 @@ class Movie(object):
     def fillWithJsonObject(self, jsonObject):
         for (key, value) in jsonObject.items():
             if key in self.param_defaults.keys():
-                print('setting attribute: ' + key + ' with ' + value)
                 setattr(self, key, value)
         return self
 
@@ -86,6 +86,45 @@ class OMDbAPI(object):
 
 
 
+class Tweet(object):
+
+    def __init__(self, **kwargs):
+        self.param_defaults = {
+            'text' : None,
+            'created_at' : None,
+            'favorite_count' : None,
+            'lang' : None,
+            'location' : None,
+            'retweet_count' : None,
+            'user_name' : None,
+            'user_screen_name' : None,
+            'user_verified' : False,
+        }
+
+        for (param, default) in self.param_defaults.items():
+            setattr(self, param, kwargs.get(param, default))
+
+
+    # @params:
+    #       tweet: an object of the class twitter.Status (returnd by Twitter API)
+    # @returns:
+    #       updated_tweet: this tweet, updated with the data from the given tweet
+    def fillWithStatusObject(self, tweet):
+        if type(tweet.location) is not str:
+            tweet.location = tweet.user.location
+
+        self.text=tweet.text
+        self.created_at=tweet.created_at
+        self.favorite_count=tweet.favorite_count
+        self.lang=tweet.lang
+        self.location=tweet.location
+        self.retweet_count=tweet.retweet_count
+        self.user_name=tweet.user.name
+        self.user_screen_name=tweet.user.screen_name
+        self.user_verified=tweet.user.verified
+        return self
+
+
 
 omdb_api = OMDbAPI()
 twitter_api = TwitterAPI()
@@ -96,6 +135,12 @@ with open('popular_movies.txt') as titles:
     for i, line in enumerate(titles):
         movie = omdb_api.search(line)
         if movie is not None:
-            tweets = twitter_api.search(movie.Title)
-            for tweet in tweets:
-                yaml.dump(tweet, output_file_yaml, allow_unicode=True)
+            print('GETTING tweets for: ' + movie.Title)
+            search_results = twitter_api.search(movie.Title)
+            for result in search_results:
+                if result.lang == 'en' or result.user.lang == 'en':
+                    tweet = Tweet().fillWithStatusObject(result)
+                    del tweet.param_defaults # so param_defaults does not show up in our data
+                    yaml.dump(tweet, output_file_yaml, allow_unicode=True)
+                else:
+                    print('SKIPPING tweet, language is ' + result.lang)
