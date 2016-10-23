@@ -1,21 +1,12 @@
-from django.db import models
-from django import forms
-import twitter
-import yaml
 import omdb
-
-
-
-class QueryForm(forms.Form):
-    query = forms.CharField(label='Movie Title', max_length=100)
-
-
+import yaml
+import twitter
 
 class TwitterAPI(object):
 
     def __init__(self):
         # load the API keys from api_keys.txt
-        with open("scripts/twitter_api/api_keys.yml", 'r') as stream:
+        with open("../twitter_api/api_keys.yml", 'r') as stream:
             try:
                 keys = yaml.load(stream)
             except yaml.YAMLError as exc:
@@ -92,3 +83,19 @@ class OMDbAPI(object):
             return movieObj
         else:
             return None
+
+
+
+
+omdb_api = OMDbAPI()
+twitter_api = TwitterAPI()
+
+output_file_yaml = open("tweets.yml", 'w')
+
+with open('popular_movies.txt') as titles:
+    for i, line in enumerate(titles):
+        movie = omdb_api.search(line)
+        if movie is not None:
+            tweets = twitter_api.search(movie.Title)
+            for tweet in tweets:
+                yaml.dump(tweet, output_file_yaml, allow_unicode=True)
