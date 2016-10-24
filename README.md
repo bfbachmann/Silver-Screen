@@ -17,36 +17,46 @@ Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlV
 Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
 
 ## Setup
-Make sure you have Postgres installed (bash)
+
+1. [Download](https://www.vagrantup.com/downloads.html) Vagrant
+2. [Install](https://www.vagrantup.com/docs/getting-started/) Vagrant
+3. Make sure you are in the SilverScreen directory
+4. Exectue the following commands:
 ```shell
-$ which postgres
+$ vagrant up
+$ vagrant ssh
 ```
-Make sure you have pip and pip3 installed (bash)
+5. Your shell should now say
 ```shell
-$ which pip3
-$ which pip
+vagrant@precise64:/vagrant$
 ```
-Run setup script
+Execute the following command:
+```shell
+$ bash vagrant_setup.sh
+```
+Chill out and wait for the script to do its thing.
+6. Now:
+```shell
+$ cd /etc/postgresql/9.1/main/
+$ vim pg_hba.conf
+```
+Copy the following to the bottom of pg_hba.conf
+```shell
+export PATH="/home/vagrant/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+Save and exit with ```esc``` then ``` : ``` then ```wq``` then ```enter```
+7. Run the second setup script
 ```shell
 $ bash setup.sh
 ```
-Get Twitter API keys and place them in scripts/twitter_api/api_keys.yml
-
-## Running the Server
-You can run the server locally by doing:
+8. Then execute the following commands:
 ```shell
-$ python manage.py startserver
-```
-or
-```shell
-$ bash run.sh
-```
-Note: If you get the following error:
-```shell
-    Is the server running on host "localhost" (127.0.0.1) and accepting
-	   TCP/IP connections on port 5432?
-```
-you need to restart your Postgres server with the following (bash) command:
-```shell
-$ pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+$ sudo su postgres
+$ createuser vagrant
+# answer "y" when it asks "Shall the new role be a superuser? (y/n)"
+$ createdb -h localhost -p 5432 silverscreen
+$ exit
+$ python manage.py startserver 0.0.0:8080
 ```

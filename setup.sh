@@ -1,15 +1,15 @@
-#!/bin/bash
-
-# type "bash setup.sh" to execute this script
-echo "CREATING DATABASE (will not work without a Postgres installation)"
-eval "createdb -h localhost -p 5432 silverscreen"
-
-echo "INSTALLING REQUIREMENTS (will not work without pip3 installation)"
-eval "pip3 install -r requirements.txt"
-eval "pip install -r requirements.txt"
-
-echo "INSTALLING Python 3.4.0"
+eval ". /home/vagrant/.profile"
+eval "pyenv update"
+eval "sudo apt-get install make"
 eval "pyenv install 3.4.0"
-
-echo "SETTING LOCAL PYTHON VERSION TO 3.4.0 (will not work without Python 3.4.0 installed)"
 eval "pyenv local 3.4.0"
+eval "sudo apt-get install postgresql"
+eval "sudo apt-get install python-psycopg2"
+eval "sudo apt-get install libpq-dev"
+eval "sudo pip install -r requirements.txt"
+eval "sudo pip3 install -r requirements.txt"
+eval "sudo chown vagrant -R /etc/postgresql/9.1/main"
+eval "sudo chown vagrant -R /etc/postgresql/9.1/main/pg_hba.conf"
+eval "sudo chown -R postgres:postgres /var/run/postgresql"
+eval "sudo chown postgres -R /var/lib/postgresql/"
+eval "sudo chown vagrant -R /var/lib/postgresql/"

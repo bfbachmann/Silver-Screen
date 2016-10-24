@@ -32,13 +32,12 @@
 
         {% for tweet in tweets %}
             <hr>
-            <p><strong> By: </strong></p> {{ tweet.contributors }} <br>
-            <p><strong> Body: </strong></p> {{ tweet.text }} <br>
-            <p><strong> Geo: </strong></p> {{ tweet.geo }} <br>
-            <p><strong> Hashtags: </strong></p> {{ tweet.hashtags }} <br>
-            <p><strong> Location: </strong></p> {{ tweet.location }} <br>
-            <p><strong> Retweet count: </strong></p> {{ tweet.retweet_count }} <br>
-            <p><strong> User mentions: </strong></p> {{ tweet.user_mentions }} <br>
+            <p>"{{tweet.text}}"</p>
+            <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
+            <p><strong> On: </strong> {{ tweet.created_at }} </p>
+            <p><strong> In: </strong> {{ tweet.location }} </p>
+            <p><strong> Favorites: </strong> {{ tweet.favorite_count }} </p>
+            <p><strong> Retweets: </strong> {{ tweet.retweet_count }} </p>
         {% endfor %}
     </div>
 </body>

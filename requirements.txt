@@ -3,8 +3,7 @@ nltk==3.2.1
 numpy==1.11.1
 python-twitter==3.1
 PyYAML==3.12
-psycopg2==2.6.2
-pyenv
 django
 django-bootstrap3
 django-jquery
+psycopg2==2.6.2

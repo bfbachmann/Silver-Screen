@@ -15,3 +15,6 @@ db.*
 # Ignore UML Diagrams
 /docs/*.mdj
 /docs/UML\ System\ Diagram.png
+
+# Ignore Vagrant files
+.vagrant
