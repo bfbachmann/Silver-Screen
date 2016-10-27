@@ -18,3 +18,9 @@ db.*
 
 # Ignore Vagrant files
 .vagrant
+
+# Ignore .idea
+**.idea
+
+# Ignore .DS_Store because if that ends up in our repo I will actually kill someone
+**.DS_Store
