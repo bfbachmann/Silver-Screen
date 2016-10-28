@@ -1,6 +1,6 @@
 # The following is a list of software packages you will need to
 # contribute to this project.
-# NOTE: to quickly install all requirements for Python do > pip install -r docs/requirements.txt
+# NOTE: to quickly install all requirements for Python do > pip install -r requirements.txt
 # IMPORTANT: Please keep the requirements.txt file up to date with any
 # packages you are using
 

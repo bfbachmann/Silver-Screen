@@ -18,6 +18,11 @@
             <h1 style="padding-left: 40px;"> SilverScreen </h1>
             <h2 style="padding-left: 40px;"> Twitter Sentiment Analysis Tool </h2>
         </div>
+        {% if error_message is not None %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+        {% endif %}
         <div class="align-left" style="margin: 50px;">
             <h4> Search Twitter for a Movie: </h4>
             <form action="/results/" method="post" class="form">
