@@ -1,0 +1,33 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript TODO: add jQuery #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Load stylesheets #}
+{% load static %}
+
+<head>
+    <title> SilverScreen </title>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+</head>
+
+<body>
+    <div class="align-center">
+        <div class="jumbotron align-left">
+            <h1 style="padding-left: 40px;"> SilverScreen </h1>
+            <h2 style="padding-left: 40px;"> Twitter Sentiment Analysis Tool </h2>
+        </div>
+        <div class="align-left" style="margin: 50px;">
+            <h4> Search Twitter for a Movie: </h4>
+            <form action="/results/" method="post" class="form">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+</body>

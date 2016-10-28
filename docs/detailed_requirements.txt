@@ -1,6 +1,8 @@
 # The following is a list of software packages you will need to
 # contribute to this project.
 # NOTE: to quickly install all requirements for Python do > pip install -r docs/requirements.txt
+# IMPORTANT: Please keep the requirements.txt file up to date with any
+# packages you are using
 
 # It is important that we all use the same version of Python for this
 # project, as Python versions are not always backwards compatible.
@@ -38,11 +40,6 @@ numpy
 # > pip install python-twitter
 
 python-twitter
-
-# json Python package for handling Twitter and IMDB responses
-# > pip install json
-
-json
 
 # PyYaml for parsing YAML config files (like api_keys.yml)
 # > pip install PyYaml
