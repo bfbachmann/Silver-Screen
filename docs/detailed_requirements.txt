@@ -1,0 +1,52 @@
+# The following is a list of software packages you will need to
+# contribute to this project.
+# NOTE: to quickly install all requirements for Python do > pip install -r requirements.txt
+# IMPORTANT: Please keep the requirements.txt file up to date with any
+# packages you are using
+
+# It is important that we all use the same version of Python for this
+# project, as Python versions are not always backwards compatible.
+
+Python 3.4.0
+
+# pip the Python package manager. You will need this to install tools like NLTK
+# and Django. If you're running OSX with Homebrew you can > brew install pip
+
+Pip 1.5.4
+
+Django 1.10.1
+
+# Optionally you can install pyenv to manage your local python versions if you
+# plan on keeping multiple versions around on your machine.
+# Just make sure the version you use for deveopment in this directory is the
+# same as the one listed in .python-version. > pip install pyenv
+
+pyenv 1.0.2
+
+# NLTK > pip install nltk
+# To acquire all the modules we need you may have to do:
+# > python
+# >>> import ntlk
+# >>> nltk.download()
+
+NLTK
+
+# Numpy for Python data processing (its an NLTK dependency).
+# > pip install numpy
+
+numpy
+
+# Python wrapper for Twitter API.
+# > pip install python-twitter
+
+python-twitter
+
+# PyYaml for parsing YAML config files (like api_keys.yml)
+# > pip install PyYaml
+
+PyYaml
+
+# psycopg2 (2.6.2) for postgresql database
+# > pip install psycopg2
+
+psycopg2 (2.6.2)

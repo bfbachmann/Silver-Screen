@@ -1,0 +1,5 @@
+PLEASE DO NOT COMMIT API KEYS!!!!!!!!
+
+branch master       Is only for deployment code. DO NOT COMMIT HERE
+branch dev          Is only for working code. You will merge your private feature branch into dev only after your teammates have reviewed your code
+branch <your_name>  Is for anything you are working on. You can commit here whenever you want.
