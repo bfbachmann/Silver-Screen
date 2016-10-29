@@ -1,4 +1,3 @@
-from django.db import models
 from django import forms
 import twitter
 import yaml
@@ -20,7 +19,7 @@ class TwitterAPI(object):
             except yaml.YAMLError as exc:
                 print(exc)
 
-        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=True) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
+        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
 
     def search_basic(self, search_term, since=None, until=None, geocode=None):
@@ -28,17 +27,21 @@ class TwitterAPI(object):
         :param search_term: a string representing the movie to search Twitter for
         :param since (optional): tweets posted before this date will not be returned
         :param until (optional): tweets after this date will not be returned
-        :return List<twitter.models.Status>: a list of Status objects containing information
-                                            about Tweets that matched the search params if the
-                                            search_term is a string.
-                                            Othewise returns None
+        :return statuses: a List<twitter.models.Status> containing information
+                        about Tweets that matched the search params if the
+                        search_term is a string.
+                        Othewise returns None
         # See https://github.com/bear/python-twitter/blob/master/twitter/api.py for docs on arguments
         """
 
-        if type(search_term) != str:
+        if type(search_term) != str or search_term is "":
             return None
 
-        tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode, count=100, lang='en', result_type='popular')
+        try:
+            tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode, count=100, lang='en', result_type='popular')
+        except:
+            raise ConnectionError
+
         return tweets # twitter.Status
 
 
@@ -46,24 +49,22 @@ class TwitterAPI(object):
         """
         :param movie: a Movie object with valid fields
         :return tweets: A List<twitter.models.Status> containing statuses posted between one year before the movie was
-                        released and the current date if movie is a string
+                        released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != str:
+        if type(movie) != Movie or type(movie.Title) is not str:
             return None
 
-        from_year = movie.year - 1;
-        to_year = datetime.datetime.now().year
+        current_datetime = datetime.datetime.now()
         tweets = []
 
-        for year in range(from_year, to_year):
-            beginning_of_year = datetime.datetime(year, 1, 1).strftime('%Y-%m-%d')
-            middle_of_year = datetime.datetime(year, 6, 1).strftime('%Y-%m-%d')
-            end_of_year = datetime.datetime(year, 12, 31).strftime('%Y-%m-%d')
-            first_half_tweets = self.api.GetSearch(term=movie.title, since=beginning_of_year, until=middle_of_year, lang='en', result_type='popular')
-            second_half_tweets = self.api.GetSearch(term=movie.title, since=beginning_of_year, until=end_of_year, lang='en', result_type='popular')
+        for diff in range(0, 6):
+            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
+            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-            for tweet in (first_half_tweets + second_half_tweets):
+            response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='popular')
+
+            for tweet in response:
                 # only append Tweets in English
                 if tweet.lang == 'en' or tweet.user.lang == 'en':
                     tweets.append(tweet)
@@ -117,15 +118,18 @@ class OMDbAPI(object):
         """
         :params title: a string holding the title of the movie
         :return movie: if at least one movie with a similar title is found, this is a Movie object
-                      created from the most relevant result returned by OMDb, otherwise it is None
+                      created from the most relevant result returned by OMDb, otherwise it is empty list
         """
 
         # search for all movies with similar titles
-        matching_movies = omdb.search_movie(title)
+        try:
+            matching_movies = omdb.search_movie(title)
+        except:
+            raise ConnectionError
+
         self.recentSearches.update({title:matching_movies})
 
         #For now, only return most popular movie
-
         highestIMDB = 0
 
         if matching_movies:
@@ -164,7 +168,7 @@ class Tweet(object):
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
-        if tweet is None:
+        if tweet is None or type(tweet) is not twitter.Status:
             return self
 
         # assume the Tweet is in the users location if we have no info
