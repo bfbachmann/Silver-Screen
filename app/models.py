@@ -4,6 +4,8 @@ import yaml
 import omdb
 import datetime
 
+from django.db import models
+
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
@@ -52,7 +54,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or type(movie.Title) is not str:
+        if type(movie) != Movie or isinstance(movie.Title, str):
             return None
 
         current_datetime = datetime.datetime.now()
@@ -72,28 +74,41 @@ class TwitterAPI(object):
         return tweets
 
 
-class Movie(object):
+class Movie(models.Model):
+    Title = models.CharField(max_length=128)
+    Year = models.IntegerField(null=True, blank=True)
+    YomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    Actors = models.CharField(max_length=1024, null=True, blank=True)
+    BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
+    Genres = models.CharField(max_length=1024, null=True, blank=True)
+    Director = models.CharField(max_length=1024, null=True, blank=True)
+    imdbRating = models.FloatField(null=True, blank=True)
+    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True)
+    plot = models.CharField(max_length=2048, null=True, blank=True)
+    tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
+    Poster = models.CharField(max_length=1024, null=True, blank=True)
+    imdbID = models.CharField(max_length=1024)
 
-    def __init__(self,**kwargs):
-        self.param_defaults = {
-             'Title':None,
-             'Year':None,
-             'YomatoURL':None,
-             'Actors':None,
-             'BoxOffice':None,
-             'Genres':None,
-             'Director':None,
-             'imdbRating':None,
-             'tomatoRating':None,
-             'tomatoUserRating':None,
-             'plot':None,
-             'tomatoConsensus':None,
-             'Poster':None
-        }
+    param_defaults = {
+        'Title': None,
+        'Year': None,
+        'YomatoURL': None,
+        'Actors': None,
+        'BoxOffice': None,
+        'Genres': None,
+        'Director': None,
+        'imdbRating': None,
+        'tomatoRating': None,
+        'tomatoUserRating': None,
+        'Plot': None,
+        'tomatoConsensus': None,
+        'Poster': None,
+        'imdbID': None
+    }
 
-        for (param, default) in self.param_defaults.items():
-            setattr(self, param, kwargs.get(param, default))
-
+    def __unicode__(self):
+        return self.Title
 
     def fillWithJsonObject(self, jsonObject):
         """
@@ -104,6 +119,7 @@ class Movie(object):
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
                     setattr(self, key, value)
+            self.save()
         return self
 
 
@@ -135,8 +151,14 @@ class OMDbAPI(object):
         if matching_movies:
             movie = matching_movies.pop(0)
 
-            response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-            movieObj = Movie().fillWithJsonObject(response)
+            try:
+                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
+            except Movie.DoesNotExist:
+                movieObj = None
+
+            if not movieObj:
+                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
+                movieObj = Movie().fillWithJsonObject(response)
 
             return movieObj
         else:
