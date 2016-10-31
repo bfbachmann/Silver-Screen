@@ -232,8 +232,8 @@ class Tweet(models.Model):
 
         return self
 
-    def assignSentimentScore(self): # TODO Create this method
-        return self
+    def assignSentimentScore(self):
+        self.sentiment_score = SentimentScorer().polarity_scores(self.text)['sentiment']
 
     def __unicode__(self):
         return str(self.tweetID)
