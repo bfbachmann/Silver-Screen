@@ -7,9 +7,20 @@ db.*
 # Ignore pyc files
 *.pyc
 
-# Ignore data produced by Twitter api wrapper
+# Ignore data
 /scripts/twitter_api/*.json
+/scripts/twitter_api/*.yml
+/scripts/data_collector/tweets.yml
 
 # Ignore UML Diagrams
 /docs/*.mdj
 /docs/UML\ System\ Diagram.png
+
+# Ignore Vagrant files
+.vagrant
+
+# Ignore .idea
+**.idea
+
+# Ignore .DS_Store because if that ends up in our repo I will actually kill someone
+**.DS_Store

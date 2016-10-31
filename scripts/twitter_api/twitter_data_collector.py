@@ -1,5 +1,5 @@
 # Check https://github.com/bear/python-twitter for docs on twitter package
-
+import omdb
 import twitter
 import pprint
 import yaml
