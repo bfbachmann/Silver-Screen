@@ -1,31 +1,43 @@
-{# Load the tag library #}
-{% load bootstrap3 %}
-
-{# Load CSS and JavaScript TODO: add jQuery #}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-
-{# Load stylesheets #}
-{% load static %}
-
 <head>
     <title> SilverScreen </title>
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+
+    {# Load stylesheets #}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+    {# Load the tag library #}
+    {% load bootstrap3 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 
 <body>
-    <div class="align-center" style="width: 60%; margin: auto;">
-        <h2> Showing results for: {{ form.query.value }}</h2>
+    <div class="align-left" style="width: 60%; margin: auto;">
+        <h2> Showing results for: {{ movie.Title }}</h2>
+        <hr>
+        <div class="well full-width clearfix">
+            {% if movie.Poster %}
+                <img src="{{ movie.Poster }}" class ="pull-left img-responsive" style="max-height:300px; margin-right:25px;"/>
+            {% endif %}
+                <h3>IMDB Rating: {{movie.imdbRating}}</h3>
+                <h3>Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3> <br />
+                <p>Genre: {{movie.Genres}}</p>
+                <p>BoxOffice: {{movie.BoxOffice}}</p>
+                <p>Director: {{movie.Director}}</p>
+                <p>Year: {{movie.Year}}</p>
+                <p>Tomato Consensus:</p> <em>"{{movie.tomatoConsensus}}"</em>
+        </div>
 
         {% for tweet in tweets %}
             <hr>
-            <p><strong> By: </strong></p> {{ tweet.contributors }} <br>
-            <p><strong> Body: </strong></p> {{ tweet.text }} <br>
-            <p><strong> Geo: </strong></p> {{ tweet.geo }} <br>
-            <p><strong> Hashtags: </strong></p> {{ tweet.hashtags }} <br>
-            <p><strong> Location: </strong></p> {{ tweet.location }} <br>
-            <p><strong> Retweet count: </strong></p> {{ tweet.retweet_count }} <br>
-            <p><strong> User mentions: </strong></p> {{ tweet.user_mentions }} <br>
+            <p>"{{tweet.text}}"</p>
+            <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
+            <p><strong> On: </strong> {{ tweet.created_at }} </p>
+            <p><strong> In: </strong> {{ tweet.location }} </p>
+            <p><strong> Favorites: </strong> {{ tweet.favorite_count }} </p>
+            <p><strong> Retweets: </strong> {{ tweet.retweet_count }} </p>
         {% endfor %}
     </div>
 </body>
