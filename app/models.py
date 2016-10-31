@@ -5,7 +5,7 @@ import omdb
 import datetime
 
 from django.db import models
-
+import sentimentanalysis
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
@@ -67,6 +67,9 @@ class TwitterAPI(object):
             response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='popular')
 
             for tweet in response:
+                # tag movie with imdbID
+                tweet.imdbID = movie.imdbID
+
                 # only append Tweets in English
                 if tweet.lang == 'en' or tweet.user.lang == 'en':
                     tweets.append(tweet)
@@ -164,26 +167,34 @@ class OMDbAPI(object):
         else:
             return None
 
+class Tweet(models.Model):
+    text = models.CharField(max_length=256)
+    tweetID = models.BigIntegerField(unique=True)
+    created_at = models.CharField(max_length=256)
+    favorite_count = models.IntegerField()
+    lang = models.CharField(max_length=16)
+    location = models.CharField(max_length=256)
+    retweet_count = models.IntegerField()
+    user_name = models.CharField(max_length=256)
+    user_screen_name = models.CharField(max_length=256)
+    user_verified = models.BooleanField()
+    imdbID =  models.CharField(max_length=1024)
+    sentiment_score = models.FloatField(null=True, blank=True)
 
-
-class Tweet(object):
-
-    def __init__(self, **kwargs):
-        self.param_defaults = {
-            'text' : None,
-            'created_at' : None,
-            'favorite_count' : None,
-            'lang' : None,
-            'location' : None,
-            'retweet_count' : None,
-            'user_name' : None,
-            'user_screen_name' : None,
-            'user_verified' : False,
-        }
-
-        for (param, default) in self.param_defaults.items():
-            setattr(self, param, kwargs.get(param, default))
-
+    param_defaults = {
+        'text' : None,
+        'created_at' : None,
+        'favorite_count' : None,
+        'lang' : None,
+        'location' : None,
+        'retweet_count' : None,
+        'user_name' : None,
+        'user_screen_name' : None,
+        'user_verified' : False,
+        'sentiment_score' : False,
+        'imdbID': False,
+        'tweetID': False,
+    }
 
     def fillWithStatusObject(self, tweet):
         """
@@ -209,4 +220,20 @@ class Tweet(object):
         self.user_name=tweet.user.name
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
+        self.tweetID = tweet.id
+        self.imdbID = tweet.imdbID
+
+        self.assignSentimentScore()
+
+        try:
+            self.save()
+        except:
+            pass
+
         return self
+
+    def assignSentimentScore(self): # TODO Create this method
+        return self
+
+    def __unicode__(self):
+        return str(self.tweetID)
