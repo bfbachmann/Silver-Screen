@@ -42,7 +42,7 @@ Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLys
     $ cd /vagrant
     $ bash vagrant_setup.sh
     ```
-    You will have to answer "Y" to a few "Do you want to continue?" prompts while utils are installed.
+    You will have to answer ```Y``` to a few ```Do you want to continue?``` prompts while utils are installed.
 
 6. Once you have completed Step 5 you will need to add pyenv to your path. Open your bash profile in vim:
     ```shell
