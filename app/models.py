@@ -92,6 +92,13 @@ class Movie(models.Model):
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
+    #ArrayField's for storing sentiment values over time
+    scoreDate = ArrayField(models.DateTimeField(null=True, blank=True), size=8)
+    sentimentScore = ArrayField(models.IntegerField(null=True, blank=True), size=8)
+    positivityScore = ArrayField(models.IntegerField(null=True, blank=True), size=8)
+    negativityScore = ArrayField(models.IntegerField(null=True, blank=True), size=8)
+    neutralityScore = ArrayField(models.IntegerField(null=True, blank=True), size=8)
+
 
     param_defaults = {
         'Title': None,
@@ -107,7 +114,13 @@ class Movie(models.Model):
         'Plot': None,
         'tomatoConsensus': None,
         'Poster': None,
-        'imdbID': None
+        'imdbID': None,
+        'scoreDate': None,
+        'sentimentScore': None,
+        'positivityScore':None,
+        'negativityScore':None,
+        'neutralityScore':None
+
     }
 
     def __unicode__(self):
