@@ -44,14 +44,14 @@ def results(request):
         data_to_render = {'error_message': None, 'form': blank_form}
 
         movie = OMDbAPI().search(search_term)
-        '''
+
         try:
             movie = OMDbAPI().search(search_term)
         except ConnectionError:
             print('ERROR: Cannot connect to OMDb')
             data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
             return render(request, 'index.html', data_to_render)
-        '''
+
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
