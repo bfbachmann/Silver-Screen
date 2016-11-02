@@ -17,10 +17,10 @@ db.*
 /docs/UML\ System\ Diagram.png
 
 # Ignore Vagrant files
-.vagrant
+**/.vagrant
 
 # Ignore .idea
-**.idea
+**/.idea
 
 # Ignore .DS_Store because if that ends up in our repo I will actually kill someone
-**.DS_Store
+**/.DS_Store
