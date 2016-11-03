@@ -65,7 +65,7 @@ class TwitterAPI(object):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-            response = self.api.GetSearch(term=movie.Title +' -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
+            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
 
             for tweet in response:
                 # tag movie with imdbID
