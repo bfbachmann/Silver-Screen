@@ -25,29 +25,6 @@ class TwitterAPI(object):
         self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
 
-    def search_basic(self, search_term, since=None, until=None, geocode=None):
-        """
-        :param search_term: a string representing the movie to search Twitter for
-        :param since (optional): tweets posted before this date will not be returned
-        :param until (optional): tweets after this date will not be returned
-        :return statuses: a List<twitter.models.Status> containing information
-                        about Tweets that matched the search params if the
-                        search_term is a string.
-                        Othewise returns None
-        # See https://github.com/bear/python-twitter/blob/master/twitter/api.py for docs on arguments
-        """
-
-        if type(search_term) != str or search_term is "":
-            return None
-
-        try:
-            tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode, count=100, lang='en', result_type='popular')
-        except:
-            raise ConnectionError
-
-        return tweets # twitter.Status
-
-
     def search_movie(self, movie):
         """
         :param movie: a Movie object with valid fields
@@ -65,7 +42,7 @@ class TwitterAPI(object):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-            response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='popular')
+            response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='mixed')
 
             for tweet in response:
                 # tag movie with imdbID
@@ -159,6 +136,7 @@ class OMDbAPI(object):
 
         if matching_movies:
             movie = matching_movies.pop(0)
+            print("ERROR: " + movie.title)
 
             try:
                 movieObj = Movie.objects.get(imdbID=movie.imdb_id)

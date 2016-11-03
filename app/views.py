@@ -57,7 +57,7 @@ def results(request):
                 return render(request, 'index.html', data_to_render)
 
         if not movie or not movie.Title:
-            print('ERROR: No matching movie')
+            print('MOVIE: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
 
