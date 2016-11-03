@@ -109,12 +109,7 @@ class Movie(models.Model):
         'Plot': None,
         'tomatoConsensus': None,
         'Poster': None,
-        'imdbID': None,
-        'scoreDate': None,
-        'sentimentScore': None,
-        'positivityScore':None,
-        'negativityScore':None,
-        'neutralityScore':None
+        'imdbID': None
 
     }
 
@@ -277,10 +272,8 @@ class Sentiment(models.Model):
         return self.Title + self.imdbID
 
     def fillWithJsonObject(self, jsonObject):
-        """
-        :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
-        :return self: this movie, udpated with the relevant data from the given jsonObject
-        """
+        #:param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
+        #:return self: this movie, udpated with the relevant data from the given jsonObject
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():

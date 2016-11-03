@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
+import datetime
 
 
 # TODO: upadte this once we have analysis working
@@ -98,17 +99,26 @@ def results(request):
 
         overall_score = sum_scores/len(clean_tweets)
 
+        # populate the sentiment table with data for each movie with their scores at this time
+        MovieSentiment = Sentiment(Title = movie.Title, imdbID = movie.imdbID, sentimentDate = datetime.date.today() , sentimentScore = overall_score)
+        #find objects that are of the same movie and were made today
+        duplicate = Sentiment.objects.filter(imdbID = movie.imdbID, sentimentDate = datetime.date.today())
+        if not duplicate: 
+            try:
+                # movie doesn't exist yet (in the db) with this date so save it into the db
+                MovieSentiment.save()
+            except:
+                print ("ERROR: counldn't save to sentiment tabel")
+        
+
         data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
         return render(request, 'results.html', data_to_render)
 
-<<<<<<< HEAD
-    return tweets
 
-=======
     # if request is GET redirect to index
     elif request.method == 'GET':
         return HttpResponseRedirect('/index/')
     # otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
->>>>>>> b136e84687b4d650f0ce2feb9baff125eb96d961
+
