@@ -55,7 +55,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or not isinstance(movie.Title, str):
+        if type(movie) != Movie or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
         current_datetime = datetime.datetime.now()
