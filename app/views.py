@@ -82,10 +82,18 @@ def results(request):
                     clean_tweets.append(Tweet().fillWithStatusObject(raw_tweet))
             else:
                 print('ERROR: No tweets found')
-                data_to_render['error_message'] = 'Sorry, we could\'nt find tweets about that movie.'
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
                 return render(request, 'index.html', data_to_render)
 
-        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie}
+
+        # calculate overall sentiment score
+        sum_scores = 0
+        for tweet in clean_tweets:
+            sum_scores += tweet.sentiment_score
+
+        overall_score = sum_scores/len(clean_tweets)
+
+        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
         return render(request, 'results.html', data_to_render)
 
     # if request is GET redirect to index

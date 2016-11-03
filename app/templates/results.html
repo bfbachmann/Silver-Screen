@@ -33,29 +33,61 @@
 
 
     <div class="align-left" style="width: 60%; margin: auto;">
-        <h2> Showing results for: {{ movie.Title }}</h2>
+        <h1> {{ movie.Title }}</h1>
         <hr>
         <div class="well full-width clearfix">
             {% if movie.Poster %}
-                <img src="{{ movie.Poster }}" class ="pull-left img-responsive" style="max-height:300px; margin-right:25px;"/>
+                <div class="col-sm-4">
+                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" style="max-height:300px; margin-right:25px;"/>
+                </div>
+                <div class="col-sm-8">
             {% endif %}
-                <h3>IMDB Rating: {{movie.imdbRating}}</h3>
-                <h3>Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3> <br />
-                <p>Genre: {{movie.Genres}}</p>
-                <p>BoxOffice: {{movie.BoxOffice}}</p>
-                <p>Director: {{movie.Director}}</p>
-                <p>Year: {{movie.Year}}</p>
-                <p>Tomato Consensus:</p> <em>"{{movie.tomatoConsensus}}"</em>
+                <h3 class="info-header">IMDB Rating: {{movie.imdbRating}}</h3>
+                <h3 class="info-header">Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3>
+                <h3 class="info-header"> Sentiment Score:
+                    {% if overall_score <= 0 %}
+                        <strong style="color: red;">{{ overall_score }}</strong> </h3>
+                    {% else %}
+                        <strong style="color: green;">{{ overall_score }}</strong> </h3><br>
+                    {% endif %}
+                <div class="col-sm-3" style="margin-left: 0px !important;">
+                    <p>Genre: </p>
+                    <p>BoxOffice: </p>
+                    <p>Director: </p>
+                    <p>Year: </p>
+                    <p>Tomato Consensus: </p>
+                </div>
+                <div class="col-sm-9">
+                    <p>{{movie.Genres}}</p>
+                    <p>{{movie.BoxOffice}}</p>
+                    <p>{{movie.Director}}</p>
+                    <p>{{movie.Year}}</p>
+                    <em>"{{movie.tomatoConsensus}}"</em>
+                </div>
+            {% if movie.Poster %}
+                </div>
+            {% endif %}
         </div>
 
         {% for tweet in tweets %}
             <hr>
-            <p>"{{tweet.text}}"</p>
-            <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
-            <p><strong> On: </strong> {{ tweet.created_at }} </p>
-            <p><strong> In: </strong> {{ tweet.location }} </p>
-            <p><strong> Favorites: </strong> {{ tweet.favorite_count }} </p>
-            <p><strong> Retweets: </strong> {{ tweet.retweet_count }} </p>
+            <div class="container">
+                <div class="col-sm-8"<
+                    <p>"{{tweet.text}}"</p>
+                    <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
+                    <p><strong> On: </strong> {{ tweet.created_at }} </p>
+                    <p><strong> In: </strong> {{ tweet.location }} </p>
+                    <p><strong> Favorites: </strong> {{ tweet.favorite_count }} </p>
+                    <p><strong> Retweets: </strong> {{ tweet.retweet_count }} </p>
+                </div>
+                <div class="col-sm-4">
+                    {% if tweet.sentiment_score <= 0 %}
+                        <h5 style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
+                    {% else %}
+                        <h5 style="color: green;"> Score: {{ tweet.sentiment_score }} </h5>
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
     </div>
 </body>

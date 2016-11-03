@@ -3,9 +3,10 @@ import twitter
 import yaml
 import omdb
 import datetime
-
 from django.db import models
-import sentimentanalysis
+from sentimentanalysis.analyzer import SentimentScorer
+
+
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
@@ -54,7 +55,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or isinstance(movie.Title, str):
+        if type(movie) != Movie or not isinstance(movie.Title, str):
             return None
 
         current_datetime = datetime.datetime.now()
@@ -121,6 +122,11 @@ class Movie(models.Model):
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
+                    if key == 'imdbRating' and not isinstance(value, float):
+                        try:
+                            value = float(value)
+                        except:
+                            value = None
                     setattr(self, key, value)
             self.save()
         return self
@@ -233,7 +239,7 @@ class Tweet(models.Model):
         return self
 
     def assignSentimentScore(self):
-        self.sentiment_score = SentimentScorer().polarity_scores(self.text)['sentiment']
+        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
     def __unicode__(self):
         return str(self.tweetID)
