@@ -71,8 +71,8 @@
 
         {% for tweet in tweets %}
             <hr>
-            <div class="container">
-                <div class="col-sm-8"<
+            <div class="container-fluid">
+                <div class="col-sm-8">
                     <p>"{{tweet.text}}"</p>
                     <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
                     <p><strong> On: </strong> {{ tweet.created_at }} </p>
@@ -82,9 +82,9 @@
                 </div>
                 <div class="col-sm-4">
                     {% if tweet.sentiment_score <= 0 %}
-                        <h5 style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
+                        <h5 class="align-right" style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
                     {% else %}
-                        <h5 style="color: green;"> Score: {{ tweet.sentiment_score }} </h5>
+                        <h5 class="align-right" style="color: green;"> Score: {{ tweet.sentiment_score }} </h5>
                     {% endif %}
                 </div>
             </div>
