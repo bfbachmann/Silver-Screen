@@ -100,7 +100,7 @@ def results(request):
 
         overall_score = sum_scores/num_nonzero
 
-        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
+        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score, 'new_form': QueryForm()}
         return render(request, 'results.html', data_to_render)
 
     # if request is GET redirect to index
