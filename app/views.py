@@ -44,10 +44,11 @@ def results(request):
         data_to_render = {'error_message': None, 'form': blank_form}
 
         # try get the movie from the database
-        movie = Movie.objects.filter(Title = search_term)
+        try:
+            movie = Movie.objects.get(Title = search_term)
 
         # if the movie is not in the db search OMDB
-        if not movie:
+        except:
             try:
                 movie = OMDbAPI().search(search_term)
             except ConnectionError:
@@ -92,7 +93,8 @@ def results(request):
         # calculate overall sentiment score
         sum_scores = 0
         for tweet in clean_tweets:
-            sum_scores += tweet.sentiment_score
+            if tweet.sentiment_score: #Ensure that the sentiment score actually exists
+                sum_scores += tweet.sentiment_score
 
         overall_score = sum_scores/len(clean_tweets)
 
