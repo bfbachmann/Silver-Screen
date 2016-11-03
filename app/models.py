@@ -126,7 +126,7 @@ class Movie(models.Model):
                         try:
                             value = float(value)
                         except:
-                            value = None
+                            value = None # TODO: we'll have to handle this upstream
                     setattr(self, key, value)
             self.save()
         return self
@@ -234,6 +234,7 @@ class Tweet(models.Model):
         try:
             self.save()
         except:
+            print("Failed to save tweet: " + str(self.tweetID))
             pass
 
         return self
