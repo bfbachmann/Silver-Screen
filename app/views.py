@@ -92,11 +92,13 @@ def results(request):
 
         # calculate overall sentiment score
         sum_scores = 0
+        num_nonzero = 0
         for tweet in clean_tweets:
-            if tweet.sentiment_score: #Ensure that the sentiment score actually exists
+            if tweet.sentiment_score and tweet.sentiment_score!=0: #Ensure that the sentiment score actually exists
                 sum_scores += tweet.sentiment_score
+                num_nonzero += 1
 
-        overall_score = sum_scores/len(clean_tweets)
+        overall_score = sum_scores/num_nonzero
 
         data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
         return render(request, 'results.html', data_to_render)
