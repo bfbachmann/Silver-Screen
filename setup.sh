@@ -1,0 +1,7 @@
+eval ". /home/vagrant/.profile"
+eval "pyenv update"
+eval "sudo apt-get install make"
+eval "pyenv install 3.4.0"
+eval "pyenv local 3.4.0"
+eval "sudo apt-get install libpq-dev python-dev"
+eval "sudo apt-get install postgresql postgresql-contrib"

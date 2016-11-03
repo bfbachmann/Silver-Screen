@@ -1,2 +1,33 @@
 # Ignore database files
 db.*
+
+# Ingore api keys
+/scripts/twitter_api/api_keys.yml
+
+# Ignore pyc files
+**/*.pyc
+
+# Ignore data
+/scripts/twitter_api/*.json
+/scripts/twitter_api/*.yml
+/scripts/data_collector/tweets.yml
+
+# Ignore UML Diagrams
+/docs/*.mdj
+/docs/UML\ System\ Diagram.png
+
+# Ignore Vagrant files
+**/.vagrant
+
+# Ignore .idea
+**/.idea
+
+# Ignore .DS_Store because if that ends up in our repo I will actually kill someone
+<<<<<<< HEAD
+**/.DS_Store
+=======
+**.DS_Store
+
+# Ignore data
+**/*.xml
+>>>>>>> bruno

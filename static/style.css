@@ -1,0 +1,22 @@
+.align-center {
+    text-align: center;
+}
+
+.align-left {
+    text-align: left;
+}
+
+.info-header {
+    margin-bottom: 10px;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+#movieinfo img{
+    vertical-align: middle;
+}
+
+#movieinfo {
+    text-align: left;
+    background-color: gray;
+}

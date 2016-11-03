@@ -1,5 +1,4 @@
 #!/bin/bash
 
 # type "bash run.sh" to execute this script
-# it just starts the server hosting the web app
-eval "python manage.py runserver"
+eval "python manage.py runserver 0.0.0.0:8080"
