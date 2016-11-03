@@ -3,6 +3,10 @@
 
 CPEN 321 Project Sept 2016 - Nov 2016
 
+See ```docs``` directory for documentation
+
+See ```dev``` branch for latest code. 
+
 ## Documentation Links
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 

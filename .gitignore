@@ -5,7 +5,7 @@ db.*
 /scripts/twitter_api/api_keys.yml
 
 # Ignore pyc files
-**/.pyc
+**/*.pyc
 
 # Ignore data
 /scripts/twitter_api/*.json
@@ -23,4 +23,11 @@ db.*
 **/.idea
 
 # Ignore .DS_Store because if that ends up in our repo I will actually kill someone
+<<<<<<< HEAD
 **/.DS_Store
+=======
+**.DS_Store
+
+# Ignore data
+**/*.xml
+>>>>>>> bruno

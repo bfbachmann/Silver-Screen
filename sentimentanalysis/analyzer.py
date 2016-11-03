@@ -90,6 +90,22 @@ def demo(text):
     print(text)
     print()
 
+
+def normalize(score, alpha=15):
+    """
+    Normalize the score to be between -1 and 1 using an alpha that
+    approximates the max expected value (EXPERIMENTAL!!!)
+
+    :param score: the calculated polarity of the list of words
+    :param alpha: predetermined alpha value that approximates the maximum expected value
+    :return: normalized score between -1 and 1
+    """
+
+    normalized_score = score / math.sqrt((score * score) + alpha)
+
+    return normalized_score
+
+
 def negate(input_words, include_nt=True):
     """
     determines if input contains negation words
@@ -115,43 +131,6 @@ def negate(input_words, include_nt=True):
             return True
 
     return False
-
-
-def normalize(score, alpha=15):
-    """
-    Normalize the score to be between -1 and 1 using an alpha that
-    approximates the max expected value (EXPERIMENTAL!!!)
-
-    :param score: the calculated polarity of the list of words
-    :param alpha: predetermined alpha value that approximates the maximum expected value
-    :return: normalized score between -1 and 1
-    """
-
-    normalized_score = score / math.sqrt((score * score) + alpha)
-
-    return normalized_score
-
-
-def capitalized(words):
-    """
-    Checks if specific words are capitalized or the whole tweet,
-    in order to determine whether we should differentiate the word based on its capitalization
-
-    :param list words: the list of words to inspect
-    :returns: True if some but not all of the words in the list are capitalized,
-    False if none or all are capitalized
-    """
-    emphasis = False
-    capitalized_words = 0
-
-    for word in words:
-        if word.isupper():
-            capitalized_words += 1
-    cap_differential = len(words) - capitalized_words
-    if 0 < cap_differential < len(words):
-        emphasis = True
-
-    return emphasis
 
 
 def alter_valence(word, valence, is_capitalized):
@@ -182,55 +161,26 @@ def alter_valence(word, valence, is_capitalized):
     return modifier
 
 
-class SentimentAnalyzer(object):
+def capitalized(words):
     """
-    Identify sentiment-relevant string-level properties of input text.
+    Checks if specific words are capitalized or the whole tweet,
+    in order to determine whether we should differentiate the word based on its capitalization
+
+    :param list words: the list of words to inspect
+    :returns: True if some but not all of the words in the list are capitalized,
+    False if none or all are capitalized
     """
-    def __init__(self, text):
-        if not isinstance(text, str):
-            text = str(text.encode('utf-8'))
-        self.text = text
-        self.words_and_symbols = self._words_and_symbols()
-        # doesn't separate words from\
-        # adjacent punctuation (keeps emoticons & contractions)
-        self.is_capitalized = capitalized(self.words_and_symbols)
+    emphasis = False
+    capitalized_words = 0
 
-    def _word_punctuation_dictionary(self):
-        """
-        creates a dictionary whose key is the text
-        and whose value is the text without punctuation
-        i.e.: "gross,: gross"
-        or "sentiment: sentiment"
+    for word in words:
+        if word.isupper():
+            capitalized_words += 1
+    cap_differential = len(words) - capitalized_words
+    if 0 < cap_differential < len(words):
+        emphasis = True
 
-        return: a dictionary with keys of words w/ punctuation and values of that word without punctuation
-        """
-        words_only = REGEX_REMOVE_PUNCTUATION.sub('', self.text).split()
-        # remove indefinite article
-        words_only = set(w for w in words_only if len(w) > 1)
-        # product is essentially a nested for loop // or the cartesian product from itertools package
-        punc_before = {''.join(p): p[1] for p in product(PUNCTUATION_LIST, words_only)}
-        punc_after = {''.join(p): p[0] for p in product(words_only, PUNCTUATION_LIST)}
-        words_punc_dict = punc_before
-        words_punc_dict.update(punc_after)
-
-        return words_punc_dict
-
-    def _words_and_symbols(self):
-        """
-        Removes preceding and following punctuation
-        Leaves contractions and most emoticons, but does not preserve letter/punctuation emoticons like :D
-
-        return: list of words
-        """
-        word_list = self.text.split()
-        words_punc_dict = self._word_punctuation_dictionary()
-        word_list = [w for w in word_list if len(w) > 1]
-
-        for i, w in enumerate(word_list):
-            if w in words_punc_dict:
-                word_list[i] = words_punc_dict[w]
-
-        return word_list
+    return emphasis
 
 
 class SentimentScorer(object):
@@ -487,7 +437,60 @@ class SentimentScorer(object):
 
         return sentiment_dictionary
 
+
+class SentimentAnalyzer(object):
+    """
+    Identify sentiment-relevant string-level properties of input text.
+    """
+    def __init__(self, text):
+        if not isinstance(text, str):
+            text = str(text.encode('utf-8'))
+        self.text = text
+        self.words_and_symbols = self._words_and_symbols()
+        # doesn't separate words from\
+        # adjacent punctuation (keeps emoticons & contractions)
+        self.is_capitalized = capitalized(self.words_and_symbols)
+
+    def _word_punctuation_dictionary(self):
+        """
+        creates a dictionary whose key is the text
+        and whose value is the text without punctuation
+        i.e.: "gross,: gross"
+        or "sentiment: sentiment"
+
+        return: a dictionary with keys of words w/ punctuation and values of that word without punctuation
+        """
+        words_only = REGEX_REMOVE_PUNCTUATION.sub('', self.text).split()
+        # remove indefinite article
+        words_only = set(w for w in words_only if len(w) > 1)
+        # product is essentially a nested for loop // or the cartesian product from itertools package
+        punc_before = {''.join(p): p[1] for p in product(PUNCTUATION_LIST, words_only)}
+        punc_after = {''.join(p): p[0] for p in product(words_only, PUNCTUATION_LIST)}
+        words_punc_dict = punc_before
+        words_punc_dict.update(punc_after)
+
+        return words_punc_dict
+
+    def _words_and_symbols(self):
+        """
+        Removes preceding and following punctuation
+        Leaves contractions and most emoticons, but does not preserve letter/punctuation emoticons like :D
+
+        return: list of words
+        """
+        word_list = self.text.split()
+        words_punc_dict = self._word_punctuation_dictionary()
+        word_list = [w for w in word_list if len(w) > 1]
+
+        for i, w in enumerate(word_list):
+            if w in words_punc_dict:
+                word_list[i] = words_punc_dict[w]
+
+        return word_list
+
+
 if __name__ == '__main__':
     demo("I hate Michael Bay films, and this one sucks")
     demo("ALSO. Go see @moonlightmov this weekend. It is artful food for your soul. At a time when so many of us need to be lovingly nourished.")
     demo("Moonlight is the best movie &unlike me u wont have a woman behind u coughing, gagging on popcorn,saying\"here they go again\"4 every gay scene")
+    demo("moonlight is a not great movie")

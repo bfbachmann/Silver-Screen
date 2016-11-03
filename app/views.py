@@ -43,42 +43,60 @@ def results(request):
         blank_form = QueryForm()
         data_to_render = {'error_message': None, 'form': blank_form}
 
-        try:
-            movie = OMDbAPI().search(search_term)
-        except ConnectionError:
-            print('ERROR: Cannot connect to OMDb')
-            data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
-            return render(request, 'index.html', data_to_render)
+        # try get the movie from the database
+        movie = Movie.objects.filter(Title = search_term)
+
+        # if the movie is not in the db search OMDB
+        if not movie:
+            try:
+                movie = OMDbAPI().search(search_term)
+            except ConnectionError:
+                print('ERROR: Cannot connect to OMDb')
+                data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
+                return render(request, 'index.html', data_to_render)
 
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
 
-        # get list of Statuses about the movie
-        raw_tweets = []
-        try:
-            raw_tweets = TwitterAPI().search_movie(movie)
-        except Exception as error:
-            if type(error) is ValueError:
-                print('ERROR: Rate limit exceeded')
-                data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
+        # attempt to fetch tweets from the database
+        clean_tweets = Tweet.objects.filter(imdbID = movie.imdbID)
+
+        # if we have no tweets about the movie
+        if not clean_tweets:
+            # get list of Statuses about the movie
+            raw_tweets = []
+            try:
+                raw_tweets = TwitterAPI().search_movie(movie)
+            except Exception as error:
+                if type(error) is ValueError:
+                    print('ERROR: Rate limit exceeded')
+                    data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
+                else:
+                    print('ERROR: cannot connect to Twitter')
+                    data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
+                return render(request, 'index.html', data_to_render)
+
+            # create list of valid Tweet objects
+            clean_tweets = []
+            if raw_tweets:
+                for raw_tweet in raw_tweets:
+                    clean_tweets.append(Tweet().fillWithStatusObject(raw_tweet))
             else:
-                print('ERROR: cannot connect to Twitter')
-                data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
-            return render(request, 'index.html', data_to_render)
+                print('ERROR: No tweets found')
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
+                return render(request, 'index.html', data_to_render)
 
-        # create list of valid Tweet objects
-        clean_tweets = []
-        if raw_tweets:
-            for raw_tweet in raw_tweets:
-                clean_tweets.append(Tweet().fillWithStatusObject(raw_tweet))
-        else:
-            print('ERROR: No tweets found')
-            data_to_render['error_message'] = 'Sorry, we could\'nt find tweets about that movie.'
-            return render(request, 'index.html', data_to_render)
 
-        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie}
+        # calculate overall sentiment score
+        sum_scores = 0
+        for tweet in clean_tweets:
+            sum_scores += tweet.sentiment_score
+
+        overall_score = sum_scores/len(clean_tweets)
+
+        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
         return render(request, 'results.html', data_to_render)
 
     # if request is GET redirect to index
