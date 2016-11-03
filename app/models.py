@@ -244,3 +244,56 @@ class Tweet(models.Model):
 
     def __unicode__(self):
         return str(self.tweetID)
+
+
+class Sentiment(models.Model):
+    Title = models.CharField(max_length=128)
+    imdbID = models.CharField(max_length=1024)
+    sentimentDate = models.DateField(default=None, blank=True, null=True)
+    sentimentScore = models.FloatField(null=True, blank=True)
+    positivityScore = models.FloatField(null=True, blank=True)
+    negativityScore = models.FloatField(null=True, blank=True)
+    neutralityScore = models.FloatField(null=True, blank=True)
+
+
+    param_defaults = {
+        'Title': None,
+        'imdbID': None,
+        'sentimentDate': None,
+        'sentimentScore': None,
+        'positivityScore': None,
+        'negativityScore': None,
+        'neutralityScore': None
+    }    
+
+    def __unicode__(self):
+        return self.Title + self.imdbID
+
+    def fillWithJsonObject(self, jsonObject):
+        """
+        :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
+        :return self: this movie, udpated with the relevant data from the given jsonObject
+        """
+        if jsonObject is not None:
+            for (key, value) in jsonObject.items():
+                if key in self.param_defaults.keys():
+                    setattr(self, key, value)
+            self.save()
+        return self
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
