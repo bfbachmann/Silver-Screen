@@ -6,6 +6,12 @@
     text-align: left;
 }
 
+.info-header {
+    margin-bottom: 10px;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
 #movieinfo img{
     vertical-align: middle;
 }

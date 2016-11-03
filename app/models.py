@@ -3,6 +3,9 @@ import twitter
 import yaml
 import omdb
 import datetime
+from django.db import models
+from sentimentanalysis.analyzer import SentimentScorer
+
 
 
 class QueryForm(forms.Form):
@@ -52,7 +55,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or type(movie.Title) is not str:
+        if type(movie) != Movie or not isinstance(movie.Title, str):
             return None
 
         current_datetime = datetime.datetime.now()
@@ -65,6 +68,9 @@ class TwitterAPI(object):
             response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='popular')
 
             for tweet in response:
+                # tag movie with imdbID
+                tweet.imdbID = movie.imdbID
+
                 # only append Tweets in English
                 if tweet.lang == 'en' or tweet.user.lang == 'en':
                     tweets.append(tweet)
@@ -72,28 +78,41 @@ class TwitterAPI(object):
         return tweets
 
 
-class Movie(object):
+class Movie(models.Model):
+    Title = models.CharField(max_length=128)
+    Year = models.IntegerField(null=True, blank=True)
+    YomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    Actors = models.CharField(max_length=1024, null=True, blank=True)
+    BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
+    Genres = models.CharField(max_length=1024, null=True, blank=True)
+    Director = models.CharField(max_length=1024, null=True, blank=True)
+    imdbRating = models.FloatField(null=True, blank=True)
+    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True)
+    plot = models.CharField(max_length=2048, null=True, blank=True)
+    tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
+    Poster = models.CharField(max_length=1024, null=True, blank=True)
+    imdbID = models.CharField(max_length=1024)
 
-    def __init__(self,**kwargs):
-        self.param_defaults = {
-             'Title':None,
-             'Year':None,
-             'YomatoURL':None,
-             'Actors':None,
-             'BoxOffice':None,
-             'Genres':None,
-             'Director':None,
-             'imdbRating':None,
-             'tomatoRating':None,
-             'tomatoUserRating':None,
-             'plot':None,
-             'tomatoConsensus':None,
-             'Poster':None
-        }
+    param_defaults = {
+        'Title': None,
+        'Year': None,
+        'YomatoURL': None,
+        'Actors': None,
+        'BoxOffice': None,
+        'Genres': None,
+        'Director': None,
+        'imdbRating': None,
+        'tomatoRating': None,
+        'tomatoUserRating': None,
+        'Plot': None,
+        'tomatoConsensus': None,
+        'Poster': None,
+        'imdbID': None
+    }
 
-        for (param, default) in self.param_defaults.items():
-            setattr(self, param, kwargs.get(param, default))
-
+    def __unicode__(self):
+        return self.Title
 
     def fillWithJsonObject(self, jsonObject):
         """
@@ -103,7 +122,13 @@ class Movie(object):
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
+                    if key == 'imdbRating' and not isinstance(value, float):
+                        try:
+                            value = float(value)
+                        except:
+                            value = None # TODO: we'll have to handle this upstream
                     setattr(self, key, value)
+            self.save()
         return self
 
 
@@ -135,33 +160,47 @@ class OMDbAPI(object):
         if matching_movies:
             movie = matching_movies.pop(0)
 
-            response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-            movieObj = Movie().fillWithJsonObject(response)
+            try:
+                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
+            except Movie.DoesNotExist:
+                movieObj = None
+
+            if not movieObj:
+                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
+                movieObj = Movie().fillWithJsonObject(response)
 
             return movieObj
         else:
             return None
 
+class Tweet(models.Model):
+    text = models.CharField(max_length=256)
+    tweetID = models.BigIntegerField(unique=True)
+    created_at = models.CharField(max_length=256)
+    favorite_count = models.IntegerField()
+    lang = models.CharField(max_length=16)
+    location = models.CharField(max_length=256)
+    retweet_count = models.IntegerField()
+    user_name = models.CharField(max_length=256)
+    user_screen_name = models.CharField(max_length=256)
+    user_verified = models.BooleanField()
+    imdbID =  models.CharField(max_length=1024)
+    sentiment_score = models.FloatField(null=True, blank=True)
 
-
-class Tweet(object):
-
-    def __init__(self, **kwargs):
-        self.param_defaults = {
-            'text' : None,
-            'created_at' : None,
-            'favorite_count' : None,
-            'lang' : None,
-            'location' : None,
-            'retweet_count' : None,
-            'user_name' : None,
-            'user_screen_name' : None,
-            'user_verified' : False,
-        }
-
-        for (param, default) in self.param_defaults.items():
-            setattr(self, param, kwargs.get(param, default))
-
+    param_defaults = {
+        'text' : None,
+        'created_at' : None,
+        'favorite_count' : None,
+        'lang' : None,
+        'location' : None,
+        'retweet_count' : None,
+        'user_name' : None,
+        'user_screen_name' : None,
+        'user_verified' : False,
+        'sentiment_score' : False,
+        'imdbID': False,
+        'tweetID': False,
+    }
 
     def fillWithStatusObject(self, tweet):
         """
@@ -187,4 +226,21 @@ class Tweet(object):
         self.user_name=tweet.user.name
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
+        self.tweetID = tweet.id
+        self.imdbID = tweet.imdbID
+
+        self.assignSentimentScore()
+
+        try:
+            self.save()
+        except:
+            print("Failed to save tweet: " + str(self.tweetID))
+            pass
+
         return self
+
+    def assignSentimentScore(self):
+        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
+
+    def __unicode__(self):
+        return str(self.tweetID)
