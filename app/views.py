@@ -101,9 +101,14 @@ def results(request):
         data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score}
         return render(request, 'results.html', data_to_render)
 
+<<<<<<< HEAD
+    return tweets
+
+=======
     # if request is GET redirect to index
     elif request.method == 'GET':
         return HttpResponseRedirect('/index/')
     # otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+>>>>>>> b136e84687b4d650f0ce2feb9baff125eb96d961
