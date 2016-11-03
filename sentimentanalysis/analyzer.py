@@ -24,10 +24,10 @@ QUESTION_INCREASE = 0.1
 NEGATION_MODIFIER = -1.00
 
 # regex function to remove punctuation from a string
-REGEX_REMOVE_PUNCTUATION = re.compile('[%s]' % re.escape(string.punctuation))
+PUNCTUATION_REMOVER = re.compile('[%s]' % re.escape(string.punctuation))
 
 # list of punctuation we see in twitter (VERY UNFINISHED)
-PUNCTUATION_LIST = [".", "!", "?", ",", ";", ":", "-", "'", "\"",
+PUNCTUATION_LIST = ["...","..",".", "!", "?", ",", ";", ":", "-", "'", "\"",
              "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?"]
 
 # list of words which negate the meanings that follow, with some variations in spelling
@@ -49,9 +49,16 @@ here is a full list of the words:
 http://en.wiktionary.org/wiki/Category:English_degree_adverbs
 '''
 
-POSITIVE_DICT = \
-{"absolutely": SCORE_INCREASE, "amazingly": SCORE_INCREASE, "awfully": SCORE_INCREASE, "completely": SCORE_INCREASE, "considerably": SCORE_INCREASE,
- "decidedly": SCORE_INCREASE, "deeply": SCORE_INCREASE, "effing": SCORE_INCREASE, "enormously": SCORE_INCREASE,
+DEGREE_DICTIONARY = \
+{"100 percent": SCORE_INCREASE, "a good deal": SCORE_INCREASE, "a great deal": SCORE_INCREASE, "a lot": SCORE_INCREASE,
+ "aboundingly": SCORE_INCREASE, "absolutely": SCORE_INCREASE, "absurdly": SCORE_INCREASE, "abundantly": SCORE_INCREASE,
+ "admirably": SCORE_INCREASE, "alarmingly": SCORE_INCREASE, "amazingly": SCORE_INCREASE,
+ "astronomically": SCORE_INCREASE, "awfully": SCORE_INCREASE, "breathtakingly": SCORE_INCREASE,
+ "clearly": SCORE_INCREASE, "completely": SCORE_INCREASE, "considerably": SCORE_INCREASE, "crazy": SCORE_INCREASE,
+ "damn": SCORE_INCREASE, "damned": SCORE_INCREASE, "darn": SCORE_INCREASE, "darned": SCORE_INCREASE,
+ "decidedly": SCORE_INCREASE, "deeply": SCORE_INCREASE, "deservedly": SCORE_INCREASE, "downright": SCORE_INCREASE,
+ "dreadfully": SCORE_INCREASE, #up to here so far
+ "effing": SCORE_INCREASE, "enormously": SCORE_INCREASE,
  "entirely": SCORE_INCREASE, "especially": SCORE_INCREASE, "exceptionally": SCORE_INCREASE, "extremely": SCORE_INCREASE,
  "fabulously": SCORE_INCREASE, "flipping": SCORE_INCREASE, "flippin": SCORE_INCREASE,
  "fricking": SCORE_INCREASE, "frickin": SCORE_INCREASE, "frigging": SCORE_INCREASE, "friggin": SCORE_INCREASE, "fully": SCORE_INCREASE, "fucking": SCORE_INCREASE,
@@ -75,7 +82,7 @@ ALGORITHM IDEAS TO BE IMPLEMENTED
 1. idioms
 2. urban dictionary implementation?
 3. some kind Sentiment Classifier package implementation
-4.
+4.s
 ...
 
 '''
@@ -84,10 +91,12 @@ ALGORITHM IDEAS TO BE IMPLEMENTED
 '''
 ALGORITHM METHODS
 '''
+
+
 def demo(text):
     analyzer = SentimentScorer()
-    print(analyzer.polarity_scores(text))
-    print(text)
+    scores = analyzer.polarity_scores(text)
+    print(scores['sentiment'])
     print()
 
 
@@ -101,9 +110,7 @@ def normalize(score, alpha=15):
     :return: normalized score between -1 and 1
     """
 
-    normalized_score = score / math.sqrt((score * score) + alpha)
-
-    return normalized_score
+    return score / math.sqrt((score * score) + alpha)
 
 
 def negate(input_words, include_nt=True):
@@ -147,8 +154,8 @@ def alter_valence(word, valence, is_capitalized):
     modifier = 0.0
     word_lower = word.lower()
 
-    if word_lower in POSITIVE_DICT:
-        modifier = POSITIVE_DICT[word_lower]
+    if word_lower in DEGREE_DICTIONARY:
+        modifier = DEGREE_DICTIONARY[word_lower]
         if valence < 0:
             modifier *= -1
         # checks if word is capitalized (while others aren't)
@@ -218,7 +225,7 @@ class SentimentScorer(object):
         for item in words_and_symbols:
             valence = 0
             i = words_and_symbols.index(item)
-            if item.lower() in POSITIVE_DICT:
+            if item.lower() in DEGREE_DICTIONARY:
                 sentiments.append(valence)
                 continue
 
@@ -255,7 +262,7 @@ class SentimentScorer(object):
                 else:
                     valence -= CAPS_INCREASE
 
-            for predecessor_index in range(0,3):
+            for predecessor_index in range(0, 3):
                 if i > predecessor_index and words_and_symbols[i-(predecessor_index+1)].lower() not in self.lexicon:
                     # decreases the score modification of preceding words and symbols
                     # (excluding the ones that IMMEDIATELY precede the item) based
@@ -268,8 +275,7 @@ class SentimentScorer(object):
                     valence += s
                     valence = self._contains_never(valence, words_and_symbols, predecessor_index, i)
 
-
-                        # this where we could do an idiom check of some kind
+                    # this where we could do an idiom check of some kind
 
             valence = self._contains_least(valence, words_and_symbols, i)
 
@@ -460,7 +466,7 @@ class SentimentAnalyzer(object):
 
         return: a dictionary with keys of words w/ punctuation and values of that word without punctuation
         """
-        words_only = REGEX_REMOVE_PUNCTUATION.sub('', self.text).split()
+        words_only = PUNCTUATION_REMOVER.sub('', self.text).split()
         # remove indefinite article
         words_only = set(w for w in words_only if len(w) > 1)
         # product is essentially a nested for loop // or the cartesian product from itertools package
