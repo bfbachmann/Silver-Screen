@@ -148,6 +148,7 @@ class OMDbAPI(object):
 
         # search for all movies with similar titles
         try:
+            print "enteredsearch"
             matching_movies = omdb.search_movie(title)
         except:
             raise ConnectionError
