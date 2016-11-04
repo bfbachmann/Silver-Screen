@@ -5,6 +5,10 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
     <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+
+    {# Load Chart.js #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+
     {# Load the tag library #}
     {% load bootstrap3 %}
 
@@ -17,7 +21,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/index">
                     SilverScreen
                 </a>
                 <style>
@@ -34,9 +38,9 @@
         </div>
     </nav>
 
+    <canvas id="bubbleChart" width="400" height="200"></canvas>
 
-
-    <div class="align-left" style="width: 60%; margin: auto;">
+    <div class="align-left" style="max-width: 800px; margin: auto;">
         <h1> {{ movie.Title }}</h1>
         <hr>
         <div class="well full-width clearfix">
@@ -94,4 +98,47 @@
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        var ctx = document.getElementById("bubbleChart");
+        var chart = new Chart(ctx,{
+            type: 'bubble',
+            data: { datasets: [ {
+                           label: 'Negative Tweets',
+                           data: [
+                               {% for datum in negative_data %}
+                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.y }} },
+                               {% endfor %}
+                           ],
+                           backgroundColor:"#FF6384",
+                           hoverBackgroundColor: "#FF6384",
+                       }, {
+                           label: 'Positive Tweets',
+                           data: [
+                               {% for datum in positive_data %}
+                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
+                               {% endfor %}
+                           ],
+                           backgroundColor: "#00DD99",
+                           hoverBackgroundColor: "#00DD99"
+                       }]
+                   },
+            options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                max: 1,
+                                min: -1,
+                            }
+                        }]
+                    }
+                }
+        });
+    </script>
 </body>

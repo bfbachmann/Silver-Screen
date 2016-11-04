@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
+from datetime import datetime
+import json
 
 
-# TODO: upadte this once we have analysis working
+
 def index(request):
     """
     :param request: the HTTP request received from the client
@@ -42,6 +44,8 @@ def results(request):
         movie = Movie()
         blank_form = QueryForm()
         data_to_render = {'error_message': None, 'form': blank_form}
+        sum_scores = 0
+        num_nonzero = 1
 
         # try get the movie from the database
         try:
@@ -79,28 +83,31 @@ def results(request):
                     data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
                 return render(request, 'index.html', data_to_render)
 
-            # create list of valid Tweet objects
+            # create list of valid Tweet objects and calculate overall sentiment score
             clean_tweets = []
             if raw_tweets:
                 for raw_tweet in raw_tweets:
-                    clean_tweets.append(Tweet().fillWithStatusObject(raw_tweet))
+                    new_tweet = Tweet().fillWithStatusObject(raw_tweet)
+                    score = new_tweet.sentiment_score
+                    clean_tweets.append(new_tweet)
+
+                    if score and score != 0: #Ensure that the sentiment score actually exists
+                        sum_scores += score
+                        num_nonzero += 1
             else:
                 print('ERROR: No tweets found')
                 data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
                 return render(request, 'index.html', data_to_render)
 
-
-        # calculate overall sentiment score
-        sum_scores = 0
-        num_nonzero = 0
-        for tweet in clean_tweets:
-            if tweet.sentiment_score and tweet.sentiment_score!=0: #Ensure that the sentiment score actually exists
-                sum_scores += tweet.sentiment_score
-                num_nonzero += 1
-
-        overall_score = sum_scores/num_nonzero
-
-        data_to_render = {'form': QueryForm(request.POST), 'tweets': clean_tweets, 'movie': movie, 'overall_score': overall_score, 'new_form': QueryForm()}
+        negative_data, positive_data = create_chart_datasets(clean_tweets)
+        data_to_render = {  'form': QueryForm(request.POST),
+                            'tweets': clean_tweets,
+                            'movie': movie,
+                            'overall_score': sum_scores/num_nonzero,
+                            'new_form': QueryForm(),
+                            'negative_data': negative_data,
+                            'positive_data': positive_data
+                        }
         return render(request, 'results.html', data_to_render)
 
     # if request is GET redirect to index
@@ -109,3 +116,19 @@ def results(request):
     # otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+
+def create_chart_datasets(clean_tweets):
+    negative_data = []
+    positive_data = []
+
+    for tweet in clean_tweets:
+        score = tweet.sentiment_score
+        data = {'y': score, 'x': str(datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')), 'r': (score+1)*5}
+
+        if score < 0:
+            negative_data.append(data)
+        else:
+            positive_data.append(data)
+
+    return negative_data, positive_data

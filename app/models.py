@@ -136,7 +136,7 @@ class OMDbAPI(object):
 
         if matching_movies:
             movie = matching_movies.pop(0)
-            print("ERROR: " + movie.title)
+            print("MOVIE: " + movie.title)
 
             try:
                 movieObj = Movie.objects.get(imdbID=movie.imdb_id)
@@ -206,19 +206,19 @@ class Tweet(models.Model):
         self.user_verified=tweet.user.verified
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
+        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
-        self.assignSentimentScore()
-
-        try:
-            self.save()
-        except:
-            print("Failed to save tweet: " + str(self.tweetID))
-            pass
+        # only save this tweet if it isn't already in the database
+        if Tweet.objects.filter(tweetID=self.tweetID) is None:
+            try:
+                self.save()
+            except:
+                print("Failed to save invalid tweet: " + str(self.tweetID))
+                pass
+        else:
+            print("Failed to save duplicate tweet: " + str(self.tweetID))
 
         return self
-
-    def assignSentimentScore(self):
-        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
     def __unicode__(self):
         return str(self.tweetID)
