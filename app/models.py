@@ -147,8 +147,11 @@ class OMDbAPI(object):
         """
 
         # search for all movies with similar titles
+        try:
+            matching_movies = omdb.search_movie(title)
+        except:
+            raise ConnectionError
 
-        matching_movies = omdb.search_movie(title)
         self.recentSearches.update({title:matching_movies})
 
         #For now, only return most popular movie
