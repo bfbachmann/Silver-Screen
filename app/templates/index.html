@@ -23,15 +23,23 @@
                 {{ error_message }}
             </div>
         {% endif %}
-        <div class="align-left" style="margin: 50px;">
+        <div id="query-form" class="form-inline align-center" style="margin: 50px;">
             <h4> Search Twitter for a Movie: </h4>
             <form action="/results/" method="post" class="form">
                 {% csrf_token %}
                 {% bootstrap_form form %}
                 {% buttons %}
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button id="submit" type="submit" class="btn btn-primary">Search</button>
                 {% endbuttons %}
             </form>
         </div>
     </div>
+    <div class="loader center-on-page hidden"></div>
+
+    <script type="text/javascript">
+        $('#query-form').submit(function() {
+            $('#submit').addClass('disabled')
+            $('.loader').removeClass('hidden')
+        })
+    </script>
 </body>
