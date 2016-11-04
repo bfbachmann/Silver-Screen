@@ -92,6 +92,10 @@ def results(request):
 
             ## Create list of valid Tweet objects and calculate overall sentiment score
             clean_tweets = []
+            positive_sum = 0
+            positive_count = 0
+            negative_sum = 0
+            negative_count = 0
             if raw_tweets:
                 for raw_tweet in raw_tweets:
                     new_tweet = Tweet().fillWithStatusObject(raw_tweet)
@@ -102,6 +106,13 @@ def results(request):
                     if score and score != 0:
                         sum_scores += score
                         num_nonzero += 1
+
+                        if score > 0:
+                            positive_sum += score
+                            positive_count += 1
+                        elif score < 0:
+                            negative_sum += score
+                            negative_count += 1
             else:
                 print('ERROR: No tweets found')
                 data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
@@ -109,13 +120,15 @@ def results(request):
 
         ## Chart sentiment scores of tweets
         negative_data, positive_data = create_chart_datasets(clean_tweets)
+
         data_to_render = {  'form': QueryForm(request.POST),
                             'tweets': clean_tweets[0:10],
                             'movie': movie,
-                            'overall_score': sum_scores/num_nonzero,
+                            'overall_score': round((sum_scores/num_nonzero + 1)*5, 1),
+                            'polarity': int((positive_sum/positive_count - negative_sum/negative_count)/2*100),
                             'new_form': QueryForm(),
                             'negative_data': negative_data,
-                            'positive_data': positive_data
+                            'positive_data': positive_data,
                         }
         return render(request, 'results.html', data_to_render)
 
@@ -135,7 +148,7 @@ def create_chart_datasets(clean_tweets):
 
     for tweet in clean_tweets:
         score = tweet.sentiment_score
-        data = {'y': score, 'x': str(datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')), 'r': abs(score)*10}
+        data = {'y': abs(score)*100, 'x': str(datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')), 'r': 5}
 
         if score < 0:
             negative_data.append(data)
