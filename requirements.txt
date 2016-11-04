@@ -7,3 +7,5 @@ django
 django-bootstrap3
 django-jquery
 psycopg2==2.6.2
+dj-database-url
+whitenoise
