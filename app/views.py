@@ -68,8 +68,8 @@ def results(request):
         # attempt to fetch tweets from the database
         clean_tweets = Tweet.objects.filter(imdbID = movie.imdbID)
 
-        # if we have no tweets about the movie
-        if not clean_tweets:
+        # if we have too few tweets about a movie, search for more
+        if not clean_tweets or len(clean_tweets) < 50:
             # get list of Statuses about the movie
             raw_tweets = []
             try:
@@ -101,7 +101,7 @@ def results(request):
 
         negative_data, positive_data = create_chart_datasets(clean_tweets)
         data_to_render = {  'form': QueryForm(request.POST),
-                            'tweets': clean_tweets,
+                            'tweets': clean_tweets[0:10],
                             'movie': movie,
                             'overall_score': sum_scores/num_nonzero,
                             'new_form': QueryForm(),

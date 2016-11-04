@@ -24,21 +24,19 @@
                 <a class="navbar-brand" href="/index">
                     SilverScreen
                 </a>
-                <style>
-                    .control-label { display: none; }
-                </style>
-                <form action="/results/" method="post" class="form navbar-form navbar-left">
+                <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
                     {% csrf_token %}
                     {% bootstrap_form new_form %}
                     {% buttons %}
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button id="submit" type="submit" class="btn btn-primary">Search</button>
+                        <div class="navbar-loader hidden"></div>
                     {% endbuttons %}
                 </form>
             </div>
         </div>
     </nav>
 
-    <div class="align-left" style="max-width: 800px; margin: auto;">
+    <div class="align-left" style="max-width: 80%; margin: auto;">
         <h1> {{ movie.Title }}</h1>
         <hr>
         <div class="well full-width clearfix">
@@ -73,26 +71,31 @@
             {% if movie.Poster %}
                 </div>
             {% endif %}
+            <div class="align-center">
+                <canvas id="bubble-chart"></canvas>
+            </div>
         </div>
-    </div>
-
-    <div class="align-center">
-        <canvas id="bubble-chart"></canvas>
     </div>
 
     <div class="align-left" style="max-width: 800px; margin: auto;">
         {% for tweet in tweets %}
             <hr>
             <div class="container-fluid">
-                <div class="col-sm-8">
-                    <p>"{{tweet.text}}"</p>
-                    <p><strong> By: </strong> {{ tweet.user_name }} (@{{tweet.user_screen_name}}) </p>
-                    <p><strong> On: </strong> {{ tweet.created_at }} </p>
-                    <p><strong> In: </strong> {{ tweet.location }} </p>
-                    <p><strong> Favorites: </strong> {{ tweet.favorite_count }} </p>
-                    <p><strong> Retweets: </strong> {{ tweet.retweet_count }} </p>
+                <div class="col-sm-10">
+                    <small> {{ tweet.created_at }} </small>
+                    <p><strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong> "{{tweet.text}}"</p>
+                    <p>
+                        <span class="glyphicon glyphicon-heart" style="color: red;"></span>
+                        {{ tweet.favorite_count }} &nbsp; &nbsp;
+                        <span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
+                        {{ tweet.retweet_count }} &nbsp; &nbsp;
+                        {% if tweet.location and tweet.location != "" %}
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                        {{ tweet.location }}
+                        {% endif %}
+                    </p>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     {% if tweet.sentiment_score <= 0 %}
                         <h5 class="align-right" style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
                     {% else %}
@@ -104,6 +107,11 @@
     </div>
 
     <script>
+        $('#query-form').submit(function() {
+            $('#submit').addClass('hidden')
+            $('.navbar-loader').removeClass('hidden')
+        })
+
         var ctx = document.getElementById("bubble-chart");
         var chart = new Chart(ctx,{
             type: 'bubble',
