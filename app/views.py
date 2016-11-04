@@ -124,7 +124,7 @@ def create_chart_datasets(clean_tweets):
 
     for tweet in clean_tweets:
         score = tweet.sentiment_score
-        data = {'y': score, 'x': str(datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')), 'r': (score+1)*5}
+        data = {'y': score, 'x': str(datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')), 'r': abs(score)*10}
 
         if score < 0:
             negative_data.append(data)

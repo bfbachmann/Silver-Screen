@@ -38,8 +38,6 @@
         </div>
     </nav>
 
-    <canvas id="bubbleChart" width="400" height="200"></canvas>
-
     <div class="align-left" style="max-width: 800px; margin: auto;">
         <h1> {{ movie.Title }}</h1>
         <hr>
@@ -76,7 +74,13 @@
                 </div>
             {% endif %}
         </div>
+    </div>
 
+    <div class="align-center">
+        <canvas id="bubble-chart"></canvas>
+    </div>
+
+    <div class="align-left" style="max-width: 800px; margin: auto;">
         {% for tweet in tweets %}
             <hr>
             <div class="container-fluid">
@@ -100,14 +104,14 @@
     </div>
 
     <script>
-        var ctx = document.getElementById("bubbleChart");
+        var ctx = document.getElementById("bubble-chart");
         var chart = new Chart(ctx,{
             type: 'bubble',
             data: { datasets: [ {
                            label: 'Negative Tweets',
                            data: [
                                {% for datum in negative_data %}
-                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.y }} },
+                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
                                {% endfor %}
                            ],
                            backgroundColor:"#FF6384",
