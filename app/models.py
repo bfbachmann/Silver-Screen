@@ -4,8 +4,7 @@ import yaml
 import omdb
 import datetime
 from django.db import models
-from sentimentanalysis.analyzer import SentimentScorer
-
+from sentimentanalysis.analyzer import TweetSentiment
 
 
 class QueryForm(forms.Form):
@@ -206,7 +205,7 @@ class Tweet(models.Model):
         self.user_verified=tweet.user.verified
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
-        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
+        self.sentiment_score = TweetSentiment("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
         # only save this tweet if it isn't already in the database
         if Tweet.objects.filter(tweetID=self.tweetID) is None:
