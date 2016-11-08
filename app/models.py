@@ -21,8 +21,14 @@ class TwitterAPI(object):
                 keys = yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
+                
+        with open("../twitter_api/common_wordlist.txt", 'r') as f:
+            self.common_wordlist = f.readlines()
+            
+        for word in self.common_wordlist:
+            word.replace('\n', '')
 
-        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
+        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=True) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
 
     def search_movie(self, movie):
@@ -42,8 +48,11 @@ class TwitterAPI(object):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
-
+            if commonTitleChecker(movie.Title):
+                print('common phrase detected')
+                response = self.api.GetSearch(term='"'+movie.Title +' movie" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
+            else:
+                response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
             for tweet in response:
                 # tag movie with imdbID
                 tweet.imdbID = movie.imdbID
@@ -57,9 +66,13 @@ class TwitterAPI(object):
     def __commonTitleChecker(self, search_term):
         """
         :param searchterm: movie title to check for in file containing common words
-        :return tweets: 
+        :return boolean whether the movie title was found
         """
         
+        for word in self.common_wordlist:
+            if (search_term == word):
+                return True
+        return False
 
 
 class Movie(models.Model):
