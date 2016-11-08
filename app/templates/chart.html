@@ -13,7 +13,7 @@
         var chart = new Chart(ctx,{
             type: 'bubble',
             data: { datasets: [ {
-                           label: 'First Dataset',
+                           label: 'Negative Tweets',
                            data: [
                                {x: 20, y: 5, r: 12},
                                {x: 25, y: 25, r: 6},
@@ -28,7 +28,7 @@
                            backgroundColor:"#FF6384",
                            hoverBackgroundColor: "#FF6384",
                        }, {
-                           label: 'Second Dataset',
+                           label: 'Positive Tweets',
                            data: [
                                {x: 43, y: 5, r: 12},
                                {x: 25, y: 25, r: 6},
@@ -48,7 +48,7 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                max: 50,
+                                max: {{}},
                                 min: 0,
                                 stepSize: 5
                             }

@@ -25,29 +25,6 @@ class TwitterAPI(object):
         self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
 
-    def search_basic(self, search_term, since=None, until=None, geocode=None):
-        """
-        :param search_term: a string representing the movie to search Twitter for
-        :param since (optional): tweets posted before this date will not be returned
-        :param until (optional): tweets after this date will not be returned
-        :return statuses: a List<twitter.models.Status> containing information
-                        about Tweets that matched the search params if the
-                        search_term is a string.
-                        Othewise returns None
-        # See https://github.com/bear/python-twitter/blob/master/twitter/api.py for docs on arguments
-        """
-
-        if type(search_term) != str or search_term is "":
-            return None
-
-        try:
-            tweets = self.api.GetSearch(term=search_term, since=since, until=until, geocode=geocode, count=100, lang='en', result_type='popular')
-        except:
-            raise ConnectionError
-
-        return tweets # twitter.Status
-
-
     def search_movie(self, movie):
         """
         :param movie: a Movie object with valid fields
@@ -55,7 +32,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or not isinstance(movie.Title, str):
+        if type(movie) != Movie or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
         current_datetime = datetime.datetime.now()
@@ -65,7 +42,7 @@ class TwitterAPI(object):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-            response = self.api.GetSearch(term=movie.Title, since=from_date, until=to_date, lang='en', result_type='popular')
+            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
 
             for tweet in response:
                 # tag movie with imdbID
@@ -166,6 +143,7 @@ class OMDbAPI(object):
 
         if matching_movies:
             movie = matching_movies.pop(0)
+            print("MOVIE: " + movie.title)
 
             try:
                 movieObj = Movie.objects.get(imdbID=movie.imdb_id)
@@ -235,19 +213,19 @@ class Tweet(models.Model):
         self.user_verified=tweet.user.verified
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
+        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
-        self.assignSentimentScore()
-
-        try:
-            self.save()
-        except:
-            print("Failed to save tweet: " + str(self.tweetID))
-            pass
+        # only save this tweet if it isn't already in the database
+        if Tweet.objects.filter(tweetID=self.tweetID) is None:
+            try:
+                self.save()
+            except:
+                print("Failed to save invalid tweet: " + str(self.tweetID))
+                pass
+        else:
+            print("Failed to save duplicate tweet: " + str(self.tweetID))
 
         return self
-
-    def assignSentimentScore(self):
-        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
 
     def __unicode__(self):
         return str(self.tweetID)
