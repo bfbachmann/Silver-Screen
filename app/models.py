@@ -76,6 +76,13 @@ class TwitterAPI(object):
                     tweets.append(tweet)
 
         return tweets
+        
+    def __commonTitleChecker(self, search_term):
+        """
+        :param searchterm: movie title to check for in file containing common words
+        :return tweets: 
+        """
+        
 
 
 class Movie(models.Model):
