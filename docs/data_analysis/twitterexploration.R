@@ -11,3 +11,10 @@ sample_file = "martian.json"
 ## Parse json to dataframe
 tweets <- stream_in(sample_file)
 
+## Number Chars in Strings
+text <- tweets %>% select(text)
+maxlen <- 0
+for(s in text){
+  lens <- unlist(nchar(s))
+  #print(lens)
+}
