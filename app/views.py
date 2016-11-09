@@ -6,7 +6,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
-from datetime import datetime
+import datetime
 from django.utils import timezone
 import json
 
@@ -94,7 +94,7 @@ def results(request):
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
 
         ## If we have too few tweets about the movie, or our sentiment is outdated, get more from Twitter
-        if not clean_tweets or len(clean_tweets) < 50 or (mostRecentSentiment and mostRecentSentiment[0].sentimentDate < datetime.now() - datetime.timedelta(days = 7)):
+        if not clean_tweets or len(clean_tweets) < 50 or (mostRecentSentiment and mostRecentSentiment[0].sentimentDate < timezone.now() - datetime.timedelta(days=7)):
             print("Not enough tweets in our database or sentiment is out of date, searching Twitter for more")
 
             ## Get list of Statuses about the movie
@@ -233,12 +233,12 @@ def get_polarity(clean_tweets):
 ## Saves the given sentiment data to the db if it is not redundant
 def save_new_sentiment(overall_score, movie):
     ## Find objects that are of the same movie and were made today
-    duplicate = Sentiment.objects.filter(imdbID = movie.imdbID, sentimentDate = datetime.now())
+    duplicate = Sentiment.objects.filter(imdbID = movie.imdbID, sentimentDate = timezone.now())
 
     ## If there aren't duplicates create a new sentiment object for this movie
     if not duplicate:
         ## Populate the sentiment table with data for each movie with their scores at this time
-        MovieSentiment = Sentiment(Title = movie.Title, imdbID = movie.imdbID, sentimentDate = datetime.now() , sentimentScore = overall_score)
+        MovieSentiment = Sentiment(Title = movie.Title, imdbID = movie.imdbID, sentimentDate = timezone.now() , sentimentScore = overall_score)
 
         try:
             ## Movie doesn't exist yet (in the db) with this date so save it into the db
