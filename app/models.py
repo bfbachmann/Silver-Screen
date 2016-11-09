@@ -205,7 +205,7 @@ class Tweet(models.Model):
         self.user_verified=tweet.user.verified
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
-        self.sentiment_score = TweetSentiment("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
+        self.sentiment_score = TweetSentiment(self.text, "sentimentanalysis/lexicon_done.txt").polarity_scores()['sentiment']
 
         # only save this tweet if it isn't already in the database
         if Tweet.objects.filter(tweetID=self.tweetID) is None:
