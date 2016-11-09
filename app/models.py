@@ -238,8 +238,7 @@ class Tweet(models.Model):
         self.imdbID = tweet.imdbID
 
         ## Assign sentiment score to the tweet
-        self.sentiment_score = TweetSentiment(self.text).polarity_scores()['sentiment']
-
+        self.sentiment_score = TweetSentiment(self.text, "sentimentanalysis/lexicon_done.txt").polarity_scores()['sentiment']
 
         ## Only save this tweet if it isn't already in the database
         if Tweet.objects.filter(tweetID=self.tweetID) is None:
