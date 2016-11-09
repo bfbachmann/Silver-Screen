@@ -2,7 +2,7 @@ from django import forms
 import twitter
 import yaml
 import omdb
-import datetime
+from datetime import datetime
 from django.db import models
 from sentimentanalysis.analyzer import SentimentScorer
 
@@ -178,7 +178,7 @@ class OMDbAPI(object):
 class Tweet(models.Model):
     text = models.CharField(max_length=256)
     tweetID = models.BigIntegerField(unique=True)
-    created_at = models.CharField(max_length=256)
+    created_at = models.DateTimeField(default=None, null=True)
     favorite_count = models.IntegerField()
     lang = models.CharField(max_length=16)
     location = models.CharField(max_length=256)
@@ -220,7 +220,7 @@ class Tweet(models.Model):
             tweet.lang = tweet.user.lang
 
         self.text=tweet.text
-        self.created_at=tweet.created_at
+        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S + 0000 %Y') 
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location
@@ -251,7 +251,7 @@ class Tweet(models.Model):
 class Sentiment(models.Model):
     Title = models.CharField(max_length=128)
     imdbID = models.CharField(max_length=1024)
-    sentimentDate = models.DateField(default=None, blank=True, null=True)
+    sentimentDate = models.DateTimeField(default=None, null=True)
     sentimentScore = models.FloatField(null=True, blank=True)
     positivityScore = models.FloatField(null=True, blank=True)
     negativityScore = models.FloatField(null=True, blank=True)
@@ -265,6 +265,7 @@ class Sentiment(models.Model):
         'sentimentScore': None,
         'positivityScore': None,
         'negativityScore': None,
+
         'neutralityScore': None
     }    
 

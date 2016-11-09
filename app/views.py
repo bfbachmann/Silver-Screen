@@ -50,17 +50,51 @@ def results(request):
 
         # if the movie is not in the db search OMDB
         except:
+            # try get the movie from OMDB
             try:
                 movie = OMDbAPI().search(search_term)
+            # if we couldn't get the movie from OMDB raise ConnectionError
             except ConnectionError:
                 print('ERROR: Cannot connect to OMDb')
                 data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
                 return render(request, 'index.html', data_to_render)
 
+        # if no movie object was returned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
+
+        # we have a valid movie object, so try get most recent tweet about this movie
+        try:
+            mostRecentTweets = Tweet.objects.filter(imdbID = movie.imdbID).order_by('-created_at')
+        # if we don't have any tweets about that movie just continue
+        except:
+            print("No tweets found in database")
+            pass
+
+        # if the most recent tweet is more than week old then we need to pull in new tweets
+        if mostRecentTweets and mostRecentTweets[0].created_at < datetime.now() - datetime.timedelta(days = 7):
+            try:
+                raw_tweets = TwitterAPI().search_movie(movie)
+            except Exception as error:
+                if type(error) is ValueError:
+                    print('ERROR: Rate limit exceeded')
+                    data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
+                else:
+                    print('ERROR: cannot connect to Twitter')
+                    data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
+                return render(request, 'index.html', data_to_render)
+
+            # create list of valid Tweet objects
+            clean_tweets = []
+            if raw_tweets:
+                for raw_tweet in raw_tweets:
+                    clean_tweets.append(Tweet().fillWithStatusObject(raw_tweet))
+            else:
+                print('ERROR: No tweets found')
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
+                return render(request, 'index.html', data_to_render)
 
         # attempt to fetch tweets from the database
         clean_tweets = Tweet.objects.filter(imdbID = movie.imdbID)
