@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
 from datetime import datetime
+from django.utils import timezone
 import json
 
 ## Initialize api objects
@@ -65,27 +66,40 @@ def results(request):
         ## If the movie is not in the db search OMDb
         except:
             print('Movie not found in database, searching OMDB')
+            # try get the movie from OMDB
             try:
                 movie = omdb.search(search_term)
+            # if we couldn't get the movie from OMDB raise ConnectionError
             except ConnectionError:
                 print('ERROR: Cannot connect to OMDb')
                 data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
                 return render(request, 'index.html', data_to_render)
 
+        # if no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
 
 
+        ## Check if we have any sentiment data about this movie in our db
+        try:
+            mostRecentSentiment = Sentiment.objects.filter(imdbID = movie.imdbID).order_by('-sentimentDate')
+        # if we don't have any sentiment about that movie just continue
+        except:
+            print("No sentiment found in database for this movie")
+
+
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
 
-        ## If we have too few tweets about a movie, search for more
-        if not clean_tweets or len(clean_tweets) < 50:
-            print("Not enough tweets in our database, searching Twitter for more")
+        ## If we have too few tweets about the movie, or our sentiment is outdated, get more from Twitter
+        if not clean_tweets or len(clean_tweets) < 50 or (mostRecentSentiment and mostRecentSentiment[0].sentimentDate < datetime.now() - datetime.timedelta(days = 7)):
+            print("Not enough tweets in our database or sentiment is out of date, searching Twitter for more")
+
             ## Get list of Statuses about the movie
             raw_tweets = []
+
             try:
                 raw_tweets = twitter.search_movie(movie)
             except Exception as error:
@@ -111,6 +125,9 @@ def results(request):
         overall_score = get_overall_sentiment_score(clean_tweets)
         polarity = get_polarity(clean_tweets)
         negative_data, positive_data  = create_chart_datasets(clean_tweets)
+
+        ## Save our new sentiment data to the db
+        save_new_sentiment(overall_score, movie)
 
         ## Prepare data to render on results page
         data_to_render = {  'form': QueryForm(request.POST),
@@ -141,8 +158,8 @@ def create_chart_datasets(clean_tweets):
     for tweet in clean_tweets:
         score = tweet.sentiment_score
         data = {
-                    'y': abs(score)*100, 'x': str(datetime.strptime(tweet.created_at,
-                    '%a %b %d %H:%M:%S +0000 %Y')),
+                    'y': abs(score)*100,
+                    'x': str(tweet.created_at),
                     'r': 5
                 }
 
@@ -153,11 +170,15 @@ def create_chart_datasets(clean_tweets):
 
     return negative_data, positive_data
 
-# returns a list of Tweet objects created from the given list of twitter.Status objects
+## =============================================================================
+
+## Returns a list of Tweet objects created from the given list of twitter.Status objects
 def get_clean_tweets(raw_tweets):
     return [Tweet().fillWithStatusObject(raw_tweet) for raw_tweet in raw_tweets]
 
-# returns a list of at most 10 Tweet objects whos sentiment scores are not 0
+## =============================================================================
+
+## Returns a list of at most 10 Tweet objects whos sentiment scores are not 0
 def get_tweets_to_display(clean_tweets):
     tweets_to_display = []
     i = 0
@@ -168,8 +189,9 @@ def get_tweets_to_display(clean_tweets):
 
     return tweets_to_display
 
+## =============================================================================
 
-# returns average sentiment score on a scale of 0 to 10, rounded to one decimal place
+## Returns average sentiment score on a scale of 0 to 10, rounded to one decimal place
 def get_overall_sentiment_score(clean_tweets):
     num_nonzero = 0
     sum_scores = 0
@@ -182,8 +204,9 @@ def get_overall_sentiment_score(clean_tweets):
 
     return round((sum_scores/num_nonzero+1)*5, 1)
 
+## =============================================================================
 
-# returns polarity of scentiment scores as a percentage #TODO THIS IS TERRIBLE
+## Returns polarity of scentiment scores as a percentage #TODO THIS IS TERRIBLE
 def get_polarity(clean_tweets):
     positive_count = 0
     negative_count = 0
@@ -204,3 +227,21 @@ def get_polarity(clean_tweets):
         return round((positive_sum/positive_count - negative_sum/negative_count)*50, 1)
     else:
         return 0
+
+## =============================================================================
+
+## Saves the given sentiment data to the db if it is not redundant
+def save_new_sentiment(overall_score, movie):
+    ## Find objects that are of the same movie and were made today
+    duplicate = Sentiment.objects.filter(imdbID = movie.imdbID, sentimentDate = datetime.now())
+
+    ## If there aren't duplicates create a new sentiment object for this movie
+    if not duplicate:
+        ## Populate the sentiment table with data for each movie with their scores at this time
+        MovieSentiment = Sentiment(Title = movie.Title, imdbID = movie.imdbID, sentimentDate = datetime.now() , sentimentScore = overall_score)
+
+        try:
+            ## Movie doesn't exist yet (in the db) with this date so save it into the db
+            MovieSentiment.save()
+        except:
+            print ("ERROR: couldn't save to sentiment table")

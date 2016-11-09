@@ -182,7 +182,7 @@ class Tweet(models.Model):
     ## Attributes of a tweet after dropping extraneous fields
     text = models.CharField(max_length=256)
     tweetID = models.BigIntegerField(unique=True)
-    created_at = models.CharField(max_length=256)
+    created_at = models.DateTimeField(default=None, null=True)
     favorite_count = models.IntegerField()
     lang = models.CharField(max_length=16)
     location = models.CharField(max_length=256)
@@ -227,7 +227,7 @@ class Tweet(models.Model):
 
         ## Values from API request
         self.text=tweet.text
-        self.created_at=tweet.created_at
+        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location
@@ -251,3 +251,34 @@ class Tweet(models.Model):
 
     def __unicode__(self):
         return str(self.tweetID)
+
+
+class Sentiment(models.Model):
+   Title = models.CharField(max_length=128)
+   imdbID = models.CharField(max_length=1024)
+   sentimentDate = models.DateTimeField(default=None, null=True)
+   sentimentScore = models.FloatField(null=True, blank=True)
+   polarity_score = models.FloatField(null=True, blank=True)
+
+   param_defaults = {
+       'Title': None,
+       'imdbID': None,
+       'sentimentDate': None,
+       'sentimentScore': None,
+       'positivityScore': None,
+       'negativityScore': None,
+       'neutralityScore': None
+   }
+
+   def __unicode__(self):
+       return self.Title + self.imdbID
+
+   def fillWithJsonObject(self, jsonObject):
+       #:param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
+       #:return self: this movie, udpated with the relevant data from the given jsonObject
+       if jsonObject is not None:
+           for (key, value) in jsonObject.items():
+               if key in self.param_defaults.keys():
+                   setattr(self, key, value)
+           self.save()
+       return self
