@@ -7,7 +7,6 @@ from django.db import models
 from sentimentanalysis.analyzer import SentimentScorer
 
 
-
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
 
@@ -21,12 +20,6 @@ class TwitterAPI(object):
                 keys = yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-                
-        with open("../twitter_api/common_wordlist.txt", 'r') as f:
-            self.common_wordlist = f.readlines()
-            
-        for word in self.common_wordlist:
-            word.replace('\n', '')
 
         self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=True) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
@@ -43,12 +36,13 @@ class TwitterAPI(object):
 
         current_datetime = datetime.datetime.now()
         tweets = []
+        response = []
 
         for diff in range(0, 6):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
-
-            if commonTitleChecker(movie.Title):
+            
+            if word_detector().commonTitleChecker('apple'):
                 print('common phrase detected')
                 response = self.api.GetSearch(term='"'+movie.Title +' movie" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
             else:
@@ -63,16 +57,6 @@ class TwitterAPI(object):
 
         return tweets
         
-    def __commonTitleChecker(self, search_term):
-        """
-        :param searchterm: movie title to check for in file containing common words
-        :return boolean whether the movie title was found
-        """
-        
-        for word in self.common_wordlist:
-            if (search_term == word):
-                return True
-        return False
 
 
 class Movie(models.Model):
@@ -242,3 +226,30 @@ class Tweet(models.Model):
 
     def __unicode__(self):
         return str(self.tweetID)
+
+class word_detector(object):
+
+    def __init__(self):
+        with open("app/common_wordlist.txt", 'r') as f:
+            self.common_wordlist = f.readlines()
+            
+            
+        self.common_wordlist = [word.replace('\n','') for word in self.common_wordlist]
+        for word in self.common_wordlist:
+            word = word.replace("\n", "")
+
+    def commonTitleChecker(self, search_term):
+        """
+        :param searchterm: movie title to check for in file containing common words
+        :return boolean whether the movie title was found
+        """
+        if len(search_term.split()) > 1: # has more than 1 word
+            return False
+        
+        search_term = search_term.lower()
+        for word in self.common_wordlist:
+            if (search_term == word):
+                return True
+            elif (search_term < word):
+                return False
+        return False
