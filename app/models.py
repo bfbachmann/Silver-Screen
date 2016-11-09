@@ -136,10 +136,11 @@ class Movie(models.Model):
 class OMDbAPI(object):
 
     def __init__(self):
-        self.recentSearches = {}
+        pass
+
 
     ## Search the OMDb database for movies with titles that match the requested movie
-    def search(self, title, year=None):
+    def search(self, title):
         """
         :params title: a string holding the title of the movie
         :return movie: if at least one movie with a similar title is found, this is a Movie object
@@ -151,8 +152,6 @@ class OMDbAPI(object):
             matching_movies = omdb.search_movie(title)
         except:
             raise ConnectionError
-
-        self.recentSearches.update({title:matching_movies})
 
         ## For now, only return most popular movie
         highestIMDB = 0
@@ -173,6 +172,7 @@ class OMDbAPI(object):
             return movieObj
         else:
             return None
+
 
 ## =============================================================================
 ##  Tweet
@@ -214,7 +214,8 @@ class Tweet(models.Model):
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
-        if tweet is None or type(tweet) is not twitter.Status:
+        ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
+        if tweet is None or not isinstance(tweet, twitter.Status) or len(Tweet.objects.filter(tweetID=self.tweetID)):
             return self
 
         ## Assume the Tweet is in the users location if we have no info
@@ -240,15 +241,11 @@ class Tweet(models.Model):
         ## Assign sentiment score to the tweet
         self.sentiment_score = TweetSentiment(self.text, "sentimentanalysis/lexicon_done.txt").polarity_scores()['sentiment']
 
-        ## Only save this tweet if it isn't already in the database
-        if Tweet.objects.filter(tweetID=self.tweetID) is None:
-            try:
-                self.save()
-            except:
-                print("Failed to save invalid tweet: " + str(self.tweetID))
-                pass
-        else:
-            print("Failed to save duplicate tweet: " + str(self.tweetID))
+        ## Try save the tweet to the database
+        try:
+            self.save()
+        except:
+            print("Failed to save invalid tweet: " + str(self.tweetID))
 
         return self
 
