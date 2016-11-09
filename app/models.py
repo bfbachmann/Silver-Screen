@@ -9,11 +9,12 @@ import yaml
 import omdb
 import datetime
 from django.db import models
-from sentimentanalysis.analyzer import SentimentScorer
+from sentimentanalysis.analyzer import TweetSentiment
 
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
+
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
@@ -236,8 +237,9 @@ class Tweet(models.Model):
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
 
-        ## Assign sentiment score for the tweet
-        self.sentiment_score = SentimentScorer("sentimentanalysis/lexicon_done.txt").polarity_scores(self.text)['sentiment']
+        ## Assign sentiment score to the tweet
+        self.sentiment_score = TweetSentiment(self.text).polarity_scores()['sentiment']
+
 
         ## Only save this tweet if it isn't already in the database
         if Tweet.objects.filter(tweetID=self.tweetID) is None:
