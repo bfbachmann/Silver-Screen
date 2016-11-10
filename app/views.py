@@ -9,6 +9,8 @@ from .models import *
 import datetime
 from django.utils import timezone
 from django.contrib import messages
+from imdbpie import Imdb
+import random
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -65,6 +67,11 @@ def results(request):
         data_to_render = {'error_message': None, 'form': blank_form}
         sum_scores = 0
         num_nonzero = 1
+
+        if not search_term:
+            imdb = Imdb()
+            top250 = imdb.top_250()
+            search_term = random.choice(top250).get('title')
 
         ## Try get the movie from the database
         try:

@@ -11,13 +11,14 @@ import datetime
 from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
 
+
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
 
 
 class QueryForm(forms.Form):
-    query = forms.CharField(label='Movie Title', max_length=100)
+    query = forms.CharField(label='Movie Title', max_length=100, required=False)
 
 ## =============================================================================
 ##  TwitterAPI
