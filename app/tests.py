@@ -107,12 +107,12 @@ class MovieTest(TestCase):
                 'Director': 'David Blain',
                 'Title' : 'The Amazing Race',
                 'Year' : 2005,
-                'YomatoURL' : 'http://https://www.rottentomatoes.com/m/arrival_2016',
+                'TomatoURL' : 'http://https://www.rottentomatoes.com/m/arrival_2016',
                 'Actors' : 'Johnny Deppp, Sara Connelly',
                 'Genres' : 'Drama, Horror',
                 'imdbRating' : 3.4,
                 'tomatoRating' : 5.8,
-                'tomatorUserRating' : 6.7,
+                'tomatoUserRating' : 6.7,
                 'plot' : 'Ben finds love and then his heart gets broken',
                 'tomatoConsensus' : 'A coming of age tale of two people in love',
                 'Poster' : 'https://resizing.flixster.com/IMveInCaiQgkRrbAq2zPKX_HgYg=/206x305/v1.bTsxMjI0NzMxNjtqOzE3MTUxOzEyMDA7NjE1Ozk2MA',
@@ -125,12 +125,12 @@ class MovieTest(TestCase):
         self.assertEqual(raw_movie['Director'], movie.Director)
         self.assertEqual(raw_movie['Title'], movie.Title)
         self.assertEqual(raw_movie['Year'], movie.Year)
-        self.assertEqual(raw_movie['YomatoURL'], movie.YomatoURL)
+        self.assertEqual(raw_movie['TomatoURL'], movie.TomatoURL)
         self.assertEqual(raw_movie['Actors'], movie.Actors)
         self.assertEqual(raw_movie['Genres'], movie.Genres)
         self.assertEqual(raw_movie['imdbRating'], movie.imdbRating)
         self.assertEqual(raw_movie['tomatoRating'], movie.tomatoRating)
-        self.assertEqual(raw_movie['tomatorUserRating'], movie.tomatorUserRating)
+        self.assertEqual(raw_movie['tomatoUserRating'], movie.tomatoUserRating)
         self.assertEqual(raw_movie['plot'], movie.plot)
         self.assertEqual(raw_movie['tomatoConsensus'], movie.tomatoConsensus)
         self.assertEqual(raw_movie['Poster'], movie.Poster)

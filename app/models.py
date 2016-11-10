@@ -77,14 +77,14 @@ class TwitterAPI(object):
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    YomatoURL = models.CharField(max_length=1024, null=True, blank=True) # typos
+    TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
     Genres = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
-    tomatoRating = models.CharField(max_length=32, null=True, blank=True) # TODO: change field type
-    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True) # typos # TODO: change field type
+    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatoUserRating = models.CharField(max_length=32, null=True, blank=True)
     plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
@@ -94,14 +94,14 @@ class Movie(models.Model):
     param_defaults = {
         'Title': None,
         'Year': None,
-        'YomatoURL': None, # type
+        'TomatoURL': None,
         'Actors': None,
         'BoxOffice': None,
         'Genres': None,
         'Director': None,
         'imdbRating': None,
         'tomatoRating': None,
-        'tomatorUserRating': None, # typo
+        'tomatoUserRating': None,
         'plot': None,
         'tomatoConsensus': None,
         'Poster': None,
