@@ -4,6 +4,7 @@
 CPEN 321 Project Sept 2016 - Nov 2016
 
 The live version of Silver Screen can be found [here](https://silverscrn.herokuapp.com/). 
+
 _Note:_ The live version of the site represents the current state of the code in ```master```, not ```dev```.
 
 See ```docs``` directory for documentation
