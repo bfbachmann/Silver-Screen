@@ -191,7 +191,12 @@ def create_chart_datasets(clean_tweets):
 
 ## Returns a list of Tweet objects created from the given list of twitter.Status objects
 def get_clean_tweets(raw_tweets, movie_title):
-    return [Tweet().fillWithStatusObject(raw_tweet, movie_title) for raw_tweet in raw_tweets]
+    clean_tweets = []
+    for raw_tweet in raw_tweets:
+        clean_tweet = Tweet().fillWithStatusObject(raw_tweet, movie_title)
+        if clean_tweet:
+            clean_tweets.append(clean_tweet)
+    return clean_tweets
 
 ## =============================================================================
 

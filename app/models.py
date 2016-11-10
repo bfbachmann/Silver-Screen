@@ -77,14 +77,14 @@ class TwitterAPI(object):
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    YomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    YomatoURL = models.CharField(max_length=1024, null=True, blank=True) # typos
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
     Genres = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
-    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
-    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatoRating = models.CharField(max_length=32, null=True, blank=True) # TODO: change field type
+    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True) # typos # TODO: change field type
     plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
@@ -94,15 +94,15 @@ class Movie(models.Model):
     param_defaults = {
         'Title': None,
         'Year': None,
-        'YomatoURL': None,
+        'YomatoURL': None, # type
         'Actors': None,
         'BoxOffice': None,
         'Genres': None,
         'Director': None,
         'imdbRating': None,
         'tomatoRating': None,
-        'tomatoUserRating': None,
-        'Plot': None,
+        'tomatorUserRating': None, # typo
+        'plot': None,
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
@@ -153,7 +153,6 @@ class OMDbAPI(object):
         :return movie: if at least one movie with a similar title is found, this is a Movie object
                       created from the most relevant result returned by OMDb, otherwise it is empty list
         """
-
         ## Search for all movies with similar titles
         try:
             matching_movies = omdb.search_movie(title)
@@ -224,14 +223,15 @@ class Tweet(models.Model):
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
         ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
-        if tweet is None or not isinstance(tweet, twitter.Status) or len(Tweet.objects.filter(tweetID=self.tweetID)):
-            return self
+        if tweet is None or not isinstance(tweet, twitter.Status) or Tweet.objects.filter(tweetID=tweet.id):
+            return None
 
         ## Assume the Tweet is in the users location if we have no info
-        if type(tweet.location) is not str:
+        if not isinstance(tweet.location, str):
             tweet.location = tweet.user.location
+
         ## Assume the Tweet is in the users langauge if we have no info
-        if tweet.lang is None and tweet.user.lang is not None:
+        if tweet.lang is None and tweet.user is not None and tweet.user.lang is not None:
             tweet.lang = tweet.user.lang
 
         ## Values from API request
@@ -244,8 +244,8 @@ class Tweet(models.Model):
         self.user_name=tweet.user.name
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
-        self.tweetID = tweet.id
-        self.imdbID = tweet.imdbID
+        self.tweetID=tweet.id
+        self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
         filtered_text = self.text.split()
