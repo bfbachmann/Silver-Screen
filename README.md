@@ -7,7 +7,7 @@ The live version of Silver Screen can be found [here](https://silverscrn.herokua
 
 _Note:_ The live version of the site represents the current state of the code in ```master```, not ```dev```.
 
-See ```docs``` directory for design documentation
+See ```docs``` directory and check out our Github Wiki for design documentation.
 
 See ```dev``` branch for latest code.
 
