@@ -113,7 +113,7 @@ class TweetSentiment(object):
     Gives an intensity score to the inputted tweet.
     """
 
-    def __init__(self, text, lexicon_file="lexicon_done.txt"):
+    def __init__(self, text, lexicon_file="lexicon_done.txt"): # for some people, writing "sentimentanalysis/lexicon_done.txt"
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.convert_to_dictionary()
         if not isinstance(text, str):
@@ -497,6 +497,13 @@ class TweetSentiment(object):
                 word_list[i] = words_punc_dict[w]
 
         return word_list
+
+    def included_score(self):
+        """
+        TODO implement a score checker if the tweet contains a score in the writing i.e. "loved it, 9/10"
+        :return:
+        """
+        return
 
 
 if __name__ == '__main__':
