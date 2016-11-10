@@ -118,7 +118,7 @@ def results(request):
                 data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
                 return render(request, 'index.html', data_to_render)
             else:
-                clean_tweets += get_clean_tweets(raw_tweets)
+                clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
         ## Chart sentiment scores of tweets
         overall_score = get_overall_sentiment_score(clean_tweets)
@@ -175,8 +175,8 @@ def create_chart_datasets(clean_tweets):
 ## =============================================================================
 
 ## Returns a list of Tweet objects created from the given list of twitter.Status objects
-def get_clean_tweets(raw_tweets):
-    return [Tweet().fillWithStatusObject(raw_tweet) for raw_tweet in raw_tweets]
+def get_clean_tweets(raw_tweets, movie_title):
+    return [Tweet().fillWithStatusObject(raw_tweet, movie_title) for raw_tweet in raw_tweets]
 
 ## =============================================================================
 

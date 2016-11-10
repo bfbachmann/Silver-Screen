@@ -103,7 +103,7 @@
                     </p>
                 </div>
                 <div class="col-sm-2">
-                    {% if tweet.sentiment_score <= 0 %}
+                    {% if tweet.sentiment_score < 5 %}
                         <h5 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h5>
                     {% else %}
                         <h5 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h5>
