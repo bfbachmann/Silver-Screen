@@ -36,6 +36,14 @@
                 </div>
             </form>
         </div>
+		{% if messages %}
+		 {% for message in messages %}
+			<div{% if message.tags %} style = "width:40%;margin-left: auto; margin-right: auto;" class="text-center alert alert-{{ message.tags }}"{% endif %}>
+			  <a class="close" data-dismiss="alert" href="#">&times;</a>
+			  <span class="glyphicon glyphicon-fire"></span> {{ message }}
+			</div>
+		  {% endfor %}
+		{% endif %}
     </div>
     <br><br>
     <div class="loader center-on-page hidden"></div>

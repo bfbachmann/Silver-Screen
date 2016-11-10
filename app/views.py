@@ -8,7 +8,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
 import datetime
 from django.utils import timezone
-import json
+from django.contrib import messages
+from imdbpie import Imdb
+import random
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -38,6 +40,13 @@ def index(request):
     else:
         return HttpResponse(status=403)
 
+    try:
+        trendingMovie = Movie.objects.latest('recentVisits')
+        if trendingMovie.recentVisits > 5:
+            messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
+    except:
+        pass
+
     return render(request, 'index.html', {'form': query_form})
 
 ## =============================================================================
@@ -58,6 +67,11 @@ def results(request):
         data_to_render = {'error_message': None, 'form': blank_form}
         sum_scores = 0
         num_nonzero = 1
+
+        if not search_term:
+            imdb = Imdb()
+            top250 = imdb.top_250()
+            search_term = random.choice(top250).get('title')
 
         ## Try get the movie from the database
         try:
@@ -80,7 +94,8 @@ def results(request):
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
-
+        else:
+            movie.updateViews()
 
         ## Check if we have any sentiment data about this movie in our db
         try:

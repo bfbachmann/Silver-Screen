@@ -11,13 +11,14 @@ import datetime
 from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
 
+
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
 
 
 class QueryForm(forms.Form):
-    query = forms.CharField(label='Movie Title', max_length=100)
+    query = forms.CharField(label='Movie Title', max_length=100, required=False)
 
 ## =============================================================================
 ##  TwitterAPI
@@ -88,6 +89,7 @@ class Movie(models.Model):
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
+    recentVisits = models.IntegerField(default=0)
 
     param_defaults = {
         'Title': None,
@@ -103,7 +105,8 @@ class Movie(models.Model):
         'Plot': None,
         'tomatoConsensus': None,
         'Poster': None,
-        'imdbID': None
+        'imdbID': None,
+        'recentVisits': None
     }
 
     def __unicode__(self):
@@ -127,6 +130,10 @@ class Movie(models.Model):
                     setattr(self, key, value)
             self.save()
         return self
+
+    def updateViews(self):
+        self.recentVisits = self.recentVisits+1
+        self.save()
 
 ## =============================================================================
 ##  OMDbAPI
@@ -168,6 +175,8 @@ class OMDbAPI(object):
             if not movieObj:
                 response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
                 movieObj = Movie().fillWithJsonObject(response)
+
+
 
             return movieObj
         else:
