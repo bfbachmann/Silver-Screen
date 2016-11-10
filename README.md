@@ -3,22 +3,27 @@
 
 CPEN 321 Project Sept 2016 - Nov 2016
 
+The live version of Silver Screen can be found [here](https://silverscrn.herokuapp.com/). 
+
+_Note:_ The live version of the site represents the current state of the code in ```master```, not ```dev```.
+
 See ```docs``` directory for documentation
 
 See ```dev``` branch for latest code. 
 
 ## Documentation Links
+Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
+
+Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlVRYyGUr6k0v0zUYX_COgLFxeTlp4fbnfA/edit#gid=0)
+
+Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
+
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
 [OMDb documentation](https://github.com/dgilland/omdb.py)
 
 [Chart.js documentation](http://www.chartjs.org/docs/#bubble-chart-introduction)
 
-Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
-
-Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlVRYyGUr6k0v0zUYX_COgLFxeTlp4fbnfA/edit#gid=0)
-
-Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
 
 ## Setup
 
