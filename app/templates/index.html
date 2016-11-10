@@ -13,27 +13,39 @@
 </head>
 
 <body>
-    <div class="align-center">
-        <div class="jumbotron align-left">
-            <h1 style="padding-left: 40px;"> SilverScreen </h1>
-            <h2 style="padding-left: 40px;"> Twitter Sentiment Analysis Tool </h2>
+    <div class="container-fluid" style="max-width: 510px; margin-top: 200px;">
+        <div class="page-heading align-left">
+            <h1 class="heading" style="font-size: 90px; margin-bottom: 0px;"> SilverScreen </h1>
+            <h2 class="heading" style="margin-top: 0px; margin-bottom: 50px;"> Twitter Sentiment Analysis Tool </h2>
         </div>
         {% if error_message is not None %}
             <div class="alert alert-danger" role="alert">
                 {{ error_message }}
             </div>
         {% endif %}
-        <div id="query-form" class="form-inline align-center" style="margin: 50px;">
-            <h4> Search Twitter for a Movie: </h4>
+        <div id="query-form" class="form-inline align-center center-form">
             <form action="/results/" method="post" class="form">
                 {% csrf_token %}
-                {% bootstrap_form form %}
-                {% buttons %}
-                    <button id="submit" type="submit" class="btn btn-primary">Search</button>
-                {% endbuttons %}
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                        <span class="input-group-btn">
+                            <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                        </span>
+                    </div>
+                </div>
             </form>
         </div>
+		{% if messages %}
+		 {% for message in messages %}
+			<div{% if message.tags %} style = "width:80%;margin-left: auto; margin-right: auto;" class="text-center alert alert-{{ message.tags }}"{% endif %}>
+			  <a class="close" data-dismiss="alert" href="#">&times;</a>
+			  <span class="glyphicon glyphicon-fire"></span> {{ message }}
+			</div>
+		  {% endfor %}
+		{% endif %}
     </div>
+    <br><br>
     <div class="loader center-on-page hidden"></div>
 
     <script type="text/javascript">
