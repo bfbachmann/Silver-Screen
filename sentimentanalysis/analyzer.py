@@ -92,6 +92,8 @@ ALGORITHM IDEAS TO BE IMPLEMENTED
 4.s
 5. if but is preceded by a clause, it's polarity should either be ignored or inverted
 
+idioms
+"killed it"
 '''
 
 '''
