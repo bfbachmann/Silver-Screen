@@ -7,7 +7,6 @@ See ```docs``` directory for documentation
 
 See ```dev``` branch for latest code.
 
-
 ## Documentation Links
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
