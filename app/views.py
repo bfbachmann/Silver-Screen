@@ -104,7 +104,6 @@ def results(request):
         except:
             print("No sentiment found in database for this movie")
 
-
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
 

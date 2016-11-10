@@ -11,11 +11,9 @@ import datetime
 from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
 
-
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
-
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100, required=False)
@@ -145,7 +143,6 @@ class OMDbAPI(object):
     def __init__(self):
         pass
 
-
     ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
         """
@@ -175,8 +172,6 @@ class OMDbAPI(object):
             if not movieObj:
                 response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
                 movieObj = Movie().fillWithJsonObject(response)
-
-
 
             return movieObj
         else:
@@ -269,6 +264,9 @@ class Tweet(models.Model):
     def __unicode__(self):
         return str(self.tweetID)
 
+## =============================================================================
+##  Sentiment
+## =============================================================================
 
 class Sentiment(models.Model):
    Title = models.CharField(max_length=128)
