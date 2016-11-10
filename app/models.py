@@ -46,7 +46,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
+        if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
         current_datetime = datetime.datetime.now()
@@ -117,7 +117,8 @@ class Movie(models.Model):
     def fillWithJsonObject(self, jsonObject):
         """
         :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
-        :return self: this movie, udpated with the relevant data from the given jsonObject
+        :return self:   this movie, udpated with the relevant data from the given jsonObject if it is valid
+                        otherwise returns None
         """
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
@@ -129,7 +130,9 @@ class Movie(models.Model):
                             value = None # TODO: we'll have to handle this upstream
                     setattr(self, key, value)
             self.save()
-        return self
+            return self
+        else:
+            return None
 
     def updateViews(self):
         self.recentVisits = self.recentVisits+1
@@ -174,6 +177,8 @@ class OMDbAPI(object):
             if not movieObj:
                 response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
                 movieObj = Movie().fillWithJsonObject(response)
+                if not movieObj:
+                    return None
 
 
 

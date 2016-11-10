@@ -133,3 +133,8 @@ class MovieTest(TestCase):
         self.assertEqual(raw_movie['tomatoConsensus'], movie.tomatoConsensus)
         self.assertEqual(raw_movie['Poster'], movie.Poster)
         self.assertEqual(raw_movie['imdbID'], movie.imdbID)
+
+
+    def test_fill_with_invalid_movie(self):
+            movie_with_none_init = Movie().fillWithJsonObject(None)
+            self.assertEqual(movie_with_none_init, None)
