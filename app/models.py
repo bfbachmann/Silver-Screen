@@ -209,7 +209,7 @@ class Tweet(models.Model):
     }
 
     ## Populate the current twitter object with values returned from a Twitter API request
-    def fillWithStatusObject(self, tweet):
+    def fillWithStatusObject(self, tweet, movie_title):
         """
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
@@ -238,8 +238,16 @@ class Tweet(models.Model):
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
 
+        ## Remove words in movie title from tweet body so they don't influence sentiment score
+        filtered_text = self.text.split()
+        for word in movie_title.split():
+            if word in filtered_text:
+                filtered_text.remove(word)
+
+        filtered_text = " ".join(filtered_text)
+
         ## Assign sentiment score to the tweet
-        self.sentiment_score = TweetSentiment(self.text, "sentimentanalysis/lexicon_done.txt").polarity_scores()['sentiment']
+        self.sentiment_score = TweetSentiment(filtered_text).polarity_scores()['sentiment']
 
         ## Try save the tweet to the database
         try:

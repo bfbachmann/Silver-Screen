@@ -26,11 +26,15 @@
                 </a>
                 <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
                     {% csrf_token %}
-                    {% bootstrap_form new_form %}
-                    {% buttons %}
-                        <button id="submit" type="submit" class="btn btn-primary">Search</button>
-                        <div class="navbar-loader hidden"></div>
-                    {% endbuttons %}
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                            <span class="input-group-btn">
+                                <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                            </span>
+                        </div>
+                        <div class="navbar-loader hidden" style="margin: 5px;"></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -51,7 +55,7 @@
                 <div class="col-sm-8">
             {% endif %}
                 <h3 class="info-header"> Sentiment Score:
-                    {% if overall_score <= 0 %}
+                    {% if overall_score < 5 %}
                         <strong style="color: red;">{{ overall_score }}</strong> </h3>
                     {% else %}
                         <strong style="color: green;">{{ overall_score }}</strong> </h3>
@@ -93,16 +97,16 @@
                         <span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
                         {{ tweet.retweet_count }} &nbsp; &nbsp;
                         {% if tweet.location and tweet.location != "" %}
-                        <span class="glyphicon glyphicon-map-marker"></span>
+                            <span class="glyphicon glyphicon-map-marker"></span>
                         {{ tweet.location }}
                         {% endif %}
                     </p>
                 </div>
                 <div class="col-sm-2">
-                    {% if tweet.sentiment_score <= 0 %}
-                        <h5 class="align-right" style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
+                    {% if tweet.sentiment_score < 5 %}
+                        <h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
                     {% else %}
-                        <h5 class="align-right" style="color: green;"> Score: {{ tweet.sentiment_score }} </h5>
+                        <h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
                     {% endif %}
                 </div>
             </div>
@@ -111,7 +115,7 @@
 
     <script>
         $('#query-form').submit(function() {
-            $('#submit').addClass('hidden')
+            $('#submit').addClass('disabled')
             $('.navbar-loader').removeClass('hidden')
         })
 
