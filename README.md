@@ -9,7 +9,8 @@ _Note:_ The live version of the site represents the current state of the code in
 
 See ```docs``` directory for documentation
 
-See ```dev``` branch for latest code. 
+See ```dev``` branch for latest code.
+
 
 ## Documentation Links
 Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
