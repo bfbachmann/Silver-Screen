@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
 import datetime
 from django.utils import timezone
-import json
+from django.contrib import messages
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -37,6 +37,13 @@ def index(request):
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+    try:
+        trendingMovie = Movie.objects.latest('recentVisits')
+        if trendingMovie.recentVisits > 5:
+            messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
+    except:
+        pass
 
     return render(request, 'index.html', {'form': query_form})
 
@@ -80,7 +87,8 @@ def results(request):
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
             return render(request, 'index.html', data_to_render)
-
+        else:
+            movie.updateViews()
 
         ## Check if we have any sentiment data about this movie in our db
         try:
