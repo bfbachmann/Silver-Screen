@@ -1,3 +1,8 @@
+## =============================================================================
+##  models.py
+## =============================================================================
+## - Manage data
+
 from django import forms
 import twitter
 import yaml
@@ -5,25 +10,40 @@ import omdb
 import datetime
 from django.db import models
 from sentimentanalysis.analyzer import SentimentScorer
+from sentimentanalysis.analyzer import TweetSentiment
+
+
+
+## =============================================================================
+##  QueryForm
+## =============================================================================
 
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100)
+    query = forms.CharField(label='Movie Title', max_length=100, required=False)
 
+## =============================================================================
+##  TwitterAPI
+## =============================================================================
 
+## API wrapper for Twitter
 class TwitterAPI(object):
 
+    ## Initialisation
     def __init__(self):
         # load the API keys from api_keys.txt
+        ## Load the API keys from api_keys.yml
         with open("scripts/twitter_api/api_keys.yml", 'r') as stream:
             try:
                 keys = yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
 
-        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=True) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
+        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
 
+    ## Request tweets for a given movie
     def search_movie(self, movie):
         """
         :param movie: a Movie object with valid fields
@@ -36,28 +56,36 @@ class TwitterAPI(object):
 
         current_datetime = datetime.datetime.now()
         tweets = []
-        response = []
 
         for diff in range(0, 6):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
             to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
-            
-            if word_detector().commonTitleChecker('apple'):
-                print('common phrase detected')
-                response = self.api.GetSearch(term='"'+movie.Title +' movie" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
-            else:
-                response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
+
+            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links', since=from_date, until=to_date, lang='en', result_type='mixed')
+
+
+
+
+            ## Make search request
+            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+
+
             for tweet in response:
                 # tag movie with imdbID
+                ## Tag movie with imdbID
                 tweet.imdbID = movie.imdbID
 
                 # only append Tweets in English
+                ## Only append Tweets in English
                 if tweet.lang == 'en' or tweet.user.lang == 'en':
                     tweets.append(tweet)
 
         return tweets
-        
 
+## =============================================================================
+##  Movie
+## =============================================================================
 
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
@@ -74,6 +102,7 @@ class Movie(models.Model):
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
+    recentVisits = models.IntegerField(default=0)
 
     param_defaults = {
         'Title': None,
@@ -90,11 +119,15 @@ class Movie(models.Model):
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None
+        'imdbID': None,
+        'recentVisits': None
     }
 
     def __unicode__(self):
         return self.Title
 
+    ## Populate the current movie object parameters with the values recieved from
+    ## a request to the OMDbAPI
     def fillWithJsonObject(self, jsonObject):
         """
         :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
@@ -112,15 +145,25 @@ class Movie(models.Model):
             self.save()
         return self
 
+    def updateViews(self):
+        self.recentVisits = self.recentVisits+1
+        self.save()
 
+## =============================================================================
+##  OMDbAPI
+## =============================================================================
 
+## API wrapper for OMDb
 class OMDbAPI(object):
 
     def __init__(self):
         self.recentSearches = {}
+        pass
 
 
     def search(self, title, year=None):
+    ## Search the OMDb database for movies with titles that match the requested movie
+    def search(self, title):
         """
         :params title: a string holding the title of the movie
         :return movie: if at least one movie with a similar title is found, this is a Movie object
@@ -128,6 +171,7 @@ class OMDbAPI(object):
         """
 
         # search for all movies with similar titles
+        ## Search for all movies with similar titles
         try:
             matching_movies = omdb.search_movie(title)
         except:
@@ -136,6 +180,7 @@ class OMDbAPI(object):
         self.recentSearches.update({title:matching_movies})
 
         #For now, only return most popular movie
+        ## For now, only return most popular movie
         highestIMDB = 0
 
         if matching_movies:
@@ -151,14 +196,23 @@ class OMDbAPI(object):
                 response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
                 movieObj = Movie().fillWithJsonObject(response)
 
+
+
             return movieObj
         else:
             return None
 
+
+## =============================================================================
+##  Tweet
+## =============================================================================
+
 class Tweet(models.Model):
+    ## Attributes of a tweet after dropping extraneous fields
     text = models.CharField(max_length=256)
     tweetID = models.BigIntegerField(unique=True)
     created_at = models.CharField(max_length=256)
+    created_at = models.DateTimeField(default=None, null=True)
     favorite_count = models.IntegerField()
     lang = models.CharField(max_length=16)
     location = models.CharField(max_length=256)
@@ -185,22 +239,30 @@ class Tweet(models.Model):
     }
 
     def fillWithStatusObject(self, tweet):
+    ## Populate the current twitter object with values returned from a Twitter API request
+    def fillWithStatusObject(self, tweet, movie_title):
         """
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
         if tweet is None or type(tweet) is not twitter.Status:
+        ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
+        if tweet is None or not isinstance(tweet, twitter.Status) or len(Tweet.objects.filter(tweetID=self.tweetID)):
             return self
 
         # assume the Tweet is in the users location if we have no info
+        ## Assume the Tweet is in the users location if we have no info
         if type(tweet.location) is not str:
             tweet.location = tweet.user.location
         # assume the Tweet is in the users langauge if we have no info
+        ## Assume the Tweet is in the users langauge if we have no info
         if tweet.lang is None and tweet.user.lang is not None:
             tweet.lang = tweet.user.lang
 
+        ## Values from API request
         self.text=tweet.text
         self.created_at=tweet.created_at
+        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location
@@ -221,35 +283,56 @@ class Tweet(models.Model):
                 pass
         else:
             print("Failed to save duplicate tweet: " + str(self.tweetID))
+        ## Remove words in movie title from tweet body so they don't influence sentiment score
+        filtered_text = self.text.split()
+        for word in movie_title.split():
+            if word in filtered_text:
+                filtered_text.remove(word)
+
+        filtered_text = " ".join(filtered_text)
+
+        ## Assign sentiment score to the tweet
+        self.sentiment_score = TweetSentiment(filtered_text).polarity_scores()['sentiment']
+
+        ## Try save the tweet to the database
+        try:
+            self.save()
+        except:
+            print("Failed to save invalid tweet: " + str(self.tweetID))
 
         return self
 
     def __unicode__(self):
         return str(self.tweetID)
 
-class word_detector(object):
 
-    def __init__(self):
-        with open("app/common_wordlist.txt", 'r') as f:
-            self.common_wordlist = f.readlines()
-            
-            
-        self.common_wordlist = [word.replace('\n','') for word in self.common_wordlist]
-        for word in self.common_wordlist:
-            word = word.replace("\n", "")
 
-    def commonTitleChecker(self, search_term):
-        """
-        :param searchterm: movie title to check for in file containing common words
-        :return boolean whether the movie title was found
-        """
-        if len(search_term.split()) > 1: # has more than 1 word
-            return False
-        
-        search_term = search_term.lower()
-        for word in self.common_wordlist:
-            if (search_term == word):
-                return True
-            elif (search_term < word):
-                return False
-        return False
+class Sentiment(models.Model):
+   Title = models.CharField(max_length=128)
+   imdbID = models.CharField(max_length=1024)
+   sentimentDate = models.DateTimeField(default=None, null=True)
+   sentimentScore = models.FloatField(null=True, blank=True)
+   polarity_score = models.FloatField(null=True, blank=True)
+
+   param_defaults = {
+       'Title': None,
+       'imdbID': None,
+       'sentimentDate': None,
+       'sentimentScore': None,
+       'positivityScore': None,
+       'negativityScore': None,
+       'neutralityScore': None
+   }
+
+   def __unicode__(self):
+       return self.Title + self.imdbID
+
+   def fillWithJsonObject(self, jsonObject):
+       #:param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
+       #:return self: this movie, udpated with the relevant data from the given jsonObject
+       if jsonObject is not None:
+           for (key, value) in jsonObject.items():
+               if key in self.param_defaults.keys():
+                   setattr(self, key, value)
+           self.save()
+       return self

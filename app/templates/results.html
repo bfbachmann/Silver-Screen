@@ -26,11 +26,15 @@
                 </a>
                 <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
                     {% csrf_token %}
-                    {% bootstrap_form new_form %}
-                    {% buttons %}
-                        <button id="submit" type="submit" class="btn btn-primary">Search</button>
-                        <div class="navbar-loader hidden"></div>
-                    {% endbuttons %}
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                            <span class="input-group-btn">
+                                <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                            </span>
+                        </div>
+                        <div class="navbar-loader hidden" style="margin: 5px;"></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -41,19 +45,22 @@
         <hr>
         <div class="well full-width clearfix">
             {% if movie.Poster %}
-                <div class="col-sm-4">
-                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" style="max-height:300px; margin-right:25px;"/>
+                <div class="col-sm-4 align-center">
+                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                    <h3 class="info-header align-center">
+                        <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
+                        <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
+                    </h3>
                 </div>
                 <div class="col-sm-8">
             {% endif %}
-                <h3 class="info-header">IMDB Rating: {{movie.imdbRating}}</h3>
-                <h3 class="info-header">Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3>
                 <h3 class="info-header"> Sentiment Score:
-                    {% if overall_score <= 0 %}
+                    {% if overall_score < 5 %}
                         <strong style="color: red;">{{ overall_score }}</strong> </h3>
                     {% else %}
-                        <strong style="color: green;">{{ overall_score }}</strong> </h3><br>
+                        <strong style="color: green;">{{ overall_score }}</strong> </h3>
                     {% endif %}
+                <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
                 <div class="col-sm-3" style="margin-left: 0px !important;">
                     <p>Genre: </p>
                     <p>BoxOffice: </p>
@@ -90,16 +97,16 @@
                         <span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
                         {{ tweet.retweet_count }} &nbsp; &nbsp;
                         {% if tweet.location and tweet.location != "" %}
-                        <span class="glyphicon glyphicon-map-marker"></span>
+                            <span class="glyphicon glyphicon-map-marker"></span>
                         {{ tweet.location }}
                         {% endif %}
                     </p>
                 </div>
                 <div class="col-sm-2">
-                    {% if tweet.sentiment_score <= 0 %}
-                        <h5 class="align-right" style="color: red;"> Score: {{ tweet.sentiment_score }} </h5>
+                    {% if tweet.sentiment_score < 5 %}
+                        <h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
                     {% else %}
-                        <h5 class="align-right" style="color: green;"> Score: {{ tweet.sentiment_score }} </h5>
+                        <h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
                     {% endif %}
                 </div>
             </div>
@@ -108,7 +115,7 @@
 
     <script>
         $('#query-form').submit(function() {
-            $('#submit').addClass('hidden')
+            $('#submit').addClass('disabled')
             $('.navbar-loader').removeClass('hidden')
         })
 
@@ -133,7 +140,7 @@
                            ],
                            backgroundColor: "#00DD99",
                            hoverBackgroundColor: "#00DD99"
-                       }]
+                       } ]
                    },
             options: {
                     scales: {
@@ -145,8 +152,8 @@
                         }],
                         yAxes: [{
                             ticks: {
-                                max: 1,
-                                min: -1,
+                                max: 100,
+                                min: 0,
                             }
                         }]
                     }
