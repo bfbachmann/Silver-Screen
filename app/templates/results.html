@@ -41,19 +41,22 @@
         <hr>
         <div class="well full-width clearfix">
             {% if movie.Poster %}
-                <div class="col-sm-4">
-                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" style="max-height:300px; margin-right:25px;"/>
+                <div class="col-sm-4 align-center">
+                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                    <h3 class="info-header align-center">
+                        <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
+                        <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
+                    </h3>
                 </div>
                 <div class="col-sm-8">
             {% endif %}
-                <h3 class="info-header">IMDB Rating: {{movie.imdbRating}}</h3>
-                <h3 class="info-header">Rotten Tomatoes Rating: {{movie.tomatoRating}}</h3>
                 <h3 class="info-header"> Sentiment Score:
                     {% if overall_score <= 0 %}
                         <strong style="color: red;">{{ overall_score }}</strong> </h3>
                     {% else %}
-                        <strong style="color: green;">{{ overall_score }}</strong> </h3><br>
+                        <strong style="color: green;">{{ overall_score }}</strong> </h3>
                     {% endif %}
+                <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
                 <div class="col-sm-3" style="margin-left: 0px !important;">
                     <p>Genre: </p>
                     <p>BoxOffice: </p>
@@ -133,7 +136,7 @@
                            ],
                            backgroundColor: "#00DD99",
                            hoverBackgroundColor: "#00DD99"
-                       }]
+                       } ]
                    },
             options: {
                     scales: {
@@ -145,8 +148,8 @@
                         }],
                         yAxes: [{
                             ticks: {
-                                max: 1,
-                                min: -1,
+                                max: 100,
+                                min: 0,
                             }
                         }]
                     }
