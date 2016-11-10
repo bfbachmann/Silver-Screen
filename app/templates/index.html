@@ -13,12 +13,10 @@
 </head>
 
 <body>
-    <div class="align-center">
-        <div class="jumbotron align-left">
-            <div class="page-heading">
-                <h1 style="padding-left: 40px;"> SilverScreen </h1>
-                <h2 style="padding-left: 40px;"> Twitter Sentiment Analysis Tool </h2>
-            </div>
+    <div class="container-fluid" style="max-width: 510px; margin-top: 200px;">
+        <div class="page-heading align-left">
+            <h1 class="heading" style="font-size: 90px; margin-bottom: 0px;"> SilverScreen </h1>
+            <h2 class="heading" style="margin-top: 0px; margin-bottom: 50px;"> Twitter Sentiment Analysis Tool </h2>
         </div>
         {% if error_message is not None %}
             <div class="alert alert-danger" role="alert">
@@ -39,6 +37,7 @@
             </form>
         </div>
     </div>
+    <br><br>
     <div class="loader center-on-page hidden"></div>
 
     <script type="text/javascript">

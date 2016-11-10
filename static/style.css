@@ -1,15 +1,9 @@
-.center-form {
-    margin-top: 150px;
-}
-
-.jumbotron {
-    background-image: url("movie_collage.jpg");
-    background-size: 800px;
-}
-
 .page-heading {
-    color: white !important;
-    z-index: 50 !important;
+    color: grey !important;
+}
+
+.heading {
+    font-weight: 300;
 }
 
 .alert {
