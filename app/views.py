@@ -121,10 +121,10 @@ def results(request):
                 clean_tweets += get_clean_tweets(raw_tweets)
 
         ## Chart sentiment scores of tweets
-        tweets_to_display = get_tweets_to_display(clean_tweets)
         overall_score = get_overall_sentiment_score(clean_tweets)
         polarity = get_polarity(clean_tweets)
         negative_data, positive_data  = create_chart_datasets(clean_tweets)
+        tweets_to_display = get_tweets_to_display(clean_tweets)
 
         ## Save our new sentiment data to the db
         save_new_sentiment(overall_score, movie)
@@ -157,7 +157,7 @@ def create_chart_datasets(clean_tweets):
 
     for tweet in clean_tweets:
         score = tweet.sentiment_score
-        
+
         if score != 0:
             data = {
                         'y': abs(score)*100,
@@ -186,6 +186,7 @@ def get_tweets_to_display(clean_tweets):
     i = 0
     while i < len(clean_tweets) and len(tweets_to_display) < 10:
         if clean_tweets[i].sentiment_score != 0:
+            clean_tweets[i].sentiment_score = round((clean_tweets[i].sentiment_score+1)*5, 1)
             tweets_to_display.append(clean_tweets[i])
         i += 1
 

@@ -23,7 +23,7 @@ db.*
 **/.idea
 
 # Ignore .DS_Store because if that ends up in our repo I will actually kill someone
-*.DS_Store
+**/*.DS_Store
 
 # Ignore data
 **/*.xml

@@ -1,3 +1,22 @@
+.center-form {
+    margin-top: 150px;
+}
+
+.jumbotron {
+    background-image: url("movie_collage.jpg");
+    background-size: 800px;
+}
+
+.page-heading {
+    color: white !important;
+    z-index: 50 !important;
+}
+
+.alert {
+    max-width: 700px;
+    text-align: center;
+    margin: auto;
+}
 
 input.form-control {
     min-width: 400px !important;
