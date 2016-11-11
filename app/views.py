@@ -40,12 +40,13 @@ def index(request):
     else:
         return HttpResponse(status=403)
 
-    try:
-        trendingMovie = Movie.objects.latest('recentVisits')
-        if trendingMovie.recentVisits > 5:
-            messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
-    except:
-        pass
+    if not request.session.get('hide_trending_movie', False):
+        try:
+            trendingMovie = Movie.objects.latest('recentVisits')
+            if trendingMovie.recentVisits > 5:
+                messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
+        except:
+            pass
 
     return render(request, 'index.html', {'form': query_form})
 
@@ -53,7 +54,10 @@ def index(request):
 
 ## Takes the user to a loading page that waits for results from the server
 def get_results_page(request):
-    return render(request, 'results.html', {'query': request.POST['query']})
+    if request.method == 'POST':
+        return render(request, 'results.html', {'query': request.POST['query']})
+
+    return HttpResponse(status=403)
 
 ## =============================================================================
 
@@ -165,6 +169,13 @@ def results(request):
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+## =============================================================================
+
+def hide_trending_movie(request):
+    response = HttpResponse(status=200)
+    request.session['hide_trending_movie'] = True
+    return response
 
 ## =============================================================================
 

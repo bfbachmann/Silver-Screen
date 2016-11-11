@@ -13,7 +13,15 @@
 </head>
 
 <body>
-    <div class="container-fluid" style="max-width: 510px; margin-top: 200px;">
+    {% if messages %}
+        {% for message in messages %}
+            <div{% if message.tags %} class="trending text-center alert alert-{{ message.tags }}"{% endif %}>
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <span class="glyphicon glyphicon-fire"></span>&nbsp; {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container-fluid" style="max-width: 510px; margin-top: 170px;">
         <div class="page-heading align-left">
             <h1 class="heading" style="font-size: 90px; margin-bottom: 0px;"> SilverScreen </h1>
             <h2 class="heading" style="margin-top: 0px; margin-bottom: 50px;"> Twitter Sentiment Analysis Tool </h2>
@@ -31,19 +39,19 @@
                 </div>
             </form>
         </div>
-		{% if messages %}
-		 {% for message in messages %}
-			<div{% if message.tags %} style = "width:80%;margin-left: auto; margin-right: auto;" class="text-center alert alert-{{ message.tags }}"{% endif %}>
-			  <a class="close" data-dismiss="alert" href="#">&times;</a>
-			  <span class="glyphicon glyphicon-fire"></span> {{ message }}
-			</div>
-		  {% endfor %}
-		{% endif %}
     </div>
 
     <script type="text/javascript">
         $('#query-form').submit(function() {
             $('#submit').addClass('disabled')
+        })
+
+        $('.close').on('click', function() {
+            $.ajax({
+                url: "{% url 'hide_trending_movie' %}",
+                type: 'get',
+                success : function(data) {}
+            })
         })
     </script>
 </body>

@@ -88,6 +88,14 @@ DATABASES = {
 }
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'app.backends.GaeMemcachedCache',
+    }
+}
+
+SESSION_COOKIE_HTTPONLY = True
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 

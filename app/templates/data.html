@@ -50,7 +50,7 @@
         <div class="container-fluid">
             <div class="col-sm-10">
                 <small> {{ tweet.created_at }} </small>
-                <p><strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong> "{{tweet.text}}"</p>
+                <p><strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong> {{tweet.text}}</p>
                 <p>
                     <span class="glyphicon glyphicon-heart" style="color: red;"></span>
                     {{ tweet.favorite_count }} &nbsp; &nbsp;
