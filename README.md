@@ -51,7 +51,6 @@ Once you have you environment set up you can run tests manually with
 $ python manage.py test
 ```
 from the project directory in Vagrant.
->>>>>>> update README
 
 ## Setup
 

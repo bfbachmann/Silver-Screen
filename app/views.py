@@ -51,6 +51,12 @@ def index(request):
 
 ## =============================================================================
 
+## Takes the user to a loading page that waits for results from the server
+def get_results_page(request):
+    return render(request, 'results.html', {'query': request.POST['query']})
+
+## =============================================================================
+
 ## Handle User request for a certain movie and either progress to showing results
 ## from tweets or display informative error messages to the user
 def results(request):
@@ -59,12 +65,12 @@ def results(request):
     Otherwise redirects to index
     """
     ## If its a post request we need to process it
-    if request.method == 'POST':
+    if request.method == 'GET':
         ## Extract the search term
-        search_term = request.POST['query']
+        search_term = request.GET['query']
         movie = Movie()
         blank_form = QueryForm()
-        data_to_render = {'error_message': None, 'form': blank_form}
+        data_to_render = {'error_message': ''}
         sum_scores = 0
         num_nonzero = 1
 
@@ -87,13 +93,13 @@ def results(request):
             except ConnectionError:
                 print('ERROR: Cannot connect to OMDb')
                 data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
-                return render(request, 'index.html', data_to_render)
+                return render(request, 'error.html', data_to_render)
 
         # if no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
-            return render(request, 'index.html', data_to_render)
+            return render(request, 'error.html', data_to_render)
         else:
             movie.updateViews()
 
@@ -124,14 +130,14 @@ def results(request):
                 else:
                     print('ERROR: cannot connect to Twitter')
                     data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
-                return render(request, 'index.html', data_to_render)
+                return render(request, 'error.html', data_to_render)
 
 
             ## If we have no raw tweets to process raise error
             if not raw_tweets or len(raw_tweets) == 0:
                 print('ERROR: No tweets found')
                 data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
-                return render(request, 'index.html', data_to_render)
+                return render(request, 'error.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
@@ -154,11 +160,8 @@ def results(request):
                             'negative_data': negative_data, # data for the chart
                             'positive_data': positive_data, # data for the chart
                         }
-        return render(request, 'results.html', data_to_render)
+        return render(request, 'data.html', data_to_render)
 
-    ## If request is GET redirect to index
-    elif request.method == 'GET':
-        return HttpResponseRedirect('/index/')
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)

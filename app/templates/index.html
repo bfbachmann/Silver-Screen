@@ -18,11 +18,6 @@
             <h1 class="heading" style="font-size: 90px; margin-bottom: 0px;"> SilverScreen </h1>
             <h2 class="heading" style="margin-top: 0px; margin-bottom: 50px;"> Twitter Sentiment Analysis Tool </h2>
         </div>
-        {% if error_message is not None %}
-            <div class="alert alert-danger" role="alert">
-                {{ error_message }}
-            </div>
-        {% endif %}
         <div id="query-form" class="form-inline align-center center-form">
             <form action="/results/" method="post" class="form">
                 {% csrf_token %}
@@ -45,13 +40,10 @@
 		  {% endfor %}
 		{% endif %}
     </div>
-    <br><br>
-    <div class="loader center-on-page hidden"></div>
 
     <script type="text/javascript">
         $('#query-form').submit(function() {
             $('#submit').addClass('disabled')
-            $('.loader').removeClass('hidden')
         })
     </script>
 </body>
