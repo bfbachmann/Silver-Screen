@@ -132,7 +132,7 @@ def results(request):
                     print('ERROR: Rate limit exceeded')
                     data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
                 else:
-                    print('ERROR: cannot connect to Twitter')
+                    print('ERROR: cannot connect to Twitter: ' + error)
                     data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
                 return render(request, 'error.html', data_to_render)
 

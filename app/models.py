@@ -10,6 +10,7 @@ import omdb
 import datetime
 from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
+import concurrent.futures
 
 
 ## =============================================================================
@@ -50,23 +51,39 @@ class TwitterAPI(object):
             return None
 
         current_datetime = datetime.datetime.now()
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
+        futures = []
         tweets = []
 
         for diff in range(0, 6):
-            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
-            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+            futures.append(executor.submit(self._make_request, movie, current_datetime, diff))
 
-            ## Make search request
-            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+        for future in futures:
+            tweets += future.result()
+
+        return tweets
+
+
+    def _make_request(self, movie, current_datetime, diff):
+        from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
+        to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+
+        tweets = []
+
+        ## Make search request
+        ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+        try:
             response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+        except Exception as e:
+            print(e)
 
-            for tweet in response:
-                ## Tag movie with imdbID
-                tweet.imdbID = movie.imdbID
+        for tweet in response:
+            ## Tag movie with imdbID
+            tweet.imdbID = movie.imdbID
 
-                ## Only append Tweets in English
-                if tweet.lang == 'en' or tweet.user.lang == 'en':
-                    tweets.append(tweet)
+            ## Only append Tweets in English
+            if tweet.lang == 'en' or tweet.user.lang == 'en':
+                tweets.append(tweet)
 
         return tweets
 
