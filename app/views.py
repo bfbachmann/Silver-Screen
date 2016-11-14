@@ -220,6 +220,11 @@ def get_overall_sentiment_score(clean_tweets):
             num_nonzero += 1
             sum_scores += score
 
+            
+    ##Division by zero bug when some tweets failed to save, this is a workaround
+    if (num_nonzero == 0):
+        return 0
+        
     return round((sum_scores/num_nonzero+1)*5, 1)
 
 ## =============================================================================

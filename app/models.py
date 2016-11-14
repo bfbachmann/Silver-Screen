@@ -12,7 +12,6 @@ from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
 
 
-
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
@@ -36,10 +35,8 @@ class TwitterAPI(object):
                 keys = yaml.load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-                
-        self.title_checklist = title_detector()
-        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
+        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
     ## Request tweets for a given movie
     def search_movie(self, movie):
@@ -54,10 +51,11 @@ class TwitterAPI(object):
 
         current_datetime = datetime.datetime.now()
         tweets = []
-        add_search_param = ''
-        if (title_checklist.commonTitleChecker(movie.Title)):
-            add_search_param = 'movie'
         
+        add_search_param = ''
+
+        if (title_detector().commonTitleChecker(movie.Title)):
+            add_search_param = 'movie'
 
         for diff in range(0, 6):
             from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
@@ -65,8 +63,7 @@ class TwitterAPI(object):
 
             ## Make search request
             ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
-            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
-
+            response = self.api.GetSearch(term='"'+movie.Title +'"'+ add_search_param + ' -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
 
             for tweet in response:
                 ## Tag movie with imdbID
@@ -154,6 +151,7 @@ class OMDbAPI(object):
         pass
 
 
+    ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
         """
         :params title: a string holding the title of the movie
@@ -166,8 +164,6 @@ class OMDbAPI(object):
             matching_movies = omdb.search_movie(title)
         except:
             raise ConnectionError
-
-        self.recentSearches.update({title:matching_movies})
 
         ## For now, only return most popular movie
         highestIMDB = 0
@@ -255,6 +251,7 @@ class Tweet(models.Model):
         self.user_verified=tweet.user.verified
         self.tweetID = tweet.id
         self.imdbID = tweet.imdbID
+
         ## Remove words in movie title from tweet body so they don't influence sentiment score
         filtered_text = self.text.split()
         for word in movie_title.split():
@@ -276,7 +273,6 @@ class Tweet(models.Model):
 
     def __unicode__(self):
         return str(self.tweetID)
-
 
 
 class Sentiment(models.Model):
@@ -308,17 +304,18 @@ class Sentiment(models.Model):
                    setattr(self, key, value)
            self.save()
        return self
+
        
 class title_detector(object):
 
     def __init__(self):
     
         #Lists are sourced from:
-        with open("app/wordlists/uncommon_wordlist.txt", 'r',encoding="gb18030") as f:
+        with open("scripts/common_word_detector/uncommon_wordlist.txt", 'r',encoding="gb18030") as f:
             self.uncommon_wordlist = f.readlines()  #list containing top 2000-5000 words in english language
         self.uncommon_wordlist = [word.replace('\n','') for word in self.uncommon_wordlist]
         
-        with open("app/wordlists/common_wordlist.txt", 'r',encoding="gb18030") as f:
+        with open("scripts/common_word_detector/uncommon_wordlist.txt", 'r',encoding="gb18030") as f:
             self.common_wordlist = f.readlines()    #list containing top 2000 words in english language
         self.common_wordlist = [word.replace('\n','') for word in self.common_wordlist]
         
@@ -358,9 +355,4 @@ class title_detector(object):
             scoreTotal += self.__searchLists(word)
             
         return (scoreTotal < 11)
-    
-
-
-    
-    
     
