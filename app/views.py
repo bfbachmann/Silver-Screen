@@ -99,7 +99,7 @@ def results(request):
                 data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
                 return render(request, 'error.html', data_to_render)
 
-        # if no movie object was reaturned by OMDB or the database raise error
+        ## If no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
             data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
@@ -148,21 +148,24 @@ def results(request):
         ## Chart sentiment scores of tweets
         overall_score = get_overall_sentiment_score(clean_tweets)
         polarity = get_polarity(clean_tweets)
-        negative_data, positive_data  = create_chart_datasets(clean_tweets)
+        negative_data, positive_data, neutral_count = create_chart_datasets(clean_tweets)
         tweets_to_display = get_tweets_to_display(clean_tweets)
 
         ## Save our new sentiment data to the db
         save_new_sentiment(overall_score, movie)
 
         ## Prepare data to render on results page
-        data_to_render = {  'form': QueryForm(request.POST),
-                            'tweets': tweets_to_display,
-                            'movie': movie,
-                            'overall_score': overall_score,
-                            'polarity': polarity,
-                            'new_form': QueryForm(),
-                            'negative_data': negative_data, # data for the chart
-                            'positive_data': positive_data, # data for the chart
+        data_to_render = {  'form'          : QueryForm(request.POST),
+                            'tweets'        : tweets_to_display,
+                            'movie'         : movie,
+                            'overall_score' : overall_score,
+                            'polarity'      : polarity,
+                            'new_form'      : QueryForm(),
+                            'negative_data' : negative_data, # data for the chart
+                            'positive_data' : positive_data, # data for the chart
+                            'negative_count': len(negative_data), # data for the chart
+                            'positive_count': len(positive_data), # data for the chart
+                            'neutral_count' : neutral_count # data for the chart
                         }
         return render(request, 'data.html', data_to_render)
 
@@ -183,13 +186,14 @@ def hide_trending_movie(request):
 def create_chart_datasets(clean_tweets):
     negative_data = []
     positive_data = []
+    neutral_count = 0
 
     for tweet in clean_tweets:
         score = tweet.sentiment_score
 
         if score != 0:
             data = {
-                        'y': abs(score)*100,
+                        'y': round(abs(score)*100,1),
                         'x': str(tweet.created_at),
                         'r': 5
                     }
@@ -198,8 +202,10 @@ def create_chart_datasets(clean_tweets):
                 negative_data.append(data)
             else:
                 positive_data.append(data)
+        else:
+            neutral_count += 1
 
-    return negative_data, positive_data
+    return negative_data, positive_data, neutral_count
 
 ## =============================================================================
 

@@ -39,6 +39,7 @@
             </div>
         {% endif %}
         <div class="align-center">
+            <canvas id="pie-chart"></canvas>
             <canvas id="bubble-chart"></canvas>
         </div>
     </div>
@@ -79,10 +80,11 @@
         $('.navbar-loader').removeClass('hidden')
     })
 
-    var ctx = document.getElementById("bubble-chart");
-    var chart = new Chart(ctx,{
+    var chart1Ctx = $('#bubble-chart');
+    var chart = new Chart(chart1Ctx,{
         type: 'bubble',
-        data: { datasets: [ {
+        data: {
+            datasets: [ {
                        label: 'Negative Tweets',
                        data: [
                            {% for datum in negative_data %}
@@ -103,6 +105,11 @@
                    } ]
                },
         options: {
+                title: {
+                    display: true,
+                    fontSize: 26,
+                    text: 'Senitment Intensity Over Time'
+                },
                 scales: {
                     xAxes: [{
                         type: 'time',
@@ -118,5 +125,42 @@
                     }]
                 }
             }
+    });
+
+    var chart2Ctx = $('#pie-chart');
+    var pieChart = new Chart(chart2Ctx, {
+        type: 'pie',
+        data: {
+            labels: [
+                "Negative",
+                "Neutral",
+                "Positive",
+            ],
+            datasets: [{
+                data: [
+                    {{ negative_count }},
+                    {{ neutral_count }},
+                    {{ positive_count }},
+                ],
+                backgroundColor: [
+                    "#FF6384",
+                    "#0099FF",
+                    "#00DD99",
+                ],
+                hoverBackgroundColor: [
+                    "#FF6384",
+                    "#0099FF",
+                    "#00DD99",
+                ],
+                label: 'Senitment Scores'
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                fontSize: 26,
+                text: 'Proportion of Tweets by Senitment'
+            },
+        }
     });
 </script>

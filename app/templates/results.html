@@ -3,11 +3,13 @@
 
     {# Load stylesheets #}
     {% load static %}
+
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
-    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
 
     {# Load Chart.js #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
 
     {# Load the tag library #}
     {% load bootstrap3 %}
@@ -28,7 +30,9 @@
                         <div class="input-group-btn">
                             <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
                             <span class="input-group-btn">
-                                <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                                <button type="submit" id="submit" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
                             </span>
                         </div>
                         <div class="navbar-loader hidden"></div>
@@ -39,7 +43,7 @@
     </nav>
     <div class="center-on-page">
         <div class="loader"></div><br>
-        <h4 id="loading" class="align-center" style="color: grey;">Loading</h4>
+        <h4 id="loading" class="align-center heading" style="color: grey;">Loading</h4>
     </div>
     <div class="content"></div>
     <script>

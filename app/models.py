@@ -151,6 +151,7 @@ class Movie(models.Model):
         else:
             return None
 
+
     def updateViews(self):
         self.recentVisits = self.recentVisits+1
         self.save()
