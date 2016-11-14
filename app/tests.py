@@ -17,7 +17,7 @@ class TweetTest(TestCase):
         Tweet.objects.create(
                 text='Hello world',
                 tweetID=1234567,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
                 favorite_count=9,
                 lang='en',
                 location='Russia',
@@ -31,7 +31,7 @@ class TweetTest(TestCase):
 
 
     def test_fill_with_valid_status(self):
-        current_datetime=datetime.now()
+        current_datetime=datetime.utcnow()
         current_datetime_string=datetime.strftime(current_datetime, '%a %b %d %H:%M:%S +0000 %Y')
         sample_user=twitter.User(
                 id=718443,
@@ -82,7 +82,7 @@ class TweetTest(TestCase):
                 verified=True
             )
         sample_status=twitter.Status(
-                created_at=datetime.strftime(datetime.now(), '%a %b %d %H:%M:%S +0000 %Y'),
+                created_at=datetime.strftime(datetime.utcnow(), '%a %b %d %H:%M:%S +0000 %Y'),
                 id=1234567,
                 text='Hello world',
                 user=sample_user,

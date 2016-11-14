@@ -10,7 +10,6 @@ import omdb
 import datetime
 from django.db import models
 from sentimentanalysis.analyzer import TweetSentiment
-import concurrent.futures
 
 
 ## =============================================================================
@@ -50,40 +49,24 @@ class TwitterAPI(object):
         if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
-        current_datetime = datetime.datetime.now()
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
-        futures = []
+        current_datetime = datetime.datetime.utcnow()
         tweets = []
 
         for diff in range(0, 6):
-            futures.append(executor.submit(self._make_request, movie, current_datetime, diff))
+            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
+            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
-        for future in futures:
-            tweets += future.result()
-
-        return tweets
-
-
-    def _make_request(self, movie, current_datetime, diff):
-        from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
-        to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
-
-        tweets = []
-
-        ## Make search request
-        ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
-        try:
+            ## Make search request
+            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
             response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
-        except Exception as e:
-            print(e)
 
-        for tweet in response:
-            ## Tag movie with imdbID
-            tweet.imdbID = movie.imdbID
+            for tweet in response:
+                ## Tag movie with imdbID
+                tweet.imdbID = movie.imdbID
 
-            ## Only append Tweets in English
-            if tweet.lang == 'en' or tweet.user.lang == 'en':
-                tweets.append(tweet)
+                ## Only append Tweets in English
+                if tweet.lang == 'en' or tweet.user.lang == 'en':
+                    tweets.append(tweet)
 
         return tweets
 
@@ -150,7 +133,6 @@ class Movie(models.Model):
             return self
         else:
             return None
-
 
     def updateViews(self):
         self.recentVisits = self.recentVisits+1

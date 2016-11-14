@@ -22,18 +22,34 @@
                 {% endif %}
             <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
             <div class="col-sm-3" style="margin-left: 0px !important;">
+                {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
                 <p>Genre: </p>
+                {% endif %}
+                {% if movie.BoxOffice is not None %}
                 <p>BoxOffice: </p>
+                {% endif %}
+                {% if movie.Director %}
                 <p>Director: </p>
+                {% endif %}
                 <p>Year: </p>
+                {% if movie.tomatoConsensus and movie.tomatoConsensus != "N/A" %}
                 <p>Tomato Consensus: </p>
+                {% endif %}
             </div>
             <div class="col-sm-9">
+                {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
                 <p>{{movie.Genres}}</p>
+                {% endif %}
+                {% if movie.BoxOffice is not None %}
                 <p>{{movie.BoxOffice}}</p>
+                {% endif %}
+                {% if movie.Director %}
                 <p>{{movie.Director}}</p>
+                {% endif %}
                 <p>{{movie.Year}}</p>
+                {% if movie.tomatoConsensus and movie.tomatoConsensus != "N/A" %}
                 <em>"{{movie.tomatoConsensus}}"</em>
+                {% endif %}
             </div>
         {% if movie.Poster %}
             </div>

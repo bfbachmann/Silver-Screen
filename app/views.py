@@ -145,6 +145,11 @@ def results(request):
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
+        ## If there aren't enough tweets to display tell the user
+        if len(clean_tweets) < 5:
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about that movie for analysis.'
+            return render(request, 'error.html', data_to_render)
+
         ## Chart sentiment scores of tweets
         overall_score = get_overall_sentiment_score(clean_tweets)
         polarity = get_polarity(clean_tweets)
@@ -245,7 +250,9 @@ def get_overall_sentiment_score(clean_tweets):
             num_nonzero += 1
             sum_scores += score
 
-    return round((sum_scores/num_nonzero+1)*5, 1)
+    if num_nonzero == 0:
+        return 5.0
+    return round((sum_scores/num_nonzero)*5, 1)
 
 ## =============================================================================
 
