@@ -3,11 +3,13 @@
 
     {# Load stylesheets #}
     {% load static %}
+
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
-    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
 
     {# Load Chart.js #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
 
     {# Load the tag library #}
     {% load bootstrap3 %}
@@ -21,143 +23,42 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/index">
-                    SilverScreen
-                </a>
-                <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
+                <a class="navbar-brand" href="/index">SilverScreen</a>
+                <form class="form navbar-form navbar-left" id="query-form" action="/results/" method="post">
                     {% csrf_token %}
                     <div class="input-group">
                         <div class="input-group-btn">
                             <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
                             <span class="input-group-btn">
-                                <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                                <button type="submit" id="submit" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
                             </span>
                         </div>
-                        <div class="navbar-loader hidden" style="margin: 5px;"></div>
+                        <div class="navbar-loader hidden"></div>
                     </div>
                 </form>
             </div>
         </div>
     </nav>
-
-    <div class="align-left" style="max-width: 80%; margin: auto;">
-        <h1> {{ movie.Title }}</h1>
-        <hr>
-        <div class="well full-width clearfix">
-            {% if movie.Poster %}
-                <div class="col-sm-4 align-center">
-                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
-                    <h3 class="info-header align-center">
-                        <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
-                        <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
-                    </h3>
-                </div>
-                <div class="col-sm-8">
-            {% endif %}
-                <h3 class="info-header"> Sentiment Score:
-                    {% if overall_score < 5 %}
-                        <strong style="color: red;">{{ overall_score }}</strong> </h3>
-                    {% else %}
-                        <strong style="color: green;">{{ overall_score }}</strong> </h3>
-                    {% endif %}
-                <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
-                <div class="col-sm-3" style="margin-left: 0px !important;">
-                    <p>Genre: </p>
-                    <p>BoxOffice: </p>
-                    <p>Director: </p>
-                    <p>Year: </p>
-                    <p>Tomato Consensus: </p>
-                </div>
-                <div class="col-sm-9">
-                    <p>{{movie.Genres}}</p>
-                    <p>{{movie.BoxOffice}}</p>
-                    <p>{{movie.Director}}</p>
-                    <p>{{movie.Year}}</p>
-                    <em>"{{movie.tomatoConsensus}}"</em>
-                </div>
-            {% if movie.Poster %}
-                </div>
-            {% endif %}
-            <div class="align-center">
-                <canvas id="bubble-chart"></canvas>
-            </div>
-        </div>
+    <div class="center-on-page">
+        <div class="loader"></div><br>
+        <h4 id="loading" class="align-center heading" style="color: grey;">Loading</h4>
     </div>
-
-    <div class="align-left" style="max-width: 800px; margin: auto;">
-        {% for tweet in tweets %}
-            <hr>
-            <div class="container-fluid">
-                <div class="col-sm-10">
-                    <small> {{ tweet.created_at }} </small>
-                    <p><strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong> "{{tweet.text}}"</p>
-                    <p>
-                        <span class="glyphicon glyphicon-heart" style="color: red;"></span>
-                        {{ tweet.favorite_count }} &nbsp; &nbsp;
-                        <span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
-                        {{ tweet.retweet_count }} &nbsp; &nbsp;
-                        {% if tweet.location and tweet.location != "" %}
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                        {{ tweet.location }}
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="col-sm-2">
-                    {% if tweet.sentiment_score < 5 %}
-                        <h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
-                    {% else %}
-                        <h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
+    <div class="content"></div>
     <script>
-        $('#query-form').submit(function() {
-            $('#submit').addClass('disabled')
-            $('.navbar-loader').removeClass('hidden')
-        })
-
-        var ctx = document.getElementById("bubble-chart");
-        var chart = new Chart(ctx,{
-            type: 'bubble',
-            data: { datasets: [ {
-                           label: 'Negative Tweets',
-                           data: [
-                               {% for datum in negative_data %}
-                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
-                               {% endfor %}
-                           ],
-                           backgroundColor:"#FF6384",
-                           hoverBackgroundColor: "#FF6384",
-                       }, {
-                           label: 'Positive Tweets',
-                           data: [
-                               {% for datum in positive_data %}
-                                    { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
-                               {% endfor %}
-                           ],
-                           backgroundColor: "#00DD99",
-                           hoverBackgroundColor: "#00DD99"
-                       } ]
-                   },
-            options: {
-                    scales: {
-                        xAxes: [{
-                            type: 'time',
-                            time: {
-                                unit: 'day'
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                max: 100,
-                                min: 0,
-                            }
-                        }]
-                    }
+        $(function() {
+            // Initial data fetching after user submitted form on index.html
+            $.ajax({
+                url: "{% url 'get_data' %}",
+                type: 'get',
+                data: {query: "{{query}}"},
+                success : function(data) {
+                    $('.loader').addClass('hidden')
+                    $('#loading').addClass('hidden')
+                    $('.content').replaceWith(data)
                 }
-        });
+            })
+        })
     </script>
 </body>

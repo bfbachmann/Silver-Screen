@@ -1,0 +1,182 @@
+{% load static %}
+
+<div class="align-left" style="max-width: 80%; margin: auto;">
+    <h1> {{ movie.Title }}</h1>
+    <hr>
+    <div class="well full-width clearfix">
+        {% if movie.Poster %}
+            <div class="col-sm-4 align-center">
+                <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                <h3 class="info-header align-center">
+                    <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
+                    <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
+                </h3>
+            </div>
+            <div class="col-sm-8">
+        {% endif %}
+            <h3 class="info-header"> Sentiment Score:
+                {% if overall_score < 5 %}
+                    <strong style="color: red;">{{ overall_score }}</strong> </h3>
+                {% else %}
+                    <strong style="color: green;">{{ overall_score }}</strong> </h3>
+                {% endif %}
+            <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
+            <div class="col-sm-3" style="margin-left: 0px !important;">
+                {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
+                <p>Genre: </p>
+                {% endif %}
+                {% if movie.BoxOffice is not None %}
+                <p>BoxOffice: </p>
+                {% endif %}
+                {% if movie.Director %}
+                <p>Director: </p>
+                {% endif %}
+                <p>Year: </p>
+                {% if movie.tomatoConsensus and movie.tomatoConsensus != "N/A" %}
+                <p>Tomato Consensus: </p>
+                {% endif %}
+            </div>
+            <div class="col-sm-9">
+                {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
+                <p>{{movie.Genres}}</p>
+                {% endif %}
+                {% if movie.BoxOffice is not None %}
+                <p>{{movie.BoxOffice}}</p>
+                {% endif %}
+                {% if movie.Director %}
+                <p>{{movie.Director}}</p>
+                {% endif %}
+                <p>{{movie.Year}}</p>
+                {% if movie.tomatoConsensus and movie.tomatoConsensus != "N/A" %}
+                <em>"{{movie.tomatoConsensus}}"</em>
+                {% endif %}
+            </div>
+        {% if movie.Poster %}
+            </div>
+        {% endif %}
+        <div class="align-center">
+            <canvas id="pie-chart"></canvas>
+            <canvas id="bubble-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="align-left" style="max-width: 800px; margin: auto;">
+    {% for tweet in tweets %}
+        <hr>
+        <div class="container-fluid">
+            <div class="col-sm-10">
+                <small> {{ tweet.created_at }} </small>
+                <p><strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong> {{tweet.text}}</p>
+                <p>
+                    <span class="glyphicon glyphicon-heart" style="color: red;"></span>
+                    {{ tweet.favorite_count }} &nbsp; &nbsp;
+                    <span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
+                    {{ tweet.retweet_count }} &nbsp; &nbsp;
+                    {% if tweet.location and tweet.location != "" %}
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                    {{ tweet.location }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-sm-2">
+                {% if tweet.sentiment_score < 5 %}
+                    <h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
+                {% else %}
+                    <h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    $('#query-form').submit(function() {
+        $('#submit').addClass('disabled')
+        $('.navbar-loader').removeClass('hidden')
+    })
+
+    var chart1Ctx = $('#bubble-chart');
+    var chart = new Chart(chart1Ctx,{
+        type: 'bubble',
+        data: {
+            datasets: [ {
+                       label: 'Negative Tweets',
+                       data: [
+                           {% for datum in negative_data %}
+                                { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
+                           {% endfor %}
+                       ],
+                       backgroundColor:"#FF6384",
+                       hoverBackgroundColor: "#FF6384",
+                   }, {
+                       label: 'Positive Tweets',
+                       data: [
+                           {% for datum in positive_data %}
+                                { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
+                           {% endfor %}
+                       ],
+                       backgroundColor: "#00DD99",
+                       hoverBackgroundColor: "#00DD99"
+                   } ]
+               },
+        options: {
+                title: {
+                    display: true,
+                    fontSize: 26,
+                    text: 'Senitment Intensity Over Time'
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            max: 100,
+                            min: 0,
+                        }
+                    }]
+                }
+            }
+    });
+
+    var chart2Ctx = $('#pie-chart');
+    var pieChart = new Chart(chart2Ctx, {
+        type: 'pie',
+        data: {
+            labels: [
+                "Negative",
+                "Neutral",
+                "Positive",
+            ],
+            datasets: [{
+                data: [
+                    {{ negative_count }},
+                    {{ neutral_count }},
+                    {{ positive_count }},
+                ],
+                backgroundColor: [
+                    "#FF6384",
+                    "#0099FF",
+                    "#00DD99",
+                ],
+                hoverBackgroundColor: [
+                    "#FF6384",
+                    "#0099FF",
+                    "#00DD99",
+                ],
+                label: 'Senitment Scores'
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                fontSize: 26,
+                text: 'Proportion of Tweets by Senitment'
+            },
+        }
+    });
+</script>
