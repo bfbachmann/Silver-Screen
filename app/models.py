@@ -9,6 +9,7 @@ import yaml
 import omdb
 import datetime
 from django.db import models
+from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
 import concurrent.futures
 
@@ -50,7 +51,7 @@ class TwitterAPI(object):
         if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
-        current_datetime = datetime.datetime.utcnow()
+        current_datetime = timezone.now()
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
         futures = []
         tweets = []

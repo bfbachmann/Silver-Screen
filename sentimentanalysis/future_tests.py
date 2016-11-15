@@ -1,8 +1,10 @@
-from unittest import TestCase
-from sentimentanalysis.analyzer import TweetSentiment
+"""
 
-class TestTweetSentiment(TestCase):
-    """
+from app.sentimentanalysis import TweetSentiment
+from django.test import TestCase
+
+class TestTweetSentimentIncludedScore(TestCase):
+    \"""
     This tests the included_score method (yet to be implemented), which will decipher
     an inclued score if the twitter user has rated a movie within the tweet.
     1. Standard tweet whose score agrees with the sentiment
@@ -13,7 +15,7 @@ class TestTweetSentiment(TestCase):
     6. Natural language processing of an input ("5 stars" = 5/5 = 1.00)
     7. Similarly, if people use "out of" instead of "/"
     8. If people waver, tests whether we take an average of two scores.
-    """
+    \"""
     def test_included_score(self):
         test1 = "Loved this movie. 8/10"
         test2 = "Great movie. 2/10"
@@ -33,8 +35,4 @@ class TestTweetSentiment(TestCase):
         self.assertEqual(TweetSentiment.included_score(test7), 0.50)
         self.assertEqual(TweetSentiment.included_score(test8), 0.35)
 
-
-
-
-
-
+"""

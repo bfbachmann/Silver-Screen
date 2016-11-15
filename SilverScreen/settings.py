@@ -52,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'SilverScreen.urls'
@@ -90,11 +92,13 @@ DATABASES = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'app.backends.GaeMemcachedCache',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
-SESSION_COOKIE_HTTPONLY = True
+CACHE_MIDDLEWARE_SECONDS = 500
+
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
