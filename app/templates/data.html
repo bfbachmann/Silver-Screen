@@ -22,10 +22,10 @@
                 {% endif %}
             <h3 class="info-header">Polarity: {{polarity}}%</h3><br>
             <div class="col-sm-3" style="margin-left: 0px !important;">
-                {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
+                {% if movie.Genres and movie.Genres != "N/A" %}
                 <p>Genre: </p>
                 {% endif %}
-                {% if movie.BoxOffice is not None %}
+                {% if movie.BoxOffice and movie.BoxOffice != "N/A" %}
                 <p>BoxOffice: </p>
                 {% endif %}
                 {% if movie.Director %}
@@ -40,10 +40,10 @@
                 {% if movie.Genres != None and movie.Genres is not None and movie.Genres != "N/A" %}
                 <p>{{movie.Genres}}</p>
                 {% endif %}
-                {% if movie.BoxOffice is not None %}
+                {% if movie.BoxOffice is not None  and movie.BoxOffice != "N/A" %}
                 <p>{{movie.BoxOffice}}</p>
                 {% endif %}
-                {% if movie.Director %}
+                {% if movie.Director and movie.Director != "N/A" %}
                 <p>{{movie.Director}}</p>
                 {% endif %}
                 <p>{{movie.Year}}</p>

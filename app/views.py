@@ -78,7 +78,11 @@ def results(request):
         sum_scores = 0
         num_nonzero = 1
 
-        if not search_term:
+        print('Search term: ' + search_term)
+        
+        ## If no search term was given, pick a random one
+        if not search_term or search_term == '':
+            print('No search term given, picking random movie')
             imdb = Imdb()
             top250 = imdb.top_250()
             search_term = random.choice(top250).get('title')
