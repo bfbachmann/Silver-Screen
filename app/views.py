@@ -78,7 +78,11 @@ def results(request):
         sum_scores = 0
         num_nonzero = 1
 
-        if not search_term:
+        print('Search term: ' + search_term)
+
+        ## If no search term was given, pick a random one
+        if not search_term or search_term == '':
+            print('No search term given, picking random movie')
             imdb = Imdb()
             top250 = imdb.top_250()
             search_term = random.choice(top250).get('title')
@@ -132,7 +136,7 @@ def results(request):
                     print('ERROR: Rate limit exceeded')
                     data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
                 else:
-                    print('ERROR: cannot connect to Twitter: ' + error)
+                    print('ERROR: cannot connect to Twitter: ' + str(error))
                     data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
                 return render(request, 'error.html', data_to_render)
 
@@ -252,7 +256,7 @@ def get_overall_sentiment_score(clean_tweets):
 
     if num_nonzero == 0:
         return 5.0
-    return round((sum_scores/num_nonzero)*5, 1)
+    return round((sum_scores/num_nonzero+1)*5, 1)
 
 ## =============================================================================
 

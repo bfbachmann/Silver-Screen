@@ -9,6 +9,7 @@ import yaml
 import omdb
 import datetime
 from django.db import models
+from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
 
 
@@ -49,7 +50,9 @@ class TwitterAPI(object):
         if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
-        current_datetime = datetime.datetime.utcnow()
+        current_datetime = timezone.now()
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
+        futures = []
         tweets = []
 
         for diff in range(0, 6):
@@ -128,6 +131,12 @@ class Movie(models.Model):
                             value = float(value)
                         except:
                             value = None # TODO: we'll have to handle this upstream
+
+                    if isinstance(value, str):
+                        if value == "N/A":
+                            value = None
+                        else:
+                            value = value.strip()
                     setattr(self, key, value)
             self.save()
             return self
@@ -253,8 +262,8 @@ class Tweet(models.Model):
         self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
-        filtered_text = self.text.split()
-        for word in movie_title.split():
+        filtered_text = self.text.lower().split()
+        for word in movie_title.lower().split():
             if word in filtered_text:
                 filtered_text.remove(word)
 

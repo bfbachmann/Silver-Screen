@@ -48,7 +48,7 @@ here is a full list of the words:
 http://en.wiktionary.org/wiki/Category:English_degree_adverbs
 '''
 
-DEGREE_LIST = \
+DEGREE_DICTIONARY = \
     {"100 percent": SCORE_INCREASE, "a good deal": SCORE_INCREASE, "a great deal": SCORE_INCREASE,
      "a lot": SCORE_INCREASE,
      "aboundingly": SCORE_INCREASE, "absolutely": SCORE_INCREASE, "absurdly": SCORE_INCREASE,
@@ -92,6 +92,8 @@ ALGORITHM IDEAS TO BE IMPLEMENTED
 4.s
 5. if but is preceded by a clause, it's polarity should either be ignored or inverted
 
+idioms
+"killed it"
 '''
 
 '''
@@ -111,7 +113,7 @@ class TweetSentiment(object):
     Gives an intensity score to the inputted tweet.
     """
 
-    def __init__(self, text, lexicon_file="sentimentanalysis/lexicon_done.txt"):
+    def __init__(self, text, lexicon_file="sentimentanalysis/lexicon_done.txt"): # for some people, writing "sentimentanalysis/lexicon_done.txt"
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.convert_to_dictionary()
         if not isinstance(text, str):
@@ -148,7 +150,7 @@ class TweetSentiment(object):
             valence = 0
             i = words_emojis.index(item)
             if (i < len(words_emojis) - 1 and item.lower() == "kind" and
-                        words_emojis[i + 1].lower() == "of") or item.lower() in DEGREE_LIST:
+                        words_emojis[i + 1].lower() == "of") or item.lower() in DEGREE_DICTIONARY:
                 sentiments.append(valence)
                 continue
 
@@ -346,8 +348,8 @@ class TweetSentiment(object):
         modifier = 0.0
         word_lower = word.lower()
 
-        if word_lower in DEGREE_LIST:
-            modifier = DEGREE_LIST[word_lower]
+        if word_lower in DEGREE_DICTIONARY:
+            modifier = DEGREE_DICTIONARY[word_lower]
             if valence < 0:
                 modifier *= -1
             # checks if word is capitalized (while others aren't)
@@ -456,8 +458,8 @@ class TweetSentiment(object):
         :param alpha: predetermined alpha value that approximates the maximum expected value
         :return: normalized score between -1 and 1
         """
-
-        return score / math.sqrt((score * score) + alpha)
+        normalize_score = score / math.sqrt((score * score) + alpha)
+        return normalize_score
 
     def _word_punctuation_dictionary(self):
         """
@@ -496,7 +498,22 @@ class TweetSentiment(object):
 
         return word_list
 
+    def included_score(self):
+        """
+        TODO implement a score checker if the tweet contains a score in the writing i.e. "loved it, 9/10"
+        :return:
+        """
+        return
+
 
 if __name__ == '__main__':
     demo("I hate Michael Bay films, but this one rules love it best sublime superb")
+    demo("I hate Michael Bay films")
     demo("I htae Michael bay films, and this one scks")
+    demo("I never loved it")
+    demo("Never so much hated it")
+    demo("it was never this bad")
+    demo("So this is never a bad movie")
+    demo("I've never loved that movie")
+    demo("I've never loved this movie so much")
+    demo("Never have we so loved a movie")
