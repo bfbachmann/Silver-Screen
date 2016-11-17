@@ -3,8 +3,12 @@
 
     {# Load stylesheets #}
     {% load static %}
+
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+
     <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+
     {# Load the tag library #}
     {% load bootstrap3 %}
     {# Load CSS and JavaScript #}
@@ -17,45 +21,47 @@
       <a href="about.html" class="btn btn-default">About</a>
     </div>
 
-    <div class="container-fluid" style="max-width: 510px; margin-top: 200px;">
+    {% if messages %}
+        {% for message in messages %}
+            <div{% if message.tags %} class="trending text-center alert alert-{{ message.tags }}"{% endif %}>
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <span class="glyphicon glyphicon-fire"></span>&nbsp; {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container-fluid" style="max-width: 550px; margin-top: 170px;">
         <div class="page-heading align-left">
             <h1 class="heading" style="font-size: 90px; margin-bottom: 0px;"> SilverScreen </h1>
             <h2 class="heading" style="margin-top: 0px; margin-bottom: 50px;"> Twitter Sentiment Analysis Tool </h2>
         </div>
-        {% if error_message is not None %}
-            <div class="alert alert-danger" role="alert">
-                {{ error_message }}
-            </div>
-        {% endif %}
-        <div id="query-form" class="form-inline align-center center-form">
+        <div id="query-form" class="form-inline align-left center-form">
             <form action="/results/" method="post" class="form">
                 {% csrf_token %}
                 <div class="input-group">
                     <div class="input-group-btn">
                         <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
                         <span class="input-group-btn">
-                            <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" id="submit" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
                         </span>
                     </div>
                 </div>
             </form>
         </div>
-		{% if messages %}
-		 {% for message in messages %}
-			<div{% if message.tags %} style = "width:80%;margin-left: auto; margin-right: auto;" class="text-center alert alert-{{ message.tags }}"{% endif %}>
-			  <a class="close" data-dismiss="alert" href="#">&times;</a>
-			  <span class="glyphicon glyphicon-fire"></span> {{ message }}
-			</div>
-		  {% endfor %}
-		{% endif %}
     </div>
-    <br><br>
-    <div class="loader center-on-page hidden"></div>
 
     <script type="text/javascript">
         $('#query-form').submit(function() {
             $('#submit').addClass('disabled')
-            $('.loader').removeClass('hidden')
+        })
+
+        $('.close').on('click', function() {
+            $.ajax({
+                url: "{% url 'hide_trending_movie' %}",
+                type: 'get',
+                success : function(data) {}
+            })
         })
     </script>
 </body>

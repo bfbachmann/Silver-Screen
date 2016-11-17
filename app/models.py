@@ -9,7 +9,9 @@ import yaml
 import omdb
 import datetime
 from django.db import models
+from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
+import concurrent.futures
 
 ## =============================================================================
 ##  QueryForm
@@ -44,27 +46,43 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if type(movie) != Movie or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
+        if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
             return None
 
-        current_datetime = datetime.datetime.now()
+        current_datetime = timezone.now()
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
+        futures = []
         tweets = []
 
         for diff in range(0, 6):
-            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
-            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+            futures.append(executor.submit(self._make_request, movie, current_datetime, diff))
 
-            ## Make search request
-            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+        for future in futures:
+            tweets += future.result()
+
+        return tweets
+
+
+    def _make_request(self, movie, current_datetime, diff):
+        from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
+        to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+
+        tweets = []
+
+        ## Make search request
+        ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+        try:
             response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+        except Exception as e:
+            print(e)
 
-            for tweet in response:
-                ## Tag movie with imdbID
-                tweet.imdbID = movie.imdbID
+        for tweet in response:
+            ## Tag movie with imdbID
+            tweet.imdbID = movie.imdbID
 
-                ## Only append Tweets in English
-                if tweet.lang == 'en' or tweet.user.lang == 'en':
-                    tweets.append(tweet)
+            ## Only append Tweets in English
+            if tweet.lang == 'en' or tweet.user.lang == 'en':
+                tweets.append(tweet)
 
         return tweets
 
@@ -75,14 +93,14 @@ class TwitterAPI(object):
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    YomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
     Genres = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
     tomatoRating = models.CharField(max_length=32, null=True, blank=True)
-    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatoUserRating = models.CharField(max_length=32, null=True, blank=True)
     plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
@@ -92,7 +110,7 @@ class Movie(models.Model):
     param_defaults = {
         'Title': None,
         'Year': None,
-        'YomatoURL': None,
+        'TomatoURL': None,
         'Actors': None,
         'BoxOffice': None,
         'Genres': None,
@@ -100,7 +118,7 @@ class Movie(models.Model):
         'imdbRating': None,
         'tomatoRating': None,
         'tomatoUserRating': None,
-        'Plot': None,
+        'plot': None,
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
@@ -115,7 +133,8 @@ class Movie(models.Model):
     def fillWithJsonObject(self, jsonObject):
         """
         :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
-        :return self: this movie, udpated with the relevant data from the given jsonObject
+        :return self:   this movie, udpated with the relevant data from the given jsonObject if it is valid
+                        otherwise returns None
         """
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
@@ -125,9 +144,18 @@ class Movie(models.Model):
                             value = float(value)
                         except:
                             value = None # TODO: we'll have to handle this upstream
+
+                    if isinstance(value, str):
+                        if value == "N/A":
+                            value = None
+                        else:
+                            value = value.strip()
                     setattr(self, key, value)
             self.save()
-        return self
+            return self
+        else:
+            return None
+
 
     def updateViews(self):
         self.recentVisits = self.recentVisits+1
@@ -150,7 +178,6 @@ class OMDbAPI(object):
         :return movie: if at least one movie with a similar title is found, this is a Movie object
                       created from the most relevant result returned by OMDb, otherwise it is empty list
         """
-
         ## Search for all movies with similar titles
         try:
             matching_movies = omdb.search_movie(title)
@@ -172,6 +199,8 @@ class OMDbAPI(object):
             if not movieObj:
                 response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
                 movieObj = Movie().fillWithJsonObject(response)
+                if not movieObj:
+                    return None
 
             return movieObj
         else:
@@ -219,14 +248,15 @@ class Tweet(models.Model):
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
         ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
-        if tweet is None or not isinstance(tweet, twitter.Status) or len(Tweet.objects.filter(tweetID=self.tweetID)):
-            return self
+        if tweet is None or not isinstance(tweet, twitter.Status) or Tweet.objects.filter(tweetID=tweet.id):
+            return None
 
         ## Assume the Tweet is in the users location if we have no info
-        if type(tweet.location) is not str:
+        if not isinstance(tweet.location, str):
             tweet.location = tweet.user.location
+
         ## Assume the Tweet is in the users langauge if we have no info
-        if tweet.lang is None and tweet.user.lang is not None:
+        if tweet.lang is None and tweet.user is not None and tweet.user.lang is not None:
             tweet.lang = tweet.user.lang
 
         ## Values from API request
@@ -239,12 +269,12 @@ class Tweet(models.Model):
         self.user_name=tweet.user.name
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
-        self.tweetID = tweet.id
-        self.imdbID = tweet.imdbID
+        self.tweetID=tweet.id
+        self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
-        filtered_text = self.text.split()
-        for word in movie_title.split():
+        filtered_text = self.text.lower().split()
+        for word in movie_title.lower().split():
             if word in filtered_text:
                 filtered_text.remove(word)
 
