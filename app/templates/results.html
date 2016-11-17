@@ -15,6 +15,14 @@
     {# Load CSS and JavaScript #}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+	
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip({
+			placement : 'bottom'
+		});
+	});
+	</script>
 </head>
 
 <body>
@@ -40,8 +48,17 @@
         </div>
     </nav>
 
+
+	
     <div class="align-left" style="max-width: 80%; margin: auto;">
-        <h1> {{ movie.Title }}</h1>
+        <h1> {{ movie.Title }}
+		{% if messages %}
+			{% for message in messages %}
+				<span class="glyphicon glyphicon-exclamation-sign" data-toggle="tooltip" data-original-title="{{message}}" style="color:silver; font-size: 0.8em;"></span>	
+			{% endfor %}
+		{% endif %}
+		</h1> 
+		
         <hr>
         <div class="well full-width clearfix">
             {% if movie.Poster %}

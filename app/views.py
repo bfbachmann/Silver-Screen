@@ -116,7 +116,11 @@ def results(request):
             raw_tweets = []
 
             try:
-                raw_tweets = twitter.search_movie(movie)
+                raw_tweets = twitter.search_movie(movie.Title, movie.imdbID)
+                if (not raw_tweets or len(raw_tweets)<20) and movie.SimplifiedTitle:
+                    raw_tweets = twitter.search_movie(movie.SimplifiedTitle, movie.imdbID)
+                    if len(raw_tweets)>20:
+                        movie.updateTitleStatus(True)
             except Exception as error:
                 if type(error) is ValueError:
                     print('ERROR: Rate limit exceeded')
@@ -134,6 +138,10 @@ def results(request):
                 return render(request, 'index.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
+
+        if movie.useSimplified == True:
+            messages.add_message(request, messages.INFO,
+                                 "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.SimplifiedTitle + " instead.")
 
         ## Chart sentiment scores of tweets
         overall_score = get_overall_sentiment_score(clean_tweets)
