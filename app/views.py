@@ -3,7 +3,7 @@
 ## =============================================================================
 ## - Manage web requests and responses
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import *
 import datetime
@@ -161,6 +161,12 @@ def results(request):
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+## =============================================================================
+
+def about(request):
+    #return HttpResponse("About Page")
+    return render(request, 'about.html')
 
 ## =============================================================================
 

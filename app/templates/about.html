@@ -1,0 +1,54 @@
+<head>
+    <title> SilverScreen </title>
+
+    {# Load stylesheets #}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+
+    {# Load Chart.js #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+
+    {# Load the tag library #}
+    {% load bootstrap3 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+      <div class="container-fluid">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="/index">
+                  SilverScreen
+              </a>
+              <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
+                  {% csrf_token %}
+                  <div class="input-group">
+                      <div class="input-group-btn">
+                          <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                          <span class="input-group-btn">
+                              <button type="submit" id="submit" class="btn btn-primary">Search</button>
+                          </span>
+                      </div>
+                      <div class="navbar-loader hidden" style="margin: 5px;"></div>
+                  </div>
+              </form>
+
+              <a href="about.html" class="btn btn-default">About</a>
+          </div>
+      </div>
+  </nav>
+
+  <div class="container-fluid" style="max-width: 510px; margin-top: 200px;">
+
+    <div class="algin-center">
+      <h2> What is Silver Screen? </h2>
+    </div>
+
+  </div>
+
+
+</body>
