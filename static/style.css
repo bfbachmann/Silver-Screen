@@ -81,6 +81,19 @@ img.rating-icon {
     border-radius: 3px;
 }
 
+p.about {
+  width: 80%;
+  text-align: justify;
+  text-justify: inter-word;
+  z-index: 999;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
