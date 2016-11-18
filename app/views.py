@@ -3,8 +3,9 @@
 ## =============================================================================
 ## - Manage web requests and responses
 
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
+from django.http import HttpResponse, HttpResponsePermanentRedirect
+from django.core.urlresolvers import reverse
 from .models import *
 import datetime
 from django.utils import timezone
@@ -79,7 +80,7 @@ def results(request):
         num_nonzero = 1
 
         print('Search term: ' + search_term)
-        
+
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
             print('No search term given, picking random movie')
@@ -117,7 +118,6 @@ def results(request):
         # if we don't have any sentiment about that movie just continue
         except:
             print("No sentiment found in database for this movie")
-
 
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
@@ -181,6 +181,11 @@ def results(request):
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+## =============================================================================
+
+def about(request):
+    return render(request, 'about.html')
 
 ## =============================================================================
 

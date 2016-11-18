@@ -100,6 +100,10 @@ idioms
 ALGORITHM METHODS
 '''
 
+## =============================================================================
+##  demo
+## =============================================================================
+## - Demo for testing the tweet sentiment manually
 
 def demo(text):
     analyzer = TweetSentiment(text)
@@ -107,6 +111,9 @@ def demo(text):
     print(scores['sentiment'])
     print()
 
+## =============================================================================
+##  TweetSentiment
+## =============================================================================
 
 class TweetSentiment(object):
     """
