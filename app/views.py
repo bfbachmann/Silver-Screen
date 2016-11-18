@@ -4,7 +4,8 @@
 ## - Manage web requests and responses
 
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponsePermanentRedirect
+from django.core.urlresolvers import reverse
 from .models import *
 import datetime
 from django.utils import timezone
@@ -184,7 +185,6 @@ def results(request):
 ## =============================================================================
 
 def about(request):
-    #return HttpResponse("About Page")
     return render(request, 'about.html')
 
 ## =============================================================================
