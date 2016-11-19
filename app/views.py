@@ -69,8 +69,6 @@ def results(request):
     If the method is a POST processes the query the user submitted and returns the results
     Otherwise redirects to index
     """
-    print('Response function called!!')
-
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term

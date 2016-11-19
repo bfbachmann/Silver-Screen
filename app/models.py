@@ -268,7 +268,7 @@ class Tweet(models.Model):
 
         ## Values from API request
         self.text=tweet.text
-        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location

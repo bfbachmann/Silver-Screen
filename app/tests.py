@@ -5,7 +5,7 @@
 from django.test import TestCase
 from app.models import *
 from datetime import datetime
-from datetime import timezone
+from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
 import twitter
 import omdb
@@ -18,7 +18,7 @@ class TweetTest(TestCase):
         Tweet.objects.create(
                 text='Hello world',
                 tweetID=1234567,
-                created_at=datetime.now(timezone.utc),
+                created_at=timezone.make_aware(datetime.now()),
                 favorite_count=9,
                 lang='en',
                 location='Russia',
@@ -32,7 +32,7 @@ class TweetTest(TestCase):
 
 
     def test_fill_with_valid_status(self):
-        current_datetime=datetime.now(timezone.utc)
+        current_datetime=timezone.make_aware(datetime.now())
         current_datetime_string=datetime.strftime(current_datetime, '%a %b %d %H:%M:%S +0000 %Y')
         sample_user=twitter.User(
                 id=718443,
@@ -83,7 +83,7 @@ class TweetTest(TestCase):
                 verified=True
             )
         sample_status=twitter.Status(
-                created_at=datetime.strftime(datetime.now(timezone.utc), '%a %b %d %H:%M:%S +0000 %Y'),
+                created_at=datetime.strftime(timezone.make_aware(datetime.now()), '%a %b %d %H:%M:%S +0000 %Y'),
                 id=1234567,
                 text='Hello world',
                 user=sample_user,

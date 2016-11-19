@@ -37,14 +37,12 @@
             <form action="/results/" method="post" class="form">
                 {% csrf_token %}
                 <div class="input-group">
-                    <div class="input-group-btn">
-                        <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
-                        <span class="input-group-btn">
-                            <button type="submit" id="submit" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                    </div>
+                    <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                    <span class="input-group-btn">
+                        <button type="submit" id="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
                 </div>
             </form>
         </div>
