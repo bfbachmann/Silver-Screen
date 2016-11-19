@@ -1,3 +1,7 @@
+p {
+    font-size: 16px;
+}
+
 span.glyphicon.glyphicon-search {
     height: 20px;
     padding-top: 2px;
@@ -88,17 +92,13 @@ img.rating-icon {
     border-radius: 3px;
 }
 
-p.about {
-  width: 800px;
-  text-align: justify;
-  text-justify: inter-word;
-  z-index: 999;
-  overflow: show;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+.about {
+    margin-bottom: 50px;
+}
+
+.about-heading {
+    margin-bottom: 20px;
+    color: grey;
 }
 
 @keyframes spin {
