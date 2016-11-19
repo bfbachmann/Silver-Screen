@@ -47,7 +47,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
+        if not movie.Title or not isinstance(movie, Movie) or (not isinstance(movie.Title, str)):
             return None
 
         edited_title = self.tc.clean_title(movie.Title)
@@ -65,6 +65,8 @@ class TwitterAPI(object):
         for future in futures:
             tweets += future.result()
 
+        if tweets == []:
+            return None
         return tweets
 
 
