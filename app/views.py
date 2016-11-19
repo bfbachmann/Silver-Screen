@@ -121,7 +121,6 @@ def results(request):
         except:
             print("No sentiment found in database for this movie")
 
-
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
 
@@ -184,6 +183,11 @@ def results(request):
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+## =============================================================================
+
+def about(request):
+    return render(request, 'about.html')
 
 ## =============================================================================
 

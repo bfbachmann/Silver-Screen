@@ -17,6 +17,10 @@
 </head>
 
 <body>
+    <div class="align-right" style="margin: 5px">
+      <a href="about.html" class="btn btn-default">About</a>
+    </div>
+
     {% if messages %}
         {% for message in messages %}
             <div{% if message.tags %} class="trending text-center alert alert-{{ message.tags }}"{% endif %}>

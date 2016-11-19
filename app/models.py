@@ -13,11 +13,9 @@ from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
 import concurrent.futures
 
-
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
-
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100, required=False)
@@ -178,7 +176,6 @@ class OMDbAPI(object):
     def __init__(self):
         pass
 
-
     ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
         """
@@ -209,8 +206,6 @@ class OMDbAPI(object):
                 movieObj = Movie().fillWithJsonObject(response)
                 if not movieObj:
                     return None
-
-
 
             return movieObj
         else:
@@ -304,6 +299,9 @@ class Tweet(models.Model):
     def __unicode__(self):
         return str(self.tweetID)
 
+## =============================================================================
+##  Sentiment
+## =============================================================================
 
 class Sentiment(models.Model):
    Title = models.CharField(max_length=128)
