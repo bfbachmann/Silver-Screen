@@ -36,19 +36,19 @@ Configuration files like `settings.py` can be found in the `SilverScreen` direct
 
 ### Models
 
-All data and API wrappers can be found in `app/models.py`.
+All data and API wrappers can be found in `app/models`.
 
 ### Views and Templates
 
-The application's major control flows (responses to requests) are handled in `app/views.py`. HTML templates rendered in responses are stored in `app/templates`.
+The application's major control flows (responses to requests) are handled in `app/views/views.py`. HTML templates rendered in responses are stored in `app/templates`.
 
 ### Tests
 
-Tests can be found in `app/tests.py`.
+Tests can be found in `app/tests`.
 
 Once you have you environment set up you can run tests manually with
 ```python
-$ python manage.py test
+$ python manage.py test tests
 ```
 from the project directory in Vagrant.
 
