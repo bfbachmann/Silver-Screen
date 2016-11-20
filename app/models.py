@@ -7,6 +7,7 @@ from django import forms
 import twitter
 import yaml
 import omdb
+import os
 import datetime
 import concurrent.futures
 from django.db import models
@@ -29,12 +30,18 @@ class TwitterAPI(object):
 
     ## Initialisation
     def __init__(self):
-        ## Load the API keys from api_keys.yml
-        with open("scripts/twitter_api/api_keys.yml", 'r') as stream:
-            try:
-                keys = yaml.load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
+        ## Load the API keys
+        try:
+            stream = open("scripts/twitter_api/api_keys.yml", 'r')
+            keys = yaml.load(stream)
+        except:
+            print('Failed to load Twitter API keys from file, falling back on environment variables')
+            keys = {
+                'consumer_key': os.environ['consumer_key'],
+                'consumer_secret': os.environ['consumer_secret'],
+                'access_token_key': os.environ['access_token_key'],
+                'access_token_secret': os.environ['access_token_secret'],
+            }
 
         self.tc = TitleCleaner()
         self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
