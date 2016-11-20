@@ -1,7 +1,21 @@
 {% load static %}
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip({
+			placement : 'bottom'
+		});
+	});
+</script>
+
 <div class="align-left" style="max-width: 80%; margin: auto;">
-    <h1> {{ movie.Title }}</h1>
+    <h1> {{ movie.Title }}
+	{% if messages %}
+		{% for message in messages %}
+			<span class="glyphicon glyphicon-exclamation-sign" data-toggle="tooltip" data-original-title="{{message}}" style="color:silver; font-size: 0.8em;"></span>	
+		{% endfor %}
+	{% endif %}
+	</h1> 
     <hr>
     <div class="well full-width clearfix">
         {% if movie.Poster %}
@@ -90,6 +104,12 @@
     {% endfor %}
 </div>
 
+<script type="text/javascript"> 
+	var pos_data = [{% for datum in positive_data %}"{{datum.tweet|escapejs}}",{% endfor %}];
+	var neg_data = [{% for datum in negative_data %}"{{datum.tweet|escapejs}}",{% endfor %}];
+
+</script>
+
 <script>
     $('#query-form').submit(function() {
         $('#submit').addClass('disabled')
@@ -97,51 +117,59 @@
     })
 
     var chart1Ctx = $('#bubble-chart');
-    var chart = new Chart(chart1Ctx,{
-        type: 'bubble',
-        data: {
-            datasets: [ {
-                       label: 'Negative Tweets',
-                       data: [
-                           {% for datum in negative_data %}
-                                { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
-                           {% endfor %}
-                       ],
-                       backgroundColor:"#FF6384",
-                       hoverBackgroundColor: "#FF6384",
-                   }, {
-                       label: 'Positive Tweets',
-                       data: [
-                           {% for datum in positive_data %}
-                                { x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
-                           {% endfor %}
-                       ],
-                       backgroundColor: "#00DD99",
-                       hoverBackgroundColor: "#00DD99"
-                   } ]
-               },
-        options: {
-                title: {
-                    display: true,
-                    fontSize: 26,
-                    text: 'Senitment Intensity Over Time'
-                },
-                scales: {
-                    xAxes: [{
-                        type: 'time',
-                        time: {
-                            unit: 'day'
-                        }
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            max: 100,
-                            min: 0,
-                        }
-                    }]
-                }
-            }
-    });
+	var chart = new Chart(chart1Ctx,{
+		type: 'bubble',
+		data: { datasets: [ {
+					   label: 'Negative Tweets',
+					   data: [
+						   {% for datum in negative_data %}
+								{ x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
+						   {% endfor %}
+					   ],
+					   backgroundColor:"#FF6384",
+					   hoverBackgroundColor: "#FF6384",
+				   }, {
+					   label: 'Positive Tweets',
+					   data: [
+						   {% for datum in positive_data %}
+								{ x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
+						   {% endfor %}
+					   ],
+					   backgroundColor: "#00DD99",
+					   hoverBackgroundColor: "#00DD99"
+				   } ]
+			   },
+		options: {
+				tooltips: {
+					enabled: true,
+					mode: 'single',
+					callbacks: {
+						label: function(tooltipItems, data) { 
+							if(tooltipItems.datasetIndex == 1)
+								return pos_data[tooltipItems.index];
+							//else
+								return neg_data[tooltipItems.index]
+						}
+					}
+				},
+		
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							unit: 'day'
+						}
+					}],
+					yAxes: [{
+						ticks: {
+							max: 100,
+							min: 0,
+						}
+					}]
+				}
+			}
+			
+	});
 
     var chart2Ctx = $('#pie-chart');
     var pieChart = new Chart(chart2Ctx, {

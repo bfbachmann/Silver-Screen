@@ -131,6 +131,10 @@ def results(request):
 
             try:
                 raw_tweets = twitter.search_movie(movie)
+                if (not raw_tweets or len(raw_tweets)<20) and movie.SimplifiedTitle:
+                    raw_tweets = twitter.search_movie(movie)
+                    if len(raw_tweets)>20:
+                        movie.updateTitleStatus(True)
             except Exception as error:
                 if type(error) is ValueError:
                     print('ERROR: Rate limit exceeded')
@@ -148,6 +152,10 @@ def results(request):
                 return render(request, 'error.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
+
+        if movie.useSimplified == True:
+            messages.add_message(request, messages.INFO,
+                                 "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.SimplifiedTitle + " instead.")
 
         ## If there aren't enough tweets to display tell the user
         if len(clean_tweets) < 5:
@@ -209,7 +217,8 @@ def create_chart_datasets(clean_tweets):
             data = {
                         'y': round(abs(score)*100,1),
                         'x': str(tweet.created_at),
-                        'r': 5
+                        'r': 5,
+                        'tweet' : tweet.text
                     }
 
             if score < 0:

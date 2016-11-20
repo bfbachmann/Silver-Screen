@@ -101,6 +101,11 @@ p.about {
   right: 0;
 }
 
+.tooltip-inner {
+    max-width: 350px !important;
+   width: 350px !important;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

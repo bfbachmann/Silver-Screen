@@ -46,7 +46,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
+        if not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode):
             return None
 
         current_datetime = timezone.now()
@@ -55,7 +55,7 @@ class TwitterAPI(object):
         tweets = []
 
         for diff in range(0, 6):
-            futures.append(executor.submit(self._make_request, movie, current_datetime, diff))
+            futures.append(executor.submit(self._make_request, movie.Title, movie.imdbID, current_datetime, diff))
 
         for future in futures:
             tweets += future.result()
@@ -63,7 +63,7 @@ class TwitterAPI(object):
         return tweets
 
 
-    def _make_request(self, movie, current_datetime, diff):
+    def _make_request(self, title, imdbID, current_datetime, diff):
         from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
         to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
 
@@ -72,13 +72,13 @@ class TwitterAPI(object):
         ## Make search request
         ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
         try:
-            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+            response = self.api.GetSearch(term='"'+title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
         except Exception as e:
             print(e)
 
         for tweet in response:
             ## Tag movie with imdbID
-            tweet.imdbID = movie.imdbID
+            tweet.imdbID = imdbID
 
             ## Only append Tweets in English
             if tweet.lang == 'en' or tweet.user.lang == 'en':
@@ -92,6 +92,7 @@ class TwitterAPI(object):
 
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
+    SimplifiedTitle = models.CharField(max_length=128, blank=True)
     Year = models.IntegerField(null=True, blank=True)
     TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
@@ -106,9 +107,11 @@ class Movie(models.Model):
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
     recentVisits = models.IntegerField(default=0)
+    useSimplified = models.BooleanField(default=False)
 
     param_defaults = {
         'Title': None,
+        'SimplifiedTitle': None,
         'Year': None,
         'TomatoURL': None,
         'Actors': None,
@@ -122,7 +125,8 @@ class Movie(models.Model):
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
-        'recentVisits': None
+        'recentVisits': None,
+        'useSimplified': None
     }
 
     def __unicode__(self):
@@ -151,6 +155,15 @@ class Movie(models.Model):
                         else:
                             value = value.strip()
                     setattr(self, key, value)
+
+            if self.Title and ":" in self.Title:
+                self.SimplifiedTitle = self.Title.rpartition(':')[0]
+
+            if self.Title and "-" in self.Title:
+                splitStr = self.Title.rpartition('-')[0]
+                if len(splitStr) > len(self.SimplifiedTitle):
+                    self.SimplifiedTitle = splitStr
+
             self.save()
             return self
         else:
@@ -159,6 +172,10 @@ class Movie(models.Model):
 
     def updateViews(self):
         self.recentVisits = self.recentVisits+1
+        self.save()
+
+    def updateTitleStatus(self,useSimplified):
+        self.useSimplified = useSimplified
         self.save()
 
 ## =============================================================================
