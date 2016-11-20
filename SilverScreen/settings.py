@@ -27,8 +27,7 @@ SECRET_KEY = '6d(s90a9m5mti_k33gm-+&(ia6fm%$+dsn#r)rm=x(fiw8+*bq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
-
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', '206.87.192.88']
 
 # Application definition
 
@@ -52,8 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'SilverScreen.urls'
@@ -89,16 +88,23 @@ DATABASES = {
     }
 }
 
-
+# Use dummy cache for development and testing
 CACHES = {
     'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    'deployment': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
-CACHE_MIDDLEWARE_SECONDS = 500
+# Cache for half a day
+CACHE_MIDDLEWARE_SECONDS = 0
 
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
+if DEBUG:
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'default'
+else:
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'deployment'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -126,12 +132,13 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+USE_TZ = True
+
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

@@ -1,3 +1,7 @@
+p {
+    font-size: 16px;
+}
+
 span.glyphicon.glyphicon-search {
     height: 20px;
     padding-top: 2px;
@@ -60,15 +64,6 @@ span.glyphicon.glyphicon-search {
     animation: spin 2s linear infinite;
 }
 
-navbar-loader {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    animation: spin 2s linear infinite;
-}
-
 .center-on-page {
     display: inline-block;
     position: absolute !important;
@@ -86,6 +81,15 @@ img.rating-icon {
     max-height:300px;
     margin: auto;
     border-radius: 3px;
+}
+
+.about {
+    margin-bottom: 50px;
+}
+
+.about-heading {
+    margin-bottom: 20px;
+    color: grey;
 }
 
 @keyframes spin {

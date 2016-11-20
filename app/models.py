@@ -8,15 +8,14 @@ import twitter
 import yaml
 import omdb
 import datetime
+import concurrent.futures
 from django.db import models
 from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
 
-
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
-
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100, required=False)
@@ -37,6 +36,7 @@ class TwitterAPI(object):
             except yaml.YAMLError as exc:
                 print(exc)
 
+        self.tc = TitleCleaner()
         self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
     ## Request tweets for a given movie
@@ -47,29 +47,49 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if not isinstance(movie, Movie) or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
+        if not movie.Title or not isinstance(movie, Movie) or (not isinstance(movie.Title, str)):
             return None
 
+        edited_title = self.tc.clean_title(movie.Title)
+        imdbID = movie.imdbID
         current_datetime = timezone.now()
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=7)
         futures = []
         tweets = []
 
+        print('Searching Twitter for \"' + edited_title + '\"')
+
         for diff in range(0, 6):
-            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
-            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+            futures.append(executor.submit(self._make_request, edited_title, current_datetime, diff, imdbID))
 
-            ## Make search request
-            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
-            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+        for future in futures:
+            tweets += future.result()
 
-            for tweet in response:
-                ## Tag movie with imdbID
-                tweet.imdbID = movie.imdbID
+        if tweets == []:
+            return None
+        return tweets
 
-                ## Only append Tweets in English
-                if tweet.lang == 'en' or tweet.user.lang == 'en':
-                    tweets.append(tweet)
+
+    def _make_request(self, edited_title, current_datetime, diff, imdbID):
+        from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
+        to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
+
+        tweets = []
+
+        ## Make search request
+        ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
+        try:
+            response = self.api.GetSearch(term='"'+edited_title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
+        except Exception as e:
+            print(e)
+
+        for tweet in response:
+            ## Tag movie with imdbID
+            tweet.imdbID = imdbID
+
+            ## Only append Tweets in English
+            if tweet.lang == 'en' or tweet.user.lang == 'en':
+                tweets.append(tweet)
 
         return tweets
 
@@ -157,7 +177,6 @@ class OMDbAPI(object):
     def __init__(self):
         pass
 
-
     ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
         """
@@ -188,8 +207,6 @@ class OMDbAPI(object):
                 movieObj = Movie().fillWithJsonObject(response)
                 if not movieObj:
                     return None
-
-
 
             return movieObj
         else:
@@ -250,7 +267,7 @@ class Tweet(models.Model):
 
         ## Values from API request
         self.text=tweet.text
-        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location
@@ -283,6 +300,9 @@ class Tweet(models.Model):
     def __unicode__(self):
         return str(self.tweetID)
 
+## =============================================================================
+##  Sentiment
+## =============================================================================
 
 class Sentiment(models.Model):
    Title = models.CharField(max_length=128)
@@ -313,3 +333,48 @@ class Sentiment(models.Model):
                    setattr(self, key, value)
            self.save()
        return self
+
+## =============================================================================
+
+class TitleCleaner(object):
+
+    def __init__(self):
+
+        #Lists are sourced from:
+        with open("sentimentanalysis/uncommon_wordlist.txt", 'r') as f:
+            self.uncommon_wordlist = f.readlines()  #list containing top 2000-5000 words in english language
+        self.uncommon_wordlist = [word.lower().replace('\n','') for word in self.uncommon_wordlist]
+
+        with open("sentimentanalysis/common_wordlist.txt", 'r') as f:
+            self.common_wordlist = f.readlines()    #list containing top 2000 words in english language
+        self.common_wordlist = [word.lower().replace('\n','') for word in self.common_wordlist]
+
+    def __searchLists(self, title):
+        for word in self.common_wordlist:
+            if (title == word):
+                return 1
+        for word in self.uncommon_wordlist:
+            if (title == word):
+                return 3
+        return 5
+
+
+    def __is_common(self, title):
+        words_in_title = title.lower().split()
+
+        for word in words_in_title:
+            if not word in self.common_wordlist and not word in self.uncommon_wordlist:
+                return False
+
+        return True
+
+    ## If the movie title is common it appends " movie" to the end of the title
+    def clean_title(self, title):
+        new_title = title
+        if self.__is_common(title):
+            new_title = 'movie ' + new_title
+
+        if ':' in new_title:
+            return new_title.split(':')[0]
+
+        return new_title
