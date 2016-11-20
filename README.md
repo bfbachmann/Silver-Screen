@@ -48,7 +48,7 @@ Tests can be found in `app/tests`.
 
 Once you have you environment set up you can run tests manually with
 ```python
-$ python manage.py test tests
+$ python manage.py test app.tests
 ```
 from the project directory in Vagrant.
 
