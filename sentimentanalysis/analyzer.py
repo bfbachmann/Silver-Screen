@@ -115,14 +115,22 @@ def demo(text):
 ##  TweetSentiment
 ## =============================================================================
 
+# Global variables for use in TweetSentiment class
+lexicon_file = nltk.data.load('sentimentanalysis/lexicon_done.txt')
+lexicon_dictionary = {}
+for line in lexicon_file.split('\n'):
+    (word, measure) = line.strip().split('\t')[0:2]
+    lexicon_dictionary[word] = float(measure)
+
+
 class TweetSentiment(object):
     """
     Gives an intensity score to the inputted tweet.
     """
 
-    def __init__(self, text, lexicon_file="sentimentanalysis/lexicon_done.txt"): # for some people, writing "sentimentanalysis/lexicon_done.txt"
-        self.lexicon_file = nltk.data.load(lexicon_file)
-        self.lexicon = self.convert_to_dictionary()
+    def __init__(self, text): # for some people, writing "sentimentanalysis/lexicon_done.txt"
+        self.lexicon_file = lexicon_file
+        self.lexicon = lexicon_dictionary
         if not isinstance(text, str):
             text = str(text.encode('utf-8'))
         self.text = text
@@ -130,16 +138,6 @@ class TweetSentiment(object):
         # doesn't separate words from\
         # adjacent punctuation (keeps emoticons & contractions)
         self.is_all_caps = self.capitalized(self.words_and_symbols)
-
-    def convert_to_dictionary(self):
-        """
-        Converts the lexicon text file into a dictionary
-        """
-        lexicon_dictionary = {}
-        for line in self.lexicon_file.split('\n'):
-            (word, measure) = line.strip().split('\t')[0:2]
-            lexicon_dictionary[word] = float(measure)
-        return lexicon_dictionary
 
     def polarity_scores(self):
         """

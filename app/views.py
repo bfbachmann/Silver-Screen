@@ -79,6 +79,7 @@ def results(request):
         sum_scores = 0
         num_nonzero = 1
 
+
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
             print('No search term given, picking random movie')
