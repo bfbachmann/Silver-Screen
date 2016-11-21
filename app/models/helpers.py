@@ -49,7 +49,7 @@ class TwitterAPI(object):
         futures = []
         tweets = []
 
-        print('Searching Twitter for \"' + edited_title + '\"')
+        print('Searching Twitter for ' + edited_title)
 
         for diff in range(0, 6):
             futures.append(executor.submit(self._make_request, edited_title, current_datetime, diff, imdbID))
@@ -140,42 +140,12 @@ class OMDbAPI(object):
 class TitleCleaner(object):
 
     def __init__(self):
+        pass
 
-        #Lists are sourced from:
-        with open("sentimentanalysis/uncommon_wordlist.txt", 'r') as f:
-            self.uncommon_wordlist = f.readlines()  #list containing top 2000-5000 words in english language
-        self.uncommon_wordlist = [word.lower().replace('\n','') for word in self.uncommon_wordlist]
-
-        with open("sentimentanalysis/common_wordlist.txt", 'r') as f:
-            self.common_wordlist = f.readlines()    #list containing top 2000 words in english language
-        self.common_wordlist = [word.lower().replace('\n','') for word in self.common_wordlist]
-
-    def __searchLists(self, title):
-        for word in self.common_wordlist:
-            if (title == word):
-                return 1
-        for word in self.uncommon_wordlist:
-            if (title == word):
-                return 3
-        return 5
-
-
-    def __is_common(self, title):
-        words_in_title = title.lower().split()
-
-        for word in words_in_title:
-            if not word in self.common_wordlist and not word in self.uncommon_wordlist:
-                return False
-
-        return True
-
-    ## If the movie title is common it appends " movie" to the end of the title
     def clean_title(self, title):
         new_title = title
-        if self.__is_common(title):
-            new_title = new_title + ' movie'
 
         if ':' in new_title:
             return new_title.split(':')[0]
 
-        return new_title
+        return '\"' + new_title + '\" \"movie\"'

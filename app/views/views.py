@@ -74,7 +74,7 @@ def results(request):
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term
-        search_term = request.GET['query']
+        search_term = request.GET['query'].replace('&amp;', '&')
         movie = Movie()
         blank_form = QueryForm()
         data_to_render = {'error_message': ''}
@@ -109,7 +109,7 @@ def results(request):
         ## If no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find a movie related to ' + search_term
             return render(request, 'error.html', data_to_render)
         else:
             movie.updateViews()
@@ -146,14 +146,14 @@ def results(request):
             ## If we have no raw tweets to process raise error
             if not raw_tweets or len(raw_tweets) == 0:
                 print('ERROR: No tweets found')
-                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about ' + movie.Title
                 return render(request, 'error.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
         ## If there aren't enough tweets to display tell the user
         if len(clean_tweets) < 5:
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about that movie for analysis.'
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.'
             return render(request, 'error.html', data_to_render)
 
         data_to_render = prepare_data_for_render(request, clean_tweets, movie)

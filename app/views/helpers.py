@@ -1,4 +1,5 @@
 from app.models.models import *
+import datetime
 
 ## =============================================================================
 
@@ -8,6 +9,7 @@ def prepare_data_for_render(request, clean_tweets, movie):
     overall_score = get_overall_sentiment_score(clean_tweets)
     polarity = get_polarity(clean_tweets)
     negative_data, positive_data, neutral_count = create_chart_datasets(clean_tweets)
+    positive_avgs, negative_avgs = get_daily_avgs(clean_tweets)
     tweets_to_display = get_tweets_to_display(clean_tweets)
 
     ## Save our new sentiment data to the db
@@ -20,11 +22,14 @@ def prepare_data_for_render(request, clean_tweets, movie):
                         'overall_score' : overall_score,
                         'polarity'      : polarity,
                         'new_form'      : QueryForm(),
-                        'negative_data' : negative_data, # data for the chart
-                        'positive_data' : positive_data, # data for the chart
-                        'negative_count': len(negative_data), # data for the chart
-                        'positive_count': len(positive_data), # data for the chart
-                        'neutral_count' : neutral_count # data for the chart
+                        #  Begin chart data
+                        'negative_data' : negative_data,
+                        'positive_data' : positive_data,
+                        'negative_count': len(negative_data),
+                        'positive_count': len(positive_data),
+                        'neutral_count' : neutral_count,
+                        'positive_avgs' : positive_avgs,
+                        'negative_avgs' : negative_avgs,
                     }
     return data_to_render
 
@@ -61,6 +66,41 @@ def create_chart_datasets(clean_tweets):
 
 ## =============================================================================
 
+## Returns a touple of positive daily averages and daily negative averages of
+## tweet sentiment over time
+def get_daily_avgs(clean_tweets):
+    positive_data = {}
+    negative_data = {}
+    positive_avgs = []
+    negative_avgs = []
+
+    for tweet in clean_tweets:
+        day = datetime.datetime.date(tweet.created_at)
+
+        if tweet.sentiment_score < 0:
+            try:
+                negative_data[day].append(tweet.sentiment_score)
+            except:
+                negative_data[day] = [tweet.sentiment_score]
+        elif tweet.sentiment_score > 0:
+            try:
+                positive_data[day].append(tweet.sentiment_score)
+            except:
+                positive_data[day] = [tweet.sentiment_score]
+
+    for (day, scores) in positive_data.items():
+        positive_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+
+    for (day, scores) in negative_data.items():
+        negative_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+
+    positive_avgs.sort(key=lambda entry: entry['x'])
+    negative_avgs.sort(key=lambda entry: entry['x'])
+
+    return positive_avgs, negative_avgs
+
+## =============================================================================
+
 ## Returns a list of Tweet objects created from the given list of twitter.Status objects
 def get_clean_tweets(raw_tweets, movie_title):
     clean_tweets = []
@@ -76,7 +116,7 @@ def get_clean_tweets(raw_tweets, movie_title):
 def get_tweets_to_display(clean_tweets):
     tweets_to_display = []
     i = 0
-    while i < len(clean_tweets) and len(tweets_to_display) < 10:
+    while i < len(clean_tweets) and len(tweets_to_display) < 20:
         if clean_tweets[i].sentiment_score != 0:
             clean_tweets[i].sentiment_score = round((clean_tweets[i].sentiment_score+1)*5, 1)
             tweets_to_display.append(clean_tweets[i])
@@ -97,11 +137,11 @@ def get_overall_sentiment_score(clean_tweets):
             num_nonzero += 1
             sum_scores += score
 
-            for i in range(0, (int(tweet.retweet_count))):
+            for i in range(0, (int(tweet.retweet_count/4))):
                 num_nonzero += 1
                 sum_scores += score
 
-            for i in range(0, (int(tweet.favorite_count/2))):
+            for i in range(0, (int(tweet.favorite_count/8))):
                 num_nonzero += 1
                 sum_scores += score
 

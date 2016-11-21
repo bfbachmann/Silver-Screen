@@ -144,7 +144,7 @@ class Tweet(models.Model):
             tweet.lang = tweet.user.lang
 
         ## Values from API request
-        self.text=tweet.text
+        self.text=tweet.text.replace('&amp;', '&')
         self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
