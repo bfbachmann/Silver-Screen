@@ -68,14 +68,29 @@
         {% if movie.Poster %}
             </div>
         {% endif %}
-        <div class="align-center">
-            <canvas id="pie-chart"></canvas>
-            <canvas id="bubble-chart"></canvas>
-        </div>
     </div>
+	<div class="well full-width clearfix">
+		<ul class="nav nav-tabs">
+		  <li class="active"><a data-toggle="tab" href="#graph1">Plot</a></li>
+		  <li><a data-toggle="tab" href="#graph2">Breakdown</a></li>
+
+		</ul>
+        <div class="align-center">
+			<div class="tab-content">
+				<div id="graph1" class="tab-pane fade in active">
+					<canvas id="bubble-chart"></canvas>
+				</div>
+				<div id="graph2" class="tab-pane fade">
+					<canvas id="pie-chart"></canvas>
+				</div>
+			</div>
+        </div>
+	</div>
 </div>
 
-<div class="align-left" style="max-width: 800px; margin: auto;">
+<a href="#tweetcollapse" data-toggle="collapse" class="btn input-block-level form-control" style="background-color: #e3e3e3"><span class="glyphicon glyphicon-arrow-down"></span> See Curated Tweets <span class="glyphicon glyphicon-arrow-down"></a>
+<br /> <br />
+<div class="align-left collapse" id="tweetcollapse" style="max-width: 800px; margin: auto;">
     {% for tweet in tweets %}
         <hr>
         <div class="container-fluid">
