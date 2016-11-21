@@ -3,14 +3,14 @@
 ## =============================================================================
 ## - Manage web requests and responses
 
-from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, HttpResponsePermanentRedirect
-from django.core.urlresolvers import reverse
+from django.shortcuts import render
+from django.http import HttpResponse
 from .models import *
 import datetime
 from django.utils import timezone
 from django.contrib import messages
 from imdbpie import Imdb
+from django.views.decorators.cache import never_cache
 import random
 
 ## Initialize api objects
@@ -31,7 +31,7 @@ def index(request):
 
         ## Check whether it's valid:
         if query_form.is_valid():
-            # redirect to a new URL:
+            ## redirect to a new URL:
             return render(request, 'results.html', {'form': query_form})
 
     ## If a GET we'll create a blank form
@@ -41,13 +41,12 @@ def index(request):
     else:
         return HttpResponse(status=403)
 
-    if not request.session.get('hide_trending_movie', False):
-        try:
-            trendingMovie = Movie.objects.latest('recentVisits')
-            if trendingMovie.recentVisits > 5:
-                messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
-        except:
-            pass
+    try:
+        trendingMovie = Movie.objects.latest('recentVisits')
+        if trendingMovie.recentVisits > 5:
+            messages.add_message(request, messages.SUCCESS, trendingMovie.Title + ' is trending today!')
+    except:
+        pass
 
     return render(request, 'index.html', {'form': query_form})
 
@@ -64,6 +63,7 @@ def get_results_page(request):
 
 ## Handle User request for a certain movie and either progress to showing results
 ## from tweets or display informative error messages to the user
+@never_cache
 def results(request):
     """
     If the method is a POST processes the query the user submitted and returns the results
@@ -79,14 +79,14 @@ def results(request):
         sum_scores = 0
         num_nonzero = 1
 
-        print('Search term: ' + search_term)
-
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
             print('No search term given, picking random movie')
             imdb = Imdb()
             top250 = imdb.top_250()
             search_term = random.choice(top250).get('title')
+
+        print('Search term: ' + search_term)
 
         ## Try get the movie from the database
         try:
@@ -131,10 +131,7 @@ def results(request):
 
             try:
                 raw_tweets = twitter.search_movie(movie)
-                if (not raw_tweets or len(raw_tweets)<20) and movie.SimplifiedTitle:
-                    raw_tweets = twitter.search_movie(movie)
-                    if len(raw_tweets)>20:
-                        movie.updateTitleStatus(True)
+
             except Exception as error:
                 if type(error) is ValueError:
                     print('ERROR: Rate limit exceeded')
@@ -194,13 +191,6 @@ def results(request):
 
 def about(request):
     return render(request, 'about.html')
-
-## =============================================================================
-
-def hide_trending_movie(request):
-    response = HttpResponse(status=200)
-    request.session['hide_trending_movie'] = True
-    return response
 
 ## =============================================================================
 

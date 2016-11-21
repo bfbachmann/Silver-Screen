@@ -1,3 +1,7 @@
+p {
+    font-size: 16px;
+}
+
 span.glyphicon.glyphicon-search {
     height: 20px;
     padding-top: 2px;
@@ -60,15 +64,6 @@ span.glyphicon.glyphicon-search {
     animation: spin 2s linear infinite;
 }
 
-navbar-loader {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    animation: spin 2s linear infinite;
-}
-
 .center-on-page {
     display: inline-block;
     position: absolute !important;
@@ -88,17 +83,13 @@ img.rating-icon {
     border-radius: 3px;
 }
 
-p.about {
-  width: 800px;
-  text-align: justify;
-  text-justify: inter-word;
-  z-index: 999;
-  overflow: show;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+.about {
+    margin-bottom: 50px;
+}
+
+.about-heading {
+    margin-bottom: 20px;
+    color: grey;
 }
 
 .tooltip-inner {

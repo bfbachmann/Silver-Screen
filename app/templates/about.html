@@ -18,74 +18,62 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-default">
-      <div class="container-fluid">
-          <div class="navbar-header">
-              <a class="navbar-brand" href="/index">
-                  SilverScreen
-              </a>
-              <form id="query-form" action="/results/" method="post" class="form navbar-form navbar-left">
-                  {% csrf_token %}
-                  <div class="input-group">
-                      <div class="input-group-btn">
-                          <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
-                          <span class="input-group-btn">
-                              <button type="submit" id="submit" class="btn btn-primary">Search</button>
-                          </span>
-                      </div>
-                      <div class="navbar-loader hidden" style="margin: 5px;"></div>
-                  </div>
-              </form>
-          </div>
-          <div class="align-right" style="margin: 8px">
-            <a href="about.html" class="btn btn-default">About</a>
-          </div>
-      </div>
-  </nav>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">SilverScreen</a>
+                <form class="form navbar-form navbar-left" id="query-form" action="/results/" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" id="id-query" class="form-control" name="query" placeholder="Search for a movie">
+                        <span class="input-group-btn">
+                            <button type="submit" id="submit" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <a href="{% url 'about' %}" class="navbar-text navbar-right" style="margin-right: 5px;">About</a>
+        </div>
+    </nav>
 
-  <div class="container-fluid center-on-page" style="margin: 50px">
+    <div class="container-fluid" style="max-width: 800px;">
 
-      <h2 class="align-center"> What is Silver Screen? </h2>
-      <p class="about">
-        Silver Screen is a web application that allows the user to assess sentiment expressed within relevant movie related tweets. Silver Screen was developed for the Fall 2016 session of CPEN 321 (Software Engineering) at the University of British Columbia.
-        <br><br>
-      </p>
-      <p class="about">
-        Silver Screen gathers information from the Internet Movie Database (IMDb), Rotten Tomatoes, and Twitter to present the user with information comparing the results of sentiment analysis and human generated movie reviews. Tweets about a movie requested by the user are passed through the sentiment analysis engine and assigned a sentiment score. These scores are aggregated and presented to the user alongside data from IMDb and Rotten Tomatoes. Using the results from sentiment analysis, the user can easily compare what people are saying about a movie on Twitter to existing movie reviews.
-      </p>
+        <h2 class="about-heading"> What is Silver Screen? </h2>
+        <p class="about">
+            Silver Screen is a web application that allows the user to assess sentiment expressed within relevant movie related tweets. Silver Screen was developed for the Fall 2016 session of CPEN 321 (Software Engineering) at the University of British Columbia.
+            <br><br>
+            Silver Screen gathers information from the Internet Movie Database (IMDb), Rotten Tomatoes, and Twitter to present the user with information comparing the results of sentiment analysis and human generated movie reviews. Tweets about a movie requested by the user are passed through the sentiment analysis engine and assigned a sentiment score. These scores are aggregated and presented to the user alongside data from IMDb and Rotten Tomatoes. Using the results from sentiment analysis, the user can easily compare what people are saying about a movie on Twitter to existing movie reviews.
+        </p>
 
-      <h2 class="align-center"> What is Sentiment Analysis? </h2>
-      <p class="about">
-        Sentiment analysis is a sub-field of machine learning that utilises natural language processing and text analysis to computationally identify a writer’s attitude in a piece of text. Having a computer examine a piece of text and understand it’s underlying meaning is a difficult task and the area of sentiment analysis is continually researching new ways to identify attitudes in writing.
-        <br><br>
-      </p>
-      <p class="about">
-        The main objective of the Silver Screen analysis engine is to take a tweet and identify whether the attitude of the tweet towards a movie is positive, neutral, or negative. This attitude is expressed in terms of a score from 0 to 10, where 0 is the most negative and 10 is the most positive. The Silver Screen sentiment analysis engine examines several different language features to determine the final score, such as: presence of negation words, positivity/negativity of adverbs, and capitalised words.
-      </p>
+        <h2 class="about-heading"> What is Sentiment Analysis? </h2>
+        <p class="about">
+            Sentiment analysis is a sub-field of machine learning that utilises natural language processing and text analysis to computationally identify a writer’s attitude in a piece of text. Having a computer examine a piece of text and understand it’s underlying meaning is a difficult task and the area of sentiment analysis is continually researching new ways to identify attitudes in writing.
+            <br><br>
+            The main objective of the Silver Screen analysis engine is to take a tweet and identify whether the attitude of the tweet towards a movie is positive, neutral, or negative. This attitude is expressed in terms of a score from 0 to 10, where 0 is the most negative and 10 is the most positive. The Silver Screen sentiment analysis engine examines several different language features to determine the final score, such as: presence of negation words, positivity/negativity of adverbs, and capitalised words.
+        </p>
 
-      <h2 class="align-center"> How can I use Silver Screen? </h2>
-      <p class="about">
-        Start by entering the title of the movie into the search bar and select search. Or, if you just want to explore, hit enter with a blank search bar to get the results for a random movie! After selecting to search, Silver Screen will gather data from Twitter and perform analysis (you see a loading page while these tasks complete). Finally, you will be shown the results of your request on a new page.
-      </p>
+        <h2 class="about-heading"> How can I use Silver Screen? </h2>
+        <p class="about">
+            Start by entering the title of the movie into the search bar and select search. Or, if you just want to explore, hit enter with a blank search bar to get the results for a random movie! After selecting to search, Silver Screen will gather data from Twitter and perform analysis (you see a loading page while these tasks complete). Finally, you will be shown the results of your request on a new page.
+        </p>
 
-      <h2 class="align-center"> What is shown on the results page? </h2>
-      <p class="about">
-        On the top of this page, you will find a section containing a summary of the movie with various information such as the IMDB rating, Rotten Tomatoes rating, and basic sentiment score. Farther down the page, you will see several graphs showing the results of the sentiment analysis in more detail. A quick summary of the graphs is shown below:
-        <br><br>
-      </p>
-      <p class="about">
-        IN PROGRESS
-      </p>
+        <h2 class="about-heading"> What is shown on the results page? </h2>
+        <p class="about">
+            On the top of this page, you will find a section containing a summary of the movie with various information such as the IMDB rating, Rotten Tomatoes rating, and basic sentiment score. Farther down the page, you will see several graphs showing the results of the sentiment analysis in more detail. A quick summary of the graphs is shown below:
+            <br><br>
+            IN PROGRESS
+        </p>
 
-      <h2 class="align-center"> Where can I find out more? </h2>
-      <p class="align-center">
-          <a href="https://github.com/bfbachmann/Silver-Screen">View our Github repo</a>
-      </p>
-      <p class="align-center">
-          <a href="https://github.com/bfbachmann/Silver-Screen/wiki">Read our project wiki on Github</a>
-      </p>
+        <h2 class="about-heading"> Where can I find out more? </h2>
+        <p class="about">
+            <a href="https://github.com/bfbachmann/Silver-Screen">View our Github repo</a>
+            <br><br>
+            <a href="https://github.com/bfbachmann/Silver-Screen/wiki">Read our project wiki on Github</a>
+        </p>
 
-  </div>
+    </div>
 
 
 </body>
