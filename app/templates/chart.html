@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+</head>
+
+<body>
+    <canvas id="bubbleChart" width="400" height="200"></canvas>
+    <script>
+        var ctx = document.getElementById("bubbleChart");
+        var chart = new Chart(ctx,{
+            type: 'bubble',
+            data: { datasets: [ {
+                           label: 'Negative Tweets',
+                           data: [
+                               {x: 20, y: 5, r: 12},
+                               {x: 25, y: 25, r: 6},
+                               {x: 30, y: 17, r: 5},
+                               {x: 44, y: 25, r: 16},
+                               {x: 36, y: 13, r: 12},
+                               {x: 1, y: 14, r: 7},
+                               {x: 45, y: 45, r: 9},
+                               {x: 27, y: 24, r: 5},
+                               {x: 16, y: 2, r: 14},
+                           ],
+                           backgroundColor:"#FF6384",
+                           hoverBackgroundColor: "#FF6384",
+                       }, {
+                           label: 'Positive Tweets',
+                           data: [
+                               {x: 43, y: 5, r: 12},
+                               {x: 25, y: 25, r: 6},
+                               {x: 35, y: 5, r: 5},
+                               {x: 16, y: 25, r: 16},
+                               {x: 26, y: 13, r: 12},
+                               {x: 17, y: 43, r: 7},
+                               {x: 34, y: 45, r: 9},
+                               {x: 3, y: 3, r: 5},
+                               {x: 6, y: 2, r: 14},
+                           ],
+                           backgroundColor: "#00DD99",
+                           hoverBackgroundColor: "#00DD99"
+                       }]
+                   },
+            options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                max: {{}},
+                                min: 0,
+                                stepSize: 5
+                            }
+                        }]
+                    }
+                }
+        });
+    </script>
+
+</body>
+
+</html>
