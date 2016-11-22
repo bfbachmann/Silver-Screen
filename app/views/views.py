@@ -5,7 +5,9 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import *
+from app.models.models import *
+from app.models.helpers import *
+from app.views.helpers import *
 import datetime
 from django.utils import timezone
 from django.contrib import messages
@@ -72,7 +74,7 @@ def results(request):
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term
-        search_term = request.GET['query']
+        search_term = request.GET['query'].replace('&amp;', '&')
         movie = Movie()
         blank_form = QueryForm()
         data_to_render = {'error_message': ''}
@@ -107,7 +109,7 @@ def results(request):
         ## If no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find a movie related to ' + search_term
             return render(request, 'error.html', data_to_render)
         else:
             movie.updateViews()
@@ -145,42 +147,21 @@ def results(request):
             ## If we have no raw tweets to process raise error
             if not raw_tweets or len(raw_tweets) == 0:
                 print('ERROR: No tweets found')
-                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about ' + movie.Title
                 return render(request, 'error.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
-        if movie.useSimplified == True:
+        if ':' in movie.Title:
             messages.add_message(request, messages.INFO,
-                                 "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.SimplifiedTitle + " instead.")
+                                 "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.Title.split(':')[0] + " instead.")
 
         ## If there aren't enough tweets to display tell the user
         if len(clean_tweets) < 5:
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about that movie for analysis.'
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.'
             return render(request, 'error.html', data_to_render)
 
-        ## Chart sentiment scores of tweets
-        overall_score = get_overall_sentiment_score(clean_tweets)
-        polarity = get_polarity(clean_tweets)
-        negative_data, positive_data, neutral_count = create_chart_datasets(clean_tweets)
-        tweets_to_display = get_tweets_to_display(clean_tweets)
-
-        ## Save our new sentiment data to the db
-        save_new_sentiment(overall_score, movie)
-
-        ## Prepare data to render on results page
-        data_to_render = {  'form'          : QueryForm(request.POST),
-                            'tweets'        : tweets_to_display,
-                            'movie'         : movie,
-                            'overall_score' : overall_score,
-                            'polarity'      : polarity,
-                            'new_form'      : QueryForm(),
-                            'negative_data' : negative_data, # data for the chart
-                            'positive_data' : positive_data, # data for the chart
-                            'negative_count': len(negative_data), # data for the chart
-                            'positive_count': len(positive_data), # data for the chart
-                            'neutral_count' : neutral_count # data for the chart
-                        }
+        data_to_render = prepare_data_for_render(request, clean_tweets, movie)
         return render(request, 'data.html', data_to_render)
 
     ## Otherwise return METHOD NOT ALLOWED
@@ -189,6 +170,7 @@ def results(request):
 
 ## =============================================================================
 
+## Respond to request for about page
 def about(request):
     return render(request, 'about.html')
 

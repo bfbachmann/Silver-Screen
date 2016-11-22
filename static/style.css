@@ -94,7 +94,15 @@ img.rating-icon {
 
 .tooltip-inner {
     max-width: 350px !important;
-   width: 350px !important;
+    width: 350px !important;
+}
+
+.col-sm-4 {
+    padding: 5px;
+}
+
+.no-padding {
+    padding: 0px !important;
 }
 
 @keyframes spin {
@@ -102,7 +110,11 @@ img.rating-icon {
     100% { transform: rotate(360deg); }
 }
 
-#bubble-chart, #pie-chart {
+#pie-chart {
+    display: inline-block;
+}
+
+#bubble-chart, #line-chart {
     display: inline-block;
     margin-top: 30px;
 }
