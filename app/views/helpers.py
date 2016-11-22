@@ -53,6 +53,7 @@ def create_chart_datasets(clean_tweets):
                         'y': round(abs(score)*100,1),
                         'x': str(tweet.created_at),
                         'r': 5 + r,
+                        'tweet': tweet.text,
                     }
 
             if score < 0:
