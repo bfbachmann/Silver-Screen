@@ -1,4 +1,4 @@
-# Silver Screen [![Build Status](https://travis-ci.org/bfbachmann/Silver-Screen.svg?branch=dev)](https://travis-ci.org/bfbachmann/Silver-Screen)
+# Silver Screen [![Build Status](https://travis-ci.org/bfbachmann/Silver-Screen.svg?branch=master)](https://travis-ci.org/bfbachmann/Silver-Screen)
 ## Twitter sentiment mining and analysis application
 
 CPEN 321 Project Sept 2016 - Nov 2016
