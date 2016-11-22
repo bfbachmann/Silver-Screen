@@ -517,3 +517,4 @@ if __name__ == '__main__':
     demo("I've never loved that movie")
     demo("I've never loved this movie so much")
     demo("Never have we so loved a movie")
+    demo("I htae Michael bay films, and this one scks")

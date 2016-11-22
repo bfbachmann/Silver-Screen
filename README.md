@@ -3,22 +3,56 @@
 
 CPEN 321 Project Sept 2016 - Nov 2016
 
-See ```docs``` directory for documentation
+The live version of Silver Screen can be found [here](https://silverscrn.herokuapp.com/).
 
-See ```dev``` branch for latest code. 
+_Note:_ The live version of the site represents the current state of the code in ```master```, not ```dev```.
+
+See ```docs``` directory and check out our Github Wiki for design documentation.
+
+See ```dev``` branch for latest code.
+
 
 ## Documentation Links
+Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
+
+Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlVRYyGUr6k0v0zUYX_COgLFxeTlp4fbnfA/edit#gid=0)
+
+Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
+
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
 [OMDb documentation](https://github.com/dgilland/omdb.py)
 
 [Chart.js documentation](http://www.chartjs.org/docs/#bubble-chart-introduction)
 
-Design Document: [here](https://docs.google.com/document/d/1dcyPxOl4ow4xKoFgt6TrqmlBqRJRLbmeUN1lyH9fY58/edit#)
 
-Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlVRYyGUr6k0v0zUYX_COgLFxeTlp4fbnfA/edit#gid=0)
+## Repository Structure
 
-Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
+### Sentiment Analysis
+
+All source code responsible for tweet sentiment analysis can be found in the `sentimentanalysis` directory. The class `TweetSenitment` in `analyzer.py` is the wrapper for all sentiment analysis functionality. See `sentimentanalysis/lexicon_done.txt` for the full seniment analysis lexicon.
+
+### SilverScreen Configuration
+
+Configuration files like `settings.py` can be found in the `SilverScreen` directory. Note that the application's routing is managed by `urls.py` in the `SilverScreen` directory. This routing makes use of the lower-level routing specified in `app/urls.py`.
+
+### Models
+
+All data and API wrappers can be found in `app/models.py`.
+
+### Views and Templates
+
+The application's major control flows (responses to requests) are handled in `app/views.py`. HTML templates rendered in responses are stored in `app/templates`.
+
+### Tests
+
+Tests can be found in `app/tests.py`.
+
+Once you have you environment set up you can run tests manually with
+```python
+$ python manage.py test
+```
+from the project directory in Vagrant.
 
 ## Setup
 
@@ -131,6 +165,7 @@ Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLys
     ```shell
     $ cd /vagrant
     $ sudo pip install -r requirements.txt # if you don't already have the requirements installed
+    $ python manage.py migrate
     $ python manage.py runserver
     ```
 
