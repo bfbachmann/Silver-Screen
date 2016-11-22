@@ -3,14 +3,11 @@
 ## =============================================================================
 ## - Manage data
 
-<<<<<<< HEAD:app/models.py
 from django import forms
 import twitter
 import yaml
 import os
 import omdb
-=======
->>>>>>> 913a09fd0e20b44de996c68794070f4dab4fc97b:app/models/models.py
 import datetime
 import twitter
 from django import forms
@@ -26,52 +23,6 @@ class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100, required=False)
 
 ## =============================================================================
-<<<<<<< HEAD:app/models.py
-##  TwitterAPI
-## =============================================================================
-
-## API wrapper for Twitter
-class TwitterAPI(object):
-
-    ## Initialisation
-    def __init__(self):
-        self.api = twitter.Api(consumer_key=os.environ['consumer_key'], consumer_secret=os.environ['consumer_secret'], access_token_key=os.environ['access_token_key'],  access_token_secret=os.environ['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
-
-    ## Request tweets for a given movie
-    def search_movie(self, movie):
-        """
-        :param movie: a Movie object with valid fields
-        :return tweets: A List<twitter.models.Status> containing statuses posted between one year before the movie was
-                        released and the current date if movie is a Movie object
-                        Otherwise returns None
-        """
-        if type(movie) != Movie or (not isinstance(movie.Title, str) and not isinstance(movie.Title, unicode)):
-            return None
-
-        current_datetime = datetime.datetime.now()
-        tweets = []
-
-        for diff in range(0, 6):
-            from_date = (current_datetime - datetime.timedelta(days=7-diff)).strftime('%Y-%m-%d')
-            to_date = (current_datetime - datetime.timedelta(days=6-diff)).strftime('%Y-%m-%d')
-
-            ## Make search request
-            ## Request not to recieve tweets that contain links, follow the RT pattern of retweets
-            response = self.api.GetSearch(term='"'+movie.Title +'" -filter:links -RT', since=from_date, until=to_date, lang='en', result_type='mixed')
-
-            for tweet in response:
-                ## Tag movie with imdbID
-                tweet.imdbID = movie.imdbID
-
-                ## Only append Tweets in English
-                if tweet.lang == 'en' or tweet.user.lang == 'en':
-                    tweets.append(tweet)
-
-        return tweets
-
-## =============================================================================
-=======
->>>>>>> 913a09fd0e20b44de996c68794070f4dab4fc97b:app/models/models.py
 ##  Movie
 ## =============================================================================
 
