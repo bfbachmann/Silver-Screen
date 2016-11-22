@@ -3,25 +3,30 @@
 ## =============================================================================
 ## - Manage data
 
+<<<<<<< HEAD:app/models.py
 from django import forms
 import twitter
 import yaml
 import os
 import omdb
+=======
+>>>>>>> 913a09fd0e20b44de996c68794070f4dab4fc97b:app/models/models.py
 import datetime
+import twitter
+from django import forms
 from django.db import models
+from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
-
 
 ## =============================================================================
 ##  QueryForm
 ## =============================================================================
 
-
 class QueryForm(forms.Form):
     query = forms.CharField(label='Movie Title', max_length=100, required=False)
 
 ## =============================================================================
+<<<<<<< HEAD:app/models.py
 ##  TwitterAPI
 ## =============================================================================
 
@@ -65,20 +70,22 @@ class TwitterAPI(object):
         return tweets
 
 ## =============================================================================
+=======
+>>>>>>> 913a09fd0e20b44de996c68794070f4dab4fc97b:app/models/models.py
 ##  Movie
 ## =============================================================================
 
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    YomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
     Genres = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
     tomatoRating = models.CharField(max_length=32, null=True, blank=True)
-    tomatorUserRating = models.CharField(max_length=32, null=True, blank=True)
+    tomatoUserRating = models.CharField(max_length=32, null=True, blank=True)
     plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
@@ -88,7 +95,7 @@ class Movie(models.Model):
     param_defaults = {
         'Title': None,
         'Year': None,
-        'YomatoURL': None,
+        'TomatoURL': None,
         'Actors': None,
         'BoxOffice': None,
         'Genres': None,
@@ -96,11 +103,11 @@ class Movie(models.Model):
         'imdbRating': None,
         'tomatoRating': None,
         'tomatoUserRating': None,
-        'Plot': None,
+        'plot': None,
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
-        'recentVisits': None
+        'recentVisits': None,
     }
 
     def __unicode__(self):
@@ -111,7 +118,8 @@ class Movie(models.Model):
     def fillWithJsonObject(self, jsonObject):
         """
         :param jsonObject: a JSON Object containing information about a movie returned by the OMDbAPI
-        :return self: this movie, udpated with the relevant data from the given jsonObject
+        :return self:   this movie, udpated with the relevant data from the given jsonObject if it is valid
+                        otherwise returns None
         """
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
@@ -121,61 +129,22 @@ class Movie(models.Model):
                             value = float(value)
                         except:
                             value = None # TODO: we'll have to handle this upstream
+
+                    if isinstance(value, str):
+                        if value == "N/A":
+                            value = None
+                        else:
+                            value = value.strip()
                     setattr(self, key, value)
+
             self.save()
-        return self
-
-    def updateViews(self):
-        self.recentVisits = self.recentVisits+1
-        self.save()
-
-## =============================================================================
-##  OMDbAPI
-## =============================================================================
-
-## API wrapper for OMDb
-class OMDbAPI(object):
-
-    def __init__(self):
-        pass
-
-
-    ## Search the OMDb database for movies with titles that match the requested movie
-    def search(self, title):
-        """
-        :params title: a string holding the title of the movie
-        :return movie: if at least one movie with a similar title is found, this is a Movie object
-                      created from the most relevant result returned by OMDb, otherwise it is empty list
-        """
-
-        ## Search for all movies with similar titles
-        try:
-            matching_movies = omdb.search_movie(title)
-        except:
-            raise ConnectionError
-
-        ## For now, only return most popular movie
-        highestIMDB = 0
-
-        if matching_movies:
-            movie = matching_movies.pop(0)
-            print("MOVIE: " + movie.title)
-
-            try:
-                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
-            except Movie.DoesNotExist:
-                movieObj = None
-
-            if not movieObj:
-                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-                movieObj = Movie().fillWithJsonObject(response)
-
-
-
-            return movieObj
+            return self
         else:
             return None
 
+    def updateViews(self):
+        self.recentVisits += 1
+        self.save()
 
 ## =============================================================================
 ##  Tweet
@@ -218,19 +187,20 @@ class Tweet(models.Model):
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
         ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
-        if tweet is None or not isinstance(tweet, twitter.Status) or len(Tweet.objects.filter(tweetID=self.tweetID)):
-            return self
+        if tweet is None or not isinstance(tweet, twitter.Status) or Tweet.objects.filter(tweetID=tweet.id):
+            return None
 
         ## Assume the Tweet is in the users location if we have no info
-        if type(tweet.location) is not str:
+        if not isinstance(tweet.location, str):
             tweet.location = tweet.user.location
+
         ## Assume the Tweet is in the users langauge if we have no info
-        if tweet.lang is None and tweet.user.lang is not None:
+        if tweet.lang is None and tweet.user is not None and tweet.user.lang is not None:
             tweet.lang = tweet.user.lang
 
         ## Values from API request
-        self.text=tweet.text
-        self.created_at=datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        self.text=tweet.text.replace('&amp;', '&')
+        self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
         self.location=tweet.location
@@ -238,12 +208,12 @@ class Tweet(models.Model):
         self.user_name=tweet.user.name
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
-        self.tweetID = tweet.id
-        self.imdbID = tweet.imdbID
+        self.tweetID=tweet.id
+        self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
-        filtered_text = self.text.split()
-        for word in movie_title.split():
+        filtered_text = self.text.lower().split()
+        for word in movie_title.lower().split():
             if word in filtered_text:
                 filtered_text.remove(word)
 
@@ -263,6 +233,9 @@ class Tweet(models.Model):
     def __unicode__(self):
         return str(self.tweetID)
 
+## =============================================================================
+##  Sentiment
+## =============================================================================
 
 class Sentiment(models.Model):
    Title = models.CharField(max_length=128)

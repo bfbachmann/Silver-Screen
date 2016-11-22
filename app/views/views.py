@@ -4,12 +4,15 @@
 ## - Manage web requests and responses
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from .models import *
+from django.http import HttpResponse
+from app.models.models import *
+from app.models.helpers import *
+from app.views.helpers import *
 import datetime
 from django.utils import timezone
 from django.contrib import messages
 from imdbpie import Imdb
+from django.views.decorators.cache import never_cache
 import random
 
 ## Initialize api objects
@@ -30,7 +33,7 @@ def index(request):
 
         ## Check whether it's valid:
         if query_form.is_valid():
-            # redirect to a new URL:
+            ## redirect to a new URL:
             return render(request, 'results.html', {'form': query_form})
 
     ## If a GET we'll create a blank form
@@ -51,27 +54,41 @@ def index(request):
 
 ## =============================================================================
 
+## Takes the user to a loading page that waits for results from the server
+def get_results_page(request):
+    if request.method == 'POST':
+        return render(request, 'results.html', {'query': request.POST['query']})
+
+    return HttpResponse(status=403)
+
+## =============================================================================
+
 ## Handle User request for a certain movie and either progress to showing results
 ## from tweets or display informative error messages to the user
+@never_cache
 def results(request):
     """
     If the method is a POST processes the query the user submitted and returns the results
     Otherwise redirects to index
     """
     ## If its a post request we need to process it
-    if request.method == 'POST':
+    if request.method == 'GET':
         ## Extract the search term
-        search_term = request.POST['query']
+        search_term = request.GET['query'].replace('&amp;', '&')
         movie = Movie()
         blank_form = QueryForm()
-        data_to_render = {'error_message': None, 'form': blank_form}
+        data_to_render = {'error_message': ''}
         sum_scores = 0
         num_nonzero = 1
 
-        if not search_term:
+        ## If no search term was given, pick a random one
+        if not search_term or search_term == '':
+            print('No search term given, picking random movie')
             imdb = Imdb()
             top250 = imdb.top_250()
             search_term = random.choice(top250).get('title')
+
+        print('Search term: ' + search_term)
 
         ## Try get the movie from the database
         try:
@@ -87,13 +104,13 @@ def results(request):
             except ConnectionError:
                 print('ERROR: Cannot connect to OMDb')
                 data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
-                return render(request, 'index.html', data_to_render)
+                return render(request, 'error.html', data_to_render)
 
-        # if no movie object was reaturned by OMDB or the database raise error
+        ## If no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find a move with that title.'
-            return render(request, 'index.html', data_to_render)
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find a movie related to ' + search_term
+            return render(request, 'error.html', data_to_render)
         else:
             movie.updateViews()
 
@@ -103,7 +120,6 @@ def results(request):
         # if we don't have any sentiment about that movie just continue
         except:
             print("No sentiment found in database for this movie")
-
 
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
         clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
@@ -117,51 +133,46 @@ def results(request):
 
             try:
                 raw_tweets = twitter.search_movie(movie)
+
             except Exception as error:
                 if type(error) is ValueError:
                     print('ERROR: Rate limit exceeded')
                     data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
                 else:
-                    print('ERROR: cannot connect to Twitter')
+                    print('ERROR: cannot connect to Twitter: ' + str(error))
                     data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
-                return render(request, 'index.html', data_to_render)
+                return render(request, 'error.html', data_to_render)
 
 
             ## If we have no raw tweets to process raise error
             if not raw_tweets or len(raw_tweets) == 0:
                 print('ERROR: No tweets found')
-                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about that movie.'
-                return render(request, 'index.html', data_to_render)
+                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about ' + movie.Title
+                return render(request, 'error.html', data_to_render)
             else:
                 clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
 
-        ## Chart sentiment scores of tweets
-        overall_score = get_overall_sentiment_score(clean_tweets)
-        polarity = get_polarity(clean_tweets)
-        negative_data, positive_data  = create_chart_datasets(clean_tweets)
-        tweets_to_display = get_tweets_to_display(clean_tweets)
+        if ':' in movie.Title:
+            messages.add_message(request, messages.INFO,
+                                 "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.Title.split(':')[0] + " instead.")
 
-        ## Save our new sentiment data to the db
-        save_new_sentiment(overall_score, movie)
+        ## If there aren't enough tweets to display tell the user
+        if len(clean_tweets) < 5:
+            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.'
+            return render(request, 'error.html', data_to_render)
 
-        ## Prepare data to render on results page
-        data_to_render = {  'form': QueryForm(request.POST),
-                            'tweets': tweets_to_display,
-                            'movie': movie,
-                            'overall_score': overall_score,
-                            'polarity': polarity,
-                            'new_form': QueryForm(),
-                            'negative_data': negative_data, # data for the chart
-                            'positive_data': positive_data, # data for the chart
-                        }
-        return render(request, 'results.html', data_to_render)
+        data_to_render = prepare_data_for_render(request, clean_tweets, movie)
+        return render(request, 'data.html', data_to_render)
 
-    ## If request is GET redirect to index
-    elif request.method == 'GET':
-        return HttpResponseRedirect('/index/')
     ## Otherwise return METHOD NOT ALLOWED
     else:
         return HttpResponse(status=403)
+
+## =============================================================================
+
+## Respond to request for about page
+def about(request):
+    return render(request, 'about.html')
 
 ## =============================================================================
 
@@ -169,29 +180,38 @@ def results(request):
 def create_chart_datasets(clean_tweets):
     negative_data = []
     positive_data = []
+    neutral_count = 0
 
     for tweet in clean_tweets:
         score = tweet.sentiment_score
 
         if score != 0:
             data = {
-                        'y': abs(score)*100,
+                        'y': round(abs(score)*100,1),
                         'x': str(tweet.created_at),
-                        'r': 5
+                        'r': 5,
+                        'tweet' : tweet.text
                     }
 
             if score < 0:
                 negative_data.append(data)
             else:
                 positive_data.append(data)
+        else:
+            neutral_count += 1
 
-    return negative_data, positive_data
+    return negative_data, positive_data, neutral_count
 
 ## =============================================================================
 
 ## Returns a list of Tweet objects created from the given list of twitter.Status objects
 def get_clean_tweets(raw_tweets, movie_title):
-    return [Tweet().fillWithStatusObject(raw_tweet, movie_title) for raw_tweet in raw_tweets]
+    clean_tweets = []
+    for raw_tweet in raw_tweets:
+        clean_tweet = Tweet().fillWithStatusObject(raw_tweet, movie_title)
+        if clean_tweet:
+            clean_tweets.append(clean_tweet)
+    return clean_tweets
 
 ## =============================================================================
 
@@ -220,6 +240,8 @@ def get_overall_sentiment_score(clean_tweets):
             num_nonzero += 1
             sum_scores += score
 
+    if num_nonzero == 0:
+        return 5.0
     return round((sum_scores/num_nonzero+1)*5, 1)
 
 ## =============================================================================

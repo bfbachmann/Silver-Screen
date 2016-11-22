@@ -30,7 +30,7 @@ class Movie(object):
         self.param_defaults = {
              'Title':None,
              'Year':None,
-             'YomatoURL':None,
+             'TomatoURL':None,
              'Actors':None,
              'BoxOffice':None,
              'Genres':None,

@@ -1,4 +1,4 @@
-# Silver Screen
+# Silver Screen [![Build Status](https://travis-ci.org/bfbachmann/Silver-Screen.svg?branch=dev)](https://travis-ci.org/bfbachmann/Silver-Screen)
 ## Twitter sentiment mining and analysis application
 
 CPEN 321 Project Sept 2016 - Nov 2016
@@ -24,6 +24,33 @@ Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLys
 
 [Chart.js documentation](http://www.chartjs.org/docs/#bubble-chart-introduction)
 
+## Repository Structure
+
+### Sentiment Analysis
+
+All source code responsible for tweet sentiment analysis can be found in the `sentimentanalysis` directory. The class `TweetSenitment` in `analyzer.py` is the wrapper for all sentiment analysis functionality. See `sentimentanalysis/lexicon_done.txt` for the full seniment analysis lexicon.
+
+### SilverScreen Configuration
+
+Configuration files like `settings.py` can be found in the `SilverScreen` directory. Note that the application's routing is managed by `urls.py` in the `SilverScreen` directory. This routing makes use of the lower-level routing specified in `app/urls.py`.
+
+### Models
+
+All data and API wrappers can be found in `app/models`.
+
+### Views and Templates
+
+The application's major control flows (responses to requests) are handled in `app/views/views.py`. HTML templates rendered in responses are stored in `app/templates`.
+
+### Tests
+
+Tests can be found in `app/tests`.
+
+Once you have you environment set up you can run tests manually with
+```python
+$ python manage.py test app.tests
+```
+from the project directory in Vagrant.
 
 ## Repository Structure
 
