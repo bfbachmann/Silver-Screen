@@ -1,0 +1,1096 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2241a3ef-af1d-445a-b3ba-739a6476054f" name="Default" comment="" />
+    <ignored path="Silver-Screen.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test_polarity_scores__1_.coverage" NAME="Unittest TestTweetSentiment.test_polarity_scores (1) Coverage Results" MODIFIED="1478757310734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$analyzer.coverage" NAME="analyzer Coverage Results" MODIFIED="1478764092909" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test__question_boost.coverage" NAME="Unittest TestTweetSentiment.test__question_boost Coverage Results" MODIFIED="1478794483372" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittests_in_test_tweetSentiment.coverage" NAME="Unittests in test_tweetSentiment Coverage Results" MODIFIED="1478757219959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test_polarity_scores.coverage" NAME="Unittest TestTweetSentiment.test_polarity_scores Coverage Results" MODIFIED="1478794735762" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test_negate.coverage" NAME="Unittest TestTweetSentiment.test_negate Coverage Results" MODIFIED="1478760209506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test__contains_least.coverage" NAME="Unittest TestTweetSentiment.test__contains_least Coverage Results" MODIFIED="1478758516313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test__organize_scores.coverage" NAME="Unittest TestTweetSentiment.test__organize_scores Coverage Results" MODIFIED="1478761970730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test_normalize.coverage" NAME="Unittest TestTweetSentiment.test_normalize Coverage Results" MODIFIED="1478762521905" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittests_in_TestTweetSentiment.coverage" NAME="Unittests in TestTweetSentiment Coverage Results" MODIFIED="1478756626266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test__exclamation_boost.coverage" NAME="Unittest TestTweetSentiment.test__exclamation_boost Coverage Results" MODIFIED="1478794456072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test_capitalized.coverage" NAME="Unittest TestTweetSentiment.test_capitalized Coverage Results" MODIFIED="1478794188110" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+    <SUITE FILE_PATH="coverage/Silver-Screen$Unittest_TestTweetSentiment_test__words_and_symbols.coverage" NAME="Unittest TestTweetSentiment.test__words_and_symbols Coverage Results" MODIFIED="1478763479409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/sentimentanalysis" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="Silver-Screen" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="analyzer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sentimentanalysis/analyzer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding>
+                <element signature="e#84#111#1" expanded="false" />
+                <element signature="e#803#938#0" expanded="false" />
+                <element signature="e#1050#1668#0" expanded="false" />
+                <element signature="e#1670#1963#1" expanded="false" />
+                <element signature="e#1991#4562#0" expanded="false" />
+                <element signature="e#4564#4969#1" expanded="false" />
+                <element signature="e#4971#4996#1" expanded="false" />
+                <element signature="e#5019#5133#0" expanded="false" />
+                <element signature="e#5170#5233#1" expanded="false" />
+                <element signature="e#5370#5808#0" expanded="false" />
+                <element signature="e#5855#6158#0" expanded="false" />
+                <element signature="e#6199#6379#1" expanded="false" />
+                <element signature="e#6811#6862#0" expanded="false" />
+                <element signature="e#7141#9197#0" expanded="false" />
+                <element signature="e#7141#7611#1" expanded="false" />
+                <element signature="e#7712#9134#0" expanded="false" />
+                <element signature="e#7928#8055#0" expanded="false" />
+                <element signature="e#8123#9054#0" expanded="false" />
+                <element signature="e#8282#9054#0" expanded="false" />
+                <element signature="e#8282#8347#0" expanded="false" />
+                <element signature="e#9253#9933#0" expanded="false" />
+                <element signature="e#9253#9623#1" expanded="false" />
+                <element signature="e#9719#9776#0" expanded="false" />
+                <element signature="e#10005#10860#0" expanded="false" />
+                <element signature="e#10005#10311#1" expanded="false" />
+                <element signature="e#10513#10649#0" expanded="false" />
+                <element signature="e#10951#12304#0" expanded="false" />
+                <element signature="e#10951#11291#1" expanded="false" />
+                <element signature="e#11339#11427#0" expanded="false" />
+                <element signature="e#11476#11838#0" expanded="false" />
+                <element signature="e#11887#12280#0" expanded="false" />
+                <element signature="e#12386#13465#0" expanded="false" />
+                <element signature="e#12386#12676#1" expanded="false" />
+                <element signature="e#12758#13438#0" expanded="false" />
+                <element signature="e#12969#13438#0" expanded="false" />
+                <element signature="e#13083#13225#0" expanded="false" />
+                <element signature="e#13296#13438#0" expanded="false" />
+                <element signature="e#13539#14323#0" expanded="false" />
+                <element signature="e#13539#13817#1" expanded="false" />
+                <element signature="e#13866#13917#0" expanded="false" />
+                <element signature="e#13953#14043#0" expanded="false" />
+                <element signature="e#13994#14043#0" expanded="false" />
+                <element signature="e#14190#14301#0" expanded="false" />
+                <element signature="e#14405#15325#0" expanded="false" />
+                <element signature="e#14405#14823#1" expanded="false" />
+                <element signature="e#14939#15300#0" expanded="false" />
+                <element signature="e#15171#15300#0" expanded="false" />
+                <element signature="e#15375#15637#0" expanded="false" />
+                <element signature="e#15699#15997#0" expanded="false" />
+                <element signature="e#16056#16428#0" expanded="false" />
+                <element signature="e#16240#16395#0" expanded="false" />
+                <element signature="e#16494#16873#0" expanded="false" />
+                <element signature="e#16616#16811#0" expanded="false" />
+                <element signature="e#16930#18365#0" expanded="false" />
+                <element signature="e#16957#17972#0" expanded="false" />
+                <element signature="e#18000#18101#0" expanded="false" />
+                <element signature="e#18148#18328#0" expanded="false" />
+                <element signature="e#18429#18889#0" expanded="false" />
+                <element signature="e#18429#18789#1" expanded="false" />
+                <element signature="e#18943#19793#0" expanded="false" />
+                <element signature="e#18943#19237#1" expanded="false" />
+                <element signature="e#19837#20355#0" expanded="false" />
+                <element signature="e#19837#20042#1" expanded="false" />
+                <element signature="e#20255#20329#0" expanded="false" />
+                <element signature="e#20395#20548#0" expanded="false" />
+                <element signature="e#20395#20533#1" expanded="false" />
+                <element signature="e#20582#21025#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_included_score.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_included_score.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="247">
+              <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+              <folding>
+                <element signature="e#0#29#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="lexicon_done.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sentimentanalysis/lexicon_done.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_tweetSentiment.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#29#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/tests/test_tweetSentiment.py" />
+        <option value="$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py" />
+        <option value="$PROJECT_DIR$/sentimentanalysis/analyzer.py" />
+        <option value="$PROJECT_DIR$/sentimentanalysis/test_included_score.py" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="55" />
+    <option name="y" value="22" />
+    <option name="width" value="1385" />
+    <option name="height" value="878" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane />
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests" />
+    <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
+  </component>
+  <component name="RunManager" selected="Python tests.Unittest TestTweetSentiment.test_polarity_scores">
+    <configuration default="false" name="Unittest TestTweetSentiment.test_polarity_scores" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sentimentanalysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py" />
+      <option name="CLASS_NAME" value="TestTweetSentiment" />
+      <option name="METHOD_NAME" value="test_polarity_scores" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="analyzer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sentimentanalysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sentimentanalysis/analyzer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest TestTweetSentiment.test_capitalized" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sentimentanalysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py" />
+      <option name="CLASS_NAME" value="TestTweetSentiment" />
+      <option name="METHOD_NAME" value="test_capitalized" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest TestTweetSentiment.test__exclamation_boost" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sentimentanalysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py" />
+      <option name="CLASS_NAME" value="TestTweetSentiment" />
+      <option name="METHOD_NAME" value="test__exclamation_boost" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest TestTweetSentiment.test__question_boost" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/sentimentanalysis" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py" />
+      <option name="CLASS_NAME" value="TestTweetSentiment" />
+      <option name="METHOD_NAME" value="test__question_boost" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Python.DjangoServer" factoryName="Django server">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <module name="Silver-Screen" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Silver-Screen" type="Python.DjangoServer" factoryName="Django server">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Silver-Screen" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method />
+    </configuration>
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="Django server.Silver-Screen" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test_polarity_scores" />
+      <item index="2" class="java.lang.String" itemvalue="Python.analyzer" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test_capitalized" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test__exclamation_boost" />
+      <item index="5" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test__question_boost" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test_polarity_scores" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test__question_boost" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test__exclamation_boost" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestTweetSentiment.test_capitalized" />
+        <item index="4" class="java.lang.String" itemvalue="Python.analyzer" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2241a3ef-af1d-445a-b3ba-739a6476054f" name="Default" comment="" />
+      <created>1478755959217</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1478755959217</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Unittest_TestTweetSentiment_test__exclamation_boost - 2016.11.10 at 08h 14m 17s.xml">
+      <configuration name="Unittest TestTweetSentiment.test__exclamation_boost" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test__question_boost - 2016.11.10 at 08h 14m 44s.xml">
+      <configuration name="Unittest TestTweetSentiment.test__question_boost" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test__words_and_symbols - 2016.11.09 at 23h 38m 00s.xml">
+      <configuration name="Unittest TestTweetSentiment.test__words_and_symbols" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_capitalized - 2016.11.10 at 08h 02m 43s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_capitalized" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_capitalized - 2016.11.10 at 08h 09m 50s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_capitalized" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_normalize - 2016.11.09 at 23h 18m 16s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_normalize" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_normalize - 2016.11.09 at 23h 19m 01s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_normalize" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_normalize - 2016.11.09 at 23h 22m 03s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_normalize" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_polarity_scores - 2016.11.09 at 23h 48m 37s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_polarity_scores" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittest_TestTweetSentiment_test_polarity_scores - 2016.11.10 at 08h 18m 57s.xml">
+      <configuration name="Unittest TestTweetSentiment.test_polarity_scores" configurationId="tests" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="55" y="22" width="1385" height="878" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18912882" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39939025" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+      <option name="time" value="27" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/analyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#84#111#1" expanded="false" />
+            <element signature="e#803#938#0" expanded="false" />
+            <element signature="e#1050#1668#0" expanded="false" />
+            <element signature="e#1670#1963#1" expanded="false" />
+            <element signature="e#1991#4562#0" expanded="false" />
+            <element signature="e#4564#4969#1" expanded="false" />
+            <element signature="e#4971#4996#1" expanded="false" />
+            <element signature="e#5019#5133#0" expanded="false" />
+            <element signature="e#5170#5233#1" expanded="false" />
+            <element signature="e#5370#5808#0" expanded="false" />
+            <element signature="e#5855#6158#0" expanded="false" />
+            <element signature="e#6199#6379#1" expanded="false" />
+            <element signature="e#6811#6862#0" expanded="false" />
+            <element signature="e#7141#9197#0" expanded="false" />
+            <element signature="e#7141#7611#1" expanded="false" />
+            <element signature="e#7712#9134#0" expanded="false" />
+            <element signature="e#7928#8055#0" expanded="false" />
+            <element signature="e#8123#9054#0" expanded="false" />
+            <element signature="e#8282#9054#0" expanded="false" />
+            <element signature="e#8282#8347#0" expanded="false" />
+            <element signature="e#9253#9933#0" expanded="false" />
+            <element signature="e#9253#9623#1" expanded="false" />
+            <element signature="e#9719#9776#0" expanded="false" />
+            <element signature="e#10005#10860#0" expanded="false" />
+            <element signature="e#10005#10311#1" expanded="false" />
+            <element signature="e#10513#10649#0" expanded="false" />
+            <element signature="e#10951#12304#0" expanded="false" />
+            <element signature="e#10951#11291#1" expanded="false" />
+            <element signature="e#11339#11427#0" expanded="false" />
+            <element signature="e#11476#11838#0" expanded="false" />
+            <element signature="e#11887#12280#0" expanded="false" />
+            <element signature="e#12386#13465#0" expanded="false" />
+            <element signature="e#12386#12676#1" expanded="false" />
+            <element signature="e#12758#13438#0" expanded="false" />
+            <element signature="e#12969#13438#0" expanded="false" />
+            <element signature="e#13083#13225#0" expanded="false" />
+            <element signature="e#13296#13438#0" expanded="false" />
+            <element signature="e#13539#14323#0" expanded="false" />
+            <element signature="e#13539#13817#1" expanded="false" />
+            <element signature="e#13866#13917#0" expanded="false" />
+            <element signature="e#13953#14043#0" expanded="false" />
+            <element signature="e#13994#14043#0" expanded="false" />
+            <element signature="e#14190#14301#0" expanded="false" />
+            <element signature="e#14405#15325#0" expanded="false" />
+            <element signature="e#14405#14823#1" expanded="false" />
+            <element signature="e#14939#15300#0" expanded="false" />
+            <element signature="e#15171#15300#0" expanded="false" />
+            <element signature="e#15375#15637#0" expanded="false" />
+            <element signature="e#15699#15997#0" expanded="false" />
+            <element signature="e#16056#16428#0" expanded="false" />
+            <element signature="e#16240#16395#0" expanded="false" />
+            <element signature="e#16494#16873#0" expanded="false" />
+            <element signature="e#16616#16811#0" expanded="false" />
+            <element signature="e#16930#18365#0" expanded="false" />
+            <element signature="e#16957#17972#0" expanded="false" />
+            <element signature="e#18000#18101#0" expanded="false" />
+            <element signature="e#18148#18328#0" expanded="false" />
+            <element signature="e#18429#18889#0" expanded="false" />
+            <element signature="e#18429#18789#1" expanded="false" />
+            <element signature="e#18943#19793#0" expanded="false" />
+            <element signature="e#18943#19237#1" expanded="false" />
+            <element signature="e#19837#20355#0" expanded="false" />
+            <element signature="e#19837#20042#1" expanded="false" />
+            <element signature="e#20255#20329#0" expanded="false" />
+            <element signature="e#20395#20548#0" expanded="false" />
+            <element signature="e#20395#20533#1" expanded="false" />
+            <element signature="e#20582#21025#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_included_score.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/lexicon_done.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/analyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="e#84#111#1" expanded="false" />
+            <element signature="e#803#938#0" expanded="false" />
+            <element signature="e#1050#1668#0" expanded="false" />
+            <element signature="e#1670#1963#1" expanded="false" />
+            <element signature="e#1991#4562#0" expanded="false" />
+            <element signature="e#4564#4969#1" expanded="false" />
+            <element signature="e#4971#4996#1" expanded="false" />
+            <element signature="e#5019#5133#0" expanded="false" />
+            <element signature="e#5170#5233#1" expanded="false" />
+            <element signature="e#5370#5808#0" expanded="false" />
+            <element signature="e#5855#6158#0" expanded="false" />
+            <element signature="e#6199#6379#1" expanded="false" />
+            <element signature="e#6811#6862#0" expanded="false" />
+            <element signature="e#7141#9197#0" expanded="false" />
+            <element signature="e#7141#7611#1" expanded="false" />
+            <element signature="e#7712#9134#0" expanded="false" />
+            <element signature="e#7928#8055#0" expanded="false" />
+            <element signature="e#8123#9054#0" expanded="false" />
+            <element signature="e#8282#9054#0" expanded="false" />
+            <element signature="e#8282#8347#0" expanded="false" />
+            <element signature="e#9253#9933#0" expanded="false" />
+            <element signature="e#9253#9623#1" expanded="false" />
+            <element signature="e#9719#9776#0" expanded="false" />
+            <element signature="e#10005#10860#0" expanded="false" />
+            <element signature="e#10005#10311#1" expanded="false" />
+            <element signature="e#10513#10649#0" expanded="false" />
+            <element signature="e#10951#12304#0" expanded="false" />
+            <element signature="e#10951#11291#1" expanded="false" />
+            <element signature="e#11339#11427#0" expanded="false" />
+            <element signature="e#11476#11838#0" expanded="false" />
+            <element signature="e#11887#12280#0" expanded="false" />
+            <element signature="e#12386#13465#0" expanded="false" />
+            <element signature="e#12386#12676#1" expanded="false" />
+            <element signature="e#12758#13438#0" expanded="false" />
+            <element signature="e#12969#13438#0" expanded="false" />
+            <element signature="e#13083#13225#0" expanded="false" />
+            <element signature="e#13296#13438#0" expanded="false" />
+            <element signature="e#13539#14323#0" expanded="false" />
+            <element signature="e#13539#13817#1" expanded="false" />
+            <element signature="e#13866#13917#0" expanded="false" />
+            <element signature="e#13953#14043#0" expanded="false" />
+            <element signature="e#13994#14043#0" expanded="false" />
+            <element signature="e#14190#14301#0" expanded="false" />
+            <element signature="e#14405#15325#0" expanded="false" />
+            <element signature="e#14405#14823#1" expanded="false" />
+            <element signature="e#14939#15300#0" expanded="false" />
+            <element signature="e#15171#15300#0" expanded="false" />
+            <element signature="e#15375#15637#0" expanded="false" />
+            <element signature="e#15699#15997#0" expanded="false" />
+            <element signature="e#16056#16428#0" expanded="false" />
+            <element signature="e#16240#16395#0" expanded="false" />
+            <element signature="e#16494#16873#0" expanded="false" />
+            <element signature="e#16616#16811#0" expanded="false" />
+            <element signature="e#16930#18365#0" expanded="false" />
+            <element signature="e#16957#17972#0" expanded="false" />
+            <element signature="e#18000#18101#0" expanded="false" />
+            <element signature="e#18148#18328#0" expanded="false" />
+            <element signature="e#18429#18889#0" expanded="false" />
+            <element signature="e#18429#18789#1" expanded="false" />
+            <element signature="e#18943#19793#0" expanded="false" />
+            <element signature="e#18943#19237#1" expanded="false" />
+            <element signature="e#19837#20355#0" expanded="false" />
+            <element signature="e#19837#20042#1" expanded="false" />
+            <element signature="e#20255#20329#0" expanded="false" />
+            <element signature="e#20395#20548#0" expanded="false" />
+            <element signature="e#20395#20533#1" expanded="false" />
+            <element signature="e#20582#21025#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_included_score.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/lexicon_done.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/analyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9462">
+          <caret line="498" column="0" selection-start-line="498" selection-start-column="0" selection-end-line="498" selection-end-column="0" />
+          <folding>
+            <element signature="e#84#111#1" expanded="false" />
+            <element signature="e#803#938#0" expanded="false" />
+            <element signature="e#1050#1668#0" expanded="false" />
+            <element signature="e#1670#1963#1" expanded="false" />
+            <element signature="e#1991#4562#0" expanded="false" />
+            <element signature="e#4564#4969#1" expanded="false" />
+            <element signature="e#4971#4996#1" expanded="false" />
+            <element signature="e#5019#5133#0" expanded="false" />
+            <element signature="e#5170#5233#1" expanded="false" />
+            <element signature="e#5370#5808#0" expanded="false" />
+            <element signature="e#5855#6158#0" expanded="false" />
+            <element signature="e#6199#6379#1" expanded="false" />
+            <element signature="e#6811#6862#0" expanded="false" />
+            <element signature="e#7141#9197#0" expanded="false" />
+            <element signature="e#7141#7611#1" expanded="false" />
+            <element signature="e#7712#9134#0" expanded="false" />
+            <element signature="e#7928#8055#0" expanded="false" />
+            <element signature="e#8123#9054#0" expanded="false" />
+            <element signature="e#8282#9054#0" expanded="false" />
+            <element signature="e#8282#8347#0" expanded="false" />
+            <element signature="e#9253#9933#0" expanded="false" />
+            <element signature="e#9253#9623#1" expanded="false" />
+            <element signature="e#9719#9776#0" expanded="false" />
+            <element signature="e#10005#10860#0" expanded="false" />
+            <element signature="e#10005#10311#1" expanded="false" />
+            <element signature="e#10513#10649#0" expanded="false" />
+            <element signature="e#10951#12304#0" expanded="false" />
+            <element signature="e#10951#11291#1" expanded="false" />
+            <element signature="e#11339#11427#0" expanded="false" />
+            <element signature="e#11476#11838#0" expanded="false" />
+            <element signature="e#11887#12280#0" expanded="false" />
+            <element signature="e#12386#13465#0" expanded="false" />
+            <element signature="e#12386#12676#1" expanded="false" />
+            <element signature="e#12758#13438#0" expanded="false" />
+            <element signature="e#12969#13438#0" expanded="false" />
+            <element signature="e#13083#13225#0" expanded="false" />
+            <element signature="e#13296#13438#0" expanded="false" />
+            <element signature="e#13539#14323#0" expanded="false" />
+            <element signature="e#13539#13817#1" expanded="false" />
+            <element signature="e#13866#13917#0" expanded="false" />
+            <element signature="e#13953#14043#0" expanded="false" />
+            <element signature="e#13994#14043#0" expanded="false" />
+            <element signature="e#14190#14301#0" expanded="false" />
+            <element signature="e#14405#15325#0" expanded="false" />
+            <element signature="e#14405#14823#1" expanded="false" />
+            <element signature="e#14939#15300#0" expanded="false" />
+            <element signature="e#15171#15300#0" expanded="false" />
+            <element signature="e#15375#15637#0" expanded="false" />
+            <element signature="e#15699#15997#0" expanded="false" />
+            <element signature="e#16056#16428#0" expanded="false" />
+            <element signature="e#16240#16395#0" expanded="false" />
+            <element signature="e#16494#16873#0" expanded="false" />
+            <element signature="e#16616#16811#0" expanded="false" />
+            <element signature="e#16930#18365#0" expanded="false" />
+            <element signature="e#16957#17972#0" expanded="false" />
+            <element signature="e#18000#18101#0" expanded="false" />
+            <element signature="e#18148#18328#0" expanded="false" />
+            <element signature="e#18429#18889#0" expanded="false" />
+            <element signature="e#18429#18789#1" expanded="false" />
+            <element signature="e#18943#19793#0" expanded="false" />
+            <element signature="e#18943#19237#1" expanded="false" />
+            <element signature="e#19837#20355#0" expanded="false" />
+            <element signature="e#19837#20042#1" expanded="false" />
+            <element signature="e#20255#20329#0" expanded="false" />
+            <element signature="e#20395#20548#0" expanded="false" />
+            <element signature="e#20395#20533#1" expanded="false" />
+            <element signature="e#20582#21025#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="41" column="72" selection-start-line="41" selection-start-column="72" selection-end-line="41" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_tweetSentiment.py" />
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/nltk/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="640" column="0" selection-start-line="640" selection-start-column="0" selection-end-line="640" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/lexicon_done.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_included_score.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/analyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="e#84#111#1" expanded="false" />
+            <element signature="e#803#938#0" expanded="false" />
+            <element signature="e#1050#1668#0" expanded="false" />
+            <element signature="e#1670#1963#1" expanded="false" />
+            <element signature="e#1991#4562#0" expanded="false" />
+            <element signature="e#4564#4969#1" expanded="false" />
+            <element signature="e#4971#4996#1" expanded="false" />
+            <element signature="e#5019#5133#0" expanded="false" />
+            <element signature="e#5170#5233#1" expanded="false" />
+            <element signature="e#5370#5808#0" expanded="false" />
+            <element signature="e#5855#6158#0" expanded="false" />
+            <element signature="e#6199#6379#1" expanded="false" />
+            <element signature="e#6811#6862#0" expanded="false" />
+            <element signature="e#7141#9197#0" expanded="false" />
+            <element signature="e#7141#7611#1" expanded="false" />
+            <element signature="e#7712#9134#0" expanded="false" />
+            <element signature="e#7928#8055#0" expanded="false" />
+            <element signature="e#8123#9054#0" expanded="false" />
+            <element signature="e#8282#9054#0" expanded="false" />
+            <element signature="e#8282#8347#0" expanded="false" />
+            <element signature="e#9253#9933#0" expanded="false" />
+            <element signature="e#9253#9623#1" expanded="false" />
+            <element signature="e#9719#9776#0" expanded="false" />
+            <element signature="e#10005#10860#0" expanded="false" />
+            <element signature="e#10005#10311#1" expanded="false" />
+            <element signature="e#10513#10649#0" expanded="false" />
+            <element signature="e#10951#12304#0" expanded="false" />
+            <element signature="e#10951#11291#1" expanded="false" />
+            <element signature="e#11339#11427#0" expanded="false" />
+            <element signature="e#11476#11838#0" expanded="false" />
+            <element signature="e#11887#12280#0" expanded="false" />
+            <element signature="e#12386#13465#0" expanded="false" />
+            <element signature="e#12386#12676#1" expanded="false" />
+            <element signature="e#12758#13438#0" expanded="false" />
+            <element signature="e#12969#13438#0" expanded="false" />
+            <element signature="e#13083#13225#0" expanded="false" />
+            <element signature="e#13296#13438#0" expanded="false" />
+            <element signature="e#13539#14323#0" expanded="false" />
+            <element signature="e#13539#13817#1" expanded="false" />
+            <element signature="e#13866#13917#0" expanded="false" />
+            <element signature="e#13953#14043#0" expanded="false" />
+            <element signature="e#13994#14043#0" expanded="false" />
+            <element signature="e#14190#14301#0" expanded="false" />
+            <element signature="e#14405#15325#0" expanded="false" />
+            <element signature="e#14405#14823#1" expanded="false" />
+            <element signature="e#14939#15300#0" expanded="false" />
+            <element signature="e#15171#15300#0" expanded="false" />
+            <element signature="e#15375#15637#0" expanded="false" />
+            <element signature="e#15699#15997#0" expanded="false" />
+            <element signature="e#16056#16428#0" expanded="false" />
+            <element signature="e#16240#16395#0" expanded="false" />
+            <element signature="e#16494#16873#0" expanded="false" />
+            <element signature="e#16616#16811#0" expanded="false" />
+            <element signature="e#16930#18365#0" expanded="false" />
+            <element signature="e#16957#17972#0" expanded="false" />
+            <element signature="e#18000#18101#0" expanded="false" />
+            <element signature="e#18148#18328#0" expanded="false" />
+            <element signature="e#18429#18889#0" expanded="false" />
+            <element signature="e#18429#18789#1" expanded="false" />
+            <element signature="e#18943#19793#0" expanded="false" />
+            <element signature="e#18943#19237#1" expanded="false" />
+            <element signature="e#19837#20355#0" expanded="false" />
+            <element signature="e#19837#20042#1" expanded="false" />
+            <element signature="e#20255#20329#0" expanded="false" />
+            <element signature="e#20395#20548#0" expanded="false" />
+            <element signature="e#20395#20533#1" expanded="false" />
+            <element signature="e#20582#21025#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sentimentanalysis/test_tweetSentiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
