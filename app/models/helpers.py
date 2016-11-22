@@ -39,7 +39,7 @@ class TwitterAPI(object):
                         released and the current date if movie is a Movie object
                         Otherwise returns None
         """
-        if movie.Title == '' or not isinstance(movie, Movie) or not isinstance(movie.Title, str):
+        if movie.Title == '' or not isinstance(movie, Movie):
             return None
 
         edited_title = self.__clean_title(movie.Title)
