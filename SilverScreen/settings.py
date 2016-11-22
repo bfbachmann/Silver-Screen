@@ -22,8 +22,7 @@ PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6d(s90a9m5mti_k33gm-+&(ia6fm%$+dsn#r)rm=x(fiw8+*bq'
-
+SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -80,13 +79,13 @@ WSGI_APPLICATION = 'SilverScreen.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'silverscreen',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
     }
 }
+import dj_database_url
+DATABASES['default'] = dj_database_url.config()
+DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
 # Use dummy cache for development and testing
 CACHES = {
