@@ -8,3 +8,4 @@ django-jquery
 psycopg2==2.6.2
 imdbpie
 python-memcached
+dj_database_url
