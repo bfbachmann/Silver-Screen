@@ -108,7 +108,7 @@ class Tweet(models.Model):
     user_name = models.CharField(max_length=256)
     user_screen_name = models.CharField(max_length=256)
     user_verified = models.BooleanField()
-    imdbID =  models.CharField(max_length=1024)
+    linkedMovies = models.ManyToManyField(Movie)
     sentiment_score = models.FloatField(null=True, blank=True)
 
     param_defaults = {
@@ -122,19 +122,28 @@ class Tweet(models.Model):
         'user_screen_name' : None,
         'user_verified' : False,
         'sentiment_score' : False,
-        'imdbID': False,
+        'linkedMovies' : False,
         'tweetID': False,
     }
 
     ## Populate the current twitter object with values returned from a Twitter API request
-    def fillWithStatusObject(self, tweet, movie_title):
+    def fillWithStatusObject(self, tweet, movie):
         """
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
-        ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
-        if tweet is None or not isinstance(tweet, twitter.Status) or Tweet.objects.filter(tweetID=tweet.id):
+        ## Do not create a new Tweet object for this tweet if it is invalid
+        if tweet is None or not isinstance(tweet, twitter.Status):
             return None
+
+        existingTweets = Tweet.objects.filter(tweetID=tweet.id)
+
+        ## If a Tweet object for this tweet exists, append its linkedMovies list
+        if existingTweets:
+            for eTweet in existingTweets:
+                eTweet.linkedMovies.add(movie)
+                eTweet.save()
+                return eTweet
 
         ## Assume the Tweet is in the users location if we have no info
         if not isinstance(tweet.location, str):
@@ -155,11 +164,10 @@ class Tweet(models.Model):
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
         self.tweetID=tweet.id
-        self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
         filtered_text = self.text.lower().split()
-        for word in movie_title.lower().split():
+        for word in movie.Title.lower().split():
             if word in filtered_text:
                 filtered_text.remove(word)
 

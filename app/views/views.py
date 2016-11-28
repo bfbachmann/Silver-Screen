@@ -122,7 +122,7 @@ def results(request):
             print("No sentiment found in database for this movie")
 
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
-        clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
+        clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(linkedMovies__imdbID=movie.imdbID)]
 
         ## If we have too few tweets about the movie, or our sentiment is outdated, get more from Twitter
         if not clean_tweets or len(clean_tweets) < 50 or (mostRecentSentiment and mostRecentSentiment[0].sentimentDate < timezone.now() - datetime.timedelta(days=7)):
@@ -150,7 +150,7 @@ def results(request):
                 data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about ' + movie.Title
                 return render(request, 'error.html', data_to_render)
             else:
-                clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
+                clean_tweets += get_clean_tweets(raw_tweets, movie)
 
         if ':' in movie.Title:
             messages.add_message(request, messages.INFO,
@@ -205,10 +205,10 @@ def create_chart_datasets(clean_tweets):
 ## =============================================================================
 
 ## Returns a list of Tweet objects created from the given list of twitter.Status objects
-def get_clean_tweets(raw_tweets, movie_title):
+def get_clean_tweets(raw_tweets, movie):
     clean_tweets = []
     for raw_tweet in raw_tweets:
-        clean_tweet = Tweet().fillWithStatusObject(raw_tweet, movie_title)
+        clean_tweet = Tweet().fillWithStatusObject(raw_tweet, movie)
         if clean_tweet:
             clean_tweets.append(clean_tweet)
     return clean_tweets
