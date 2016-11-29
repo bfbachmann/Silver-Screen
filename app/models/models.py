@@ -189,7 +189,7 @@ class Tweet(models.Model):
 ## =============================================================================
 
 class Sentiment(models.Model):
-   Title = models.CharField(max_length=128)
+   Title = models.CharField(max_length=128) # TODO: remove this
    imdbID = models.CharField(max_length=1024)
    sentimentDate = models.DateTimeField(default=None, null=True)
    sentimentScore = models.FloatField(null=True, blank=True)
