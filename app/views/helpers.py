@@ -1,5 +1,17 @@
 from app.models.models import *
 import datetime
+import difflib
+
+## =============================================================================
+
+## Autocorrect poorly formed search terms based on current titles in db
+def autocorrect_search_term(search_term):
+    search_term = search_term.replace('&amp;', '&').title()
+    movie_titles = Movie.objects.all().values_list('Title')
+    matches = difflib.get_close_matches(search_term, movie_titles, n=1)
+    if len(matches) == 0:
+        return search_term
+    return matches[0]
 
 ## =============================================================================
 

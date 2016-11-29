@@ -3,6 +3,7 @@ import yaml
 import omdb
 import os
 import datetime
+import difflib
 import concurrent.futures
 from django.utils import timezone
 from app.models.models import Movie, Tweet
@@ -102,7 +103,7 @@ class TwitterAPI(object):
 class OMDbAPI(object):
 
     def __init__(self):
-        pass
+        self.known_omdb_titles = [title.strip() for title in open('static/titles.txt', 'r').readlines()]
 
     ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
@@ -111,30 +112,44 @@ class OMDbAPI(object):
         :return movie: if at least one movie with a similar title is found, this is a Movie object
                       created from the most relevant result returned by OMDb, otherwise it is empty list
         """
-        ## Search for all movies with similar titles
-        try:
-            matching_movies = omdb.search_movie(title)
-        except:
-            raise ConnectionError
+        matches = difflib.get_close_matches(title.title(), self.known_omdb_titles, n=1)
 
-        ## For now, only return most popular movie
-        highestIMDB = 0
-
-        if matching_movies:
-            movie = matching_movies.pop(0)
-            print("MOVIE: " + movie.title)
-
+        ## If we aready know what the movie title is then we can request it immediately
+        if len(matches) > 0:
             try:
-                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
-            except Movie.DoesNotExist:
-                movieObj = None
+                response = omdb.request(t=matches[0], tomatoes=True, type='movie').json()
+            except:
+                raise ConnectionError
 
-            if not movieObj:
-                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-                movieObj = Movie().fillWithJsonObject(response)
-                if not movieObj:
-                    return None
+            print('AUTOCORRECTED MOVIE: ' + response['Title'])
+            return Movie().fillWithJsonObject(response)
 
-            return movieObj
         else:
-            return None
+            ## Search for all movies with similar titles
+            try:
+                matching_movies = omdb.search_movie(title)
+            except:
+                raise ConnectionError
+
+            ## For now, only return most popular movie
+            highestIMDB = 0
+
+            if matching_movies:
+                movie = matching_movies.pop(0)
+                print("MOVIE: " + movie.title)
+
+                try:
+                    movieObj = Movie.objects.get(imdbID=movie.imdb_id)
+                except Movie.DoesNotExist:
+                    movieObj = None
+
+                if not movieObj:
+                    response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
+                    movieObj = Movie().fillWithJsonObject(response)
+                    if not movieObj:
+                        return None
+
+                self.known_omdb_titles.append(movieObj.Title)
+                return movieObj
+            else:
+                return None

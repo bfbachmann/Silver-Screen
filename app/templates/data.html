@@ -56,10 +56,10 @@
 
                     {% if movie.BoxOffice and movie.BoxOffice != "N/A" %}
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Box Office: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.BoxOffice}}</p>
                         </div>
                     </div>
@@ -67,20 +67,20 @@
 
                     {% if movie.Director and movie.Director != "N/A" %}
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Director: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.Director}}</p>
                         </div>
                     </div>
                     {% endif %}
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Year: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.Year}}</p>
                         </div>
                     </div>
@@ -194,7 +194,7 @@
     // Begin Line Chart
 
     var lineChartCtx = $('#line-chart');
-    var lineChart = new Chart(lineChartCtx,{
+    var lineChart = new Chart(lineChartCtx, {
         type: 'line',
         data: {
             datasets: [ {
@@ -225,7 +225,7 @@
                 title: {
                     display: true,
                     fontSize: 26,
-                    text: 'Average Senitment Intensity Over Time'
+                    text: 'Average Sentiment Intensity Over Time'
                 },
                 scales: {
                     xAxes: [{
@@ -268,8 +268,8 @@
    					   backgroundColor: "#00DD99",
    					   hoverBackgroundColor: "#00DD99"
    				   } ]
-   			   },
-   		options: {
+                },
+       		options: {
    				tooltips: {
    					enabled: true,
    					mode: 'single',
@@ -298,7 +298,6 @@
    					}]
    				}
    			}
-
    	});
 
     // Begin Pie Chart
@@ -328,7 +327,7 @@
                     "#0099FF",
                     "#00DD99",
                 ],
-                label: 'Senitment Scores'
+                label: 'Sentiment Scores'
             }]
         },
         options: {
@@ -337,6 +336,6 @@
                 fontSize: 20,
                 text: 'Tweets by Senitment'
             }
-        },
+        }
     });
 </script>
