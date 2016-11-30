@@ -1,6 +1,42 @@
 from app.models.models import *
+from django.shortcuts import render
 import datetime
 import difflib
+
+
+## A singleton class for caching successful responses
+class ResponseCache:
+    class __ResponseCache:
+        def __init__(self, most_recent_response):
+            self.most_recent_response = most_recent_response
+
+    instance = None
+
+    def __init__(self, most_recent_response):
+        if not ResponseCache.instance:
+            ResponseCache.instance = ResponseCache.__ResponseCache(most_recent_response)
+        else:
+            print('CACHING RESPONSE: ' + most_recent_response['movie'].Title)
+            ResponseCache.instance.most_recent_response = most_recent_response
+
+    def get_most_recent(self):
+        return ResponseCache.instance.most_recent_response
+
+cache = ResponseCache(None)
+
+## =============================================================================
+
+## Handles sending an error message to the user when their request has failed
+def error_response(request, message):
+    previous_result = cache.get_most_recent()
+
+    if not previous_result:
+        print('RETURNING ONLY ERROR RESPONSE')
+        return render(request, 'error.html', {'error_message' : message})
+
+    previous_result['error_message'] = message
+    print('RETURNING ERROR RESPONSE WITH CACHED CONTENT')
+    return render(request, 'data.html', previous_result)
 
 ## =============================================================================
 
@@ -43,6 +79,7 @@ def prepare_data_for_render(request, clean_tweets, movie):
                         'positive_avgs' : positive_avgs,
                         'negative_avgs' : negative_avgs,
                     }
+    cache = ResponseCache(data_to_render)
     return data_to_render
 
 ## =============================================================================

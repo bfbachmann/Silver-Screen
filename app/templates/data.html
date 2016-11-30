@@ -1,5 +1,10 @@
 {% load static %}
 
+{% if error_message is not None %}
+    <div class="alert alert-danger align-center" role="alert" with='100%'>
+        {{ error_message }}
+    </div>
+{% endif %}
 <div class="align-left" style="max-width: 80%; margin: auto;">
     <h1> {{ movie.Title }}
 	{% if messages %}
