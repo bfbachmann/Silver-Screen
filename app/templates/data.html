@@ -21,7 +21,9 @@
 
             <!-- BEGIN MOVIE POSTER -->
             <div class="col-sm-3 align-center">
-                <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                <a href="{{movie.tomatoURL}}" title="Rotten Tomatoes Page">
+                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                </a>
                 <h3 class="info-header align-center">
                     <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
                     <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
@@ -77,6 +79,17 @@
                         </div>
                         <div class="col-md-8">
                             <p>{{movie.Director}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if movie.Actors and movie.Actors != "N/A" %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p style="color: gray;">Cast: </p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>{{movie.Actors}}</p>
                         </div>
                     </div>
                     {% endif %}
