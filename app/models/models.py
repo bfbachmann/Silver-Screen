@@ -133,7 +133,7 @@ class Tweet(models.Model):
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
         ## Do not create a new Tweet object for this tweet if it is invalid
-        if tweet is None or not isinstance(tweet, twitter.Status):
+        if tweet is None or movie is None or not isinstance(tweet, twitter.Status):
             return None
 
         existingTweets = Tweet.objects.filter(tweetID=tweet.id)
@@ -178,6 +178,8 @@ class Tweet(models.Model):
 
         ## Try save the tweet to the database
         try:
+            self.save()
+            self.linkedMovies.add(movie)
             self.save()
         except:
             print("Failed to save invalid tweet: " + str(self.tweetID))
