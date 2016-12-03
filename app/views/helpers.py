@@ -125,7 +125,7 @@ def get_daily_avgs(clean_tweets):
     negative_avgs = []
 
     for tweet in clean_tweets:
-        day = datetime.datetime.date(tweet.created_at)
+        day = datetime.datetime.date(tweet.created_at).isoformat()
 
         if tweet.sentiment_score < 0:
             try:
@@ -139,10 +139,10 @@ def get_daily_avgs(clean_tweets):
                 positive_data[day] = [tweet.sentiment_score]
 
     for (day, scores) in positive_data.items():
-        positive_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores)) * 10})
+        positive_avgs.append({ 'x' : day, 'y' : round((sum(scores) / len(scores)) * 10, 1)})
 
     for (day, scores) in negative_data.items():
-        negative_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores)) * (-10)})
+        negative_avgs.append({ 'x' : day, 'y' : round((sum(scores) / len(scores)) * (-10), 1)})
 
     positive_avgs.sort(key=lambda entry: entry['x'])
     negative_avgs.sort(key=lambda entry: entry['x'])
