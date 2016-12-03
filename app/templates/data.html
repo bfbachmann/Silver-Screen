@@ -25,8 +25,12 @@
                     <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
                 </a>
                 <h3 class="info-header align-center">
-                    <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
-                    <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
+                    <div class="col-sm-6">
+                        <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
+                    </div>
+                    <div class="col-sm-6">
+                        <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
+                    </div>
                 </h3>
             </div>
             <!-- END MOVIE POSTER -->

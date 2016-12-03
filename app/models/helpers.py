@@ -119,7 +119,7 @@ class OMDbAPI(object):
 
         ## If we aready know what the movie title is then we can request it immediately
         if len(matches) > 0:
-            print('AUTOCORRECTED TITLE \"%s\" TO \"%s\"', title, matches[0])
+            print('AUTOCORRECTED TITLE \"' + title + '\" TO \"' + matches[0] + '\"')
 
             try:
                 response = omdb.request(t=matches[0], tomatoes=True, type='movie').json()

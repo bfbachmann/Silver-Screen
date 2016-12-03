@@ -19,7 +19,13 @@ class MovieTest(TestCase):
                 'Plot' : 'Ben finds love and then his heart gets broken',
                 'tomatoConsensus' : 'A coming of age tale of two people in love',
                 'Poster' : 'https://test.example.com/',
-                'imdbID' : 284957
+                'imdbID' : 284957,
+                'Awards' : 'Golden Globe award',
+                'Country' : 'Canada',
+                'Production' : 'Lighthouse',
+                'Rated' : 'PG-13',
+                'Released' : 'December 12, 2014',
+                'Writer' : 'Fancy Pants'
             }))
 
         movie = Movie().fillWithJsonObject(raw_movie)
@@ -38,6 +44,12 @@ class MovieTest(TestCase):
         self.assertEqual(raw_movie['tomatoConsensus'], movie.tomatoConsensus)
         self.assertEqual(raw_movie['Poster'], movie.Poster)
         self.assertEqual(raw_movie['imdbID'], movie.imdbID)
+        self.assertEqual(raw_movie['Awards'], movie.Awards)
+        self.assertEqual(raw_movie['Country'], movie.Country)
+        self.assertEqual(raw_movie['Production'], movie.Production)
+        self.assertEqual(raw_movie['Rated'], movie.Rated)
+        self.assertEqual(raw_movie['Released'], movie.Released)
+        self.assertEqual(raw_movie['Writer'], movie.Writer)
 
 
     def test_fill_with_invalid_movie(self):

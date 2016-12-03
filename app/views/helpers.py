@@ -92,6 +92,9 @@ def prepare_overview_data_for_render(request):
     worst_movie = Movie.objects.get(imdbID = Sentiment.objects.earliest('sentimentScore').imdbID)
     best_movie = Movie.objects.get(imdbID = Sentiment.objects.latest('sentimentScore').imdbID)
 
+    best_score = Sentiment.objects.earliest('sentimentScore')
+    worst_score = Sentiment.objects.latest('sentimentScore')
+
     num_tweets = Tweet.objects.count()
     num_movies = Movie.objects.count()
 
@@ -104,6 +107,8 @@ def prepare_overview_data_for_render(request):
                        'num_tweets'      : num_tweets,
                        'num_movies'      : num_movies,
                        'avg_sentiment'   : avg_sentiment,
+                       'best_score'      : best_score,
+                       'worst_score'     : worst_score,
                        }
     return data_to_render
 
