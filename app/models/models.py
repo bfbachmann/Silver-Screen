@@ -135,15 +135,16 @@ class Tweet(models.Model):
         ## Do not create a new Tweet object for this tweet if it is invalid
         if tweet is None or movie is None or not isinstance(tweet, twitter.Status):
             return None
+        try:
+            existingTweet = Tweet.objects.get(tweetID=tweet.id)
 
-        existingTweets = Tweet.objects.filter(tweetID=tweet.id)
+            ## If a Tweet object for this tweet exists, append its linkedMovies list
 
-        ## If a Tweet object for this tweet exists, append its linkedMovies list
-        if existingTweets:
-            for eTweet in existingTweets:
-                eTweet.linkedMovies.add(movie)
-                eTweet.save()
-                return eTweet
+            existingTweet.linkedMovies.add(movie)
+            existingTweet.save()
+            return existingTweet
+        except:
+            pass
 
         ## Assume the Tweet is in the users location if we have no info
         if not isinstance(tweet.location, str):
