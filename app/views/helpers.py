@@ -84,7 +84,7 @@ def prepare_data_for_render(request, clean_tweets, movie):
 
 ## =============================================================================
 
-## Create a chart that displays the sentiment scores for the tweets associated with a movie
+## Create datasets for chart that displays the sentiment scores for each tweet
 def create_chart_datasets(clean_tweets):
     negative_data = []
     positive_data = []
@@ -99,7 +99,7 @@ def create_chart_datasets(clean_tweets):
                 r = 10
 
             data = {
-                        'y': round(abs(score)*100,1),
+                        'y': round((score+1)*5,1),
                         'x': str(tweet.created_at),
                         'r': 5 + r,
                         'tweet': tweet.text,
@@ -139,10 +139,10 @@ def get_daily_avgs(clean_tweets):
                 positive_data[day] = [tweet.sentiment_score]
 
     for (day, scores) in positive_data.items():
-        positive_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+        positive_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores)) * 10})
 
     for (day, scores) in negative_data.items():
-        negative_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+        negative_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores)) * (-10)})
 
     positive_avgs.sort(key=lambda entry: entry['x'])
     negative_avgs.sort(key=lambda entry: entry['x'])

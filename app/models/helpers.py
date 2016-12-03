@@ -93,6 +93,9 @@ class TwitterAPI(object):
         elif '-' in title:
             title = title.split('-')[0]
 
+        if len(title.split(' ')) < 3:
+            title = '\"' + title + '\"' + ' \"movie\"'
+
         return title
 
 ## =============================================================================

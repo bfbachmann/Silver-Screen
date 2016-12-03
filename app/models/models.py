@@ -37,6 +37,12 @@ class Movie(models.Model):
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
     recentVisits = models.IntegerField(default=0)
+    Writer = models.CharField(max_length=1024, null=True, blank=True)
+    Rated = models.CharField(max_length=1024, null=True, blank=True)
+    Awards = models.CharField(max_length=2048, null=True, blank=True)
+    Country = models.CharField(max_length=1024, null=True, blank=True)
+    Production = models.CharField(max_length=1024, null=True, blank=True)
+    Released = models.CharField(max_length=1024, null=True, blank=True)
 
     param_defaults = {
         'Title': None,
@@ -54,6 +60,12 @@ class Movie(models.Model):
         'Poster': None,
         'imdbID': None,
         'recentVisits': None,
+        'Writer': None,
+        'Rated': None,
+        'Awards': None,
+        'Country': None,
+        'Production': None,
+        'Released': None,
     }
 
     def __unicode__(self):

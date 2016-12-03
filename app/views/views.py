@@ -78,11 +78,6 @@ def results(request):
     if request.method == 'GET':
         ## Extract the search term
         search_term = request.GET['query'].replace('&amp;', '&')
-        movie = Movie()
-        blank_form = QueryForm()
-        data_to_render = {'error_message': ''}
-        sum_scores = 0
-        num_nonzero = 1
 
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
@@ -158,7 +153,7 @@ def results(request):
                                  "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.Title.split(':')[0] + " instead.")
 
         ## If there aren't enough tweets to display tell the user
-        if len(clean_tweets) < 5:
+        if len(clean_tweets) < 10:
             return error_response(request, 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.')
 
         data_to_render = prepare_data_for_render(request, clean_tweets, movie)
