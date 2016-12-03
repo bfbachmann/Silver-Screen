@@ -18,7 +18,6 @@ class TweetTest(TestCase):
                 user_name='sara',
                 user_screen_name='sarita',
                 user_verified=True,
-                imdbID=57839,
                 sentiment_score=0.2647,
             )
 
@@ -42,7 +41,6 @@ class TweetTest(TestCase):
                 retweet_count=8,
                 favorite_count=0
             )
-        sample_status.imdbID = 947502
         tweet=Tweet().fillWithStatusObject(sample_status, 'Random Movie')
         resulting_time = datetime.strftime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
         expected_time = datetime.strftime(current_datetime, '%a %b %d %H:%M:%S +0000 %Y')
@@ -58,7 +56,6 @@ class TweetTest(TestCase):
         self.assertEqual(tweet.user_screen_name, 'kesuke')
         self.assertEqual(tweet.user_verified, sample_user.verified)
         self.assertTrue(tweet.sentiment_score >= -1 and tweet.sentiment_score <= 1)
-        self.assertEqual(tweet.imdbID, 947502)
 
 
     def test_fill_with_invalid_status(self):
@@ -82,7 +79,6 @@ class TweetTest(TestCase):
                 retweet_count=1,
                 favorite_count=5,
             )
-        sample_status.imdbID = 57839
         duplicate_tweet = Tweet().fillWithStatusObject(sample_status, 'Random Movie')
 
         self.assertEqual(duplicate_tweet, None)
