@@ -1,5 +1,10 @@
 {% load static %}
 
+{% if error_message is not None %}
+    <div class="alert alert-danger align-center" role="alert" with='100%'>
+        {{ error_message }}
+    </div>
+{% endif %}
 <div class="align-left" style="max-width: 80%; margin: auto;">
     <h1> {{ movie.Title }}
 	{% if messages %}
@@ -16,7 +21,9 @@
 
             <!-- BEGIN MOVIE POSTER -->
             <div class="col-sm-3 align-center">
-                <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                <a href="{{movie.tomatoURL}}" title="Rotten Tomatoes Page">
+                    <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
+                </a>
                 <h3 class="info-header align-center">
                     <img class="rating-icon" src="{% static "imdb.png" %}" alt="IMDB"/> {{movie.imdbRating}}
                     <img class="rating-icon" src="{% static "rt.png" %}" alt="Rotten Tomatoes"/> {{movie.tomatoRating}}
@@ -56,10 +63,10 @@
 
                     {% if movie.BoxOffice and movie.BoxOffice != "N/A" %}
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Box Office: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.BoxOffice}}</p>
                         </div>
                     </div>
@@ -67,20 +74,20 @@
 
                     {% if movie.Director and movie.Director != "N/A" %}
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Director: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.Director}}</p>
                         </div>
                     </div>
                     {% endif %}
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p style="color: gray;">Year: </p>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <p>{{movie.Year}}</p>
                         </div>
                     </div>
@@ -98,6 +105,76 @@
         </div>
         <!-- END MOVIE POSTER, INFO, AND PIE CHART -->
 
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 20px;">
+            <div class="panel panel-primary">
+
+                <!-- BEGIN PANEL LABEL -->
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <div class="panel-heading align-center" role="tab" id="headingOne">More Info</div>
+                </a>
+                <!-- END PANEL LABEL -->
+
+                <!-- BEGIN ADDITIONAL MOVIE DATA -->
+                <div id='collapseOne' class="panel-collapse collapse table-responsive">
+                    <table class="table table-hover">
+                        <thead></thead>
+                        <tbody>
+                            {% if movie.Rated %}
+                            <tr>
+                                <td>Rated:</td>
+                                <td>{{movie.Rated}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Plot %}
+                            <tr>
+                                <td>Plot:</td>
+                                <td>{{movie.Plot}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Writer %}
+                            <tr>
+                                <td>Writers:</td>
+                                <td>{{movie.Writer}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Actors %}
+                            <tr>
+                                <td>Actors:</td>
+                                <td>{{movie.Actors}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Awards %}
+                            <tr>
+                                <td>Awards:</td>
+                                <td>{{movie.Awards}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Production %}
+                            <tr>
+                                <td>Production:</td>
+                                <td>{{movie.Production}}</td>
+                            <tr>
+                            {% endif %}
+
+                            {% if movie.Released %}
+                            <tr>
+                                <td>Released:</td>
+                                <td>{{movie.Released}}</td>
+                            <tr>
+                            {% endif %}
+                            <thead></thead>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- END ADDITIONAL MOVIE DATA -->
+
+            </div>
+        </div>
     </div>
 
     <!-- BEGIN GRAPHS -->
@@ -106,73 +183,61 @@
             <ul class="nav nav-pills nav-justified">
                 <li class="active"><a data-toggle="pill" href="#chart1">Average Sentiment Over Time</a></li>
                 <li><a data-toggle="pill" href="#chart2">Individual Tweet Sentiment Over Time</a></li>
+                <li><a data-toggle="pill" href="#tweets">Tweets</a></li>
             </ul>
         </div>
 
 		<!-- BEGIN CHART AREA -->
         <div class="tab-content align-center">
-            <div id="chart1" class="tab-pane fade in active">
+            <div id="chart1" class="tab-pane fade in active" style="margin-bottom: 20px;">
                 <canvas id="line-chart"></canvas>
             </div>
-            <div id="chart2" class="tab-pane fade">
+            <div id="chart2" class="tab-pane fade" style="margin-bottom: 20px;">
                 <canvas id="bubble-chart"></canvas>
+            </div>
+            <div id="tweets" class="tab-pane fade align-left">
+                <!-- BEGIN TWEETS -->
+    			<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" style="max-width: 800px; margin: auto;">
+    				<div class="panel-body">
+    					<hr>
+    					{% for tweet in tweets %}
+    						<div class="container-fluid">
+    							<div class="col-sm-10">
+    								<p>
+    									<strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong>
+    									&nbsp; <small style="color: grey;"> {{ tweet.created_at }} </small>
+    								</p>
+    								<p>{{tweet.text}}</p>
+    								<p>
+    									<span class="glyphicon glyphicon-heart" style="color: red;"></span>
+    									{{ tweet.favorite_count }} &nbsp; &nbsp;
+    									<span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
+    									{{ tweet.retweet_count }} &nbsp; &nbsp;
+    									{% if tweet.location and tweet.location != '' %}
+    										<span class="glyphicon glyphicon-map-marker"></span>
+    									{{ tweet.location }}
+    									{% endif %}
+    								</p>
+    							</div>
+    							<div class="col-sm-2">
+    								{% if tweet.sentiment_score < 5 %}
+    									<h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
+    								{% else %}
+    									<h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
+    								{% endif %}
+    							</div>
+    						</div>
+    						<hr>
+    					{% endfor %}
+    				</div>
+    			</div>
+    			<!-- END TWEETS -->
             </div>
         </div>
 		<!-- END CHART AREA -->
 
     </div>
     <!-- END GRAPHS -->
-
-	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 20px;">
-		<div class="panel panel-default">
-
-			<!-- BEGIN PANEL LABEL -->
-			<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-				<div class="panel-heading align-center" role="tab" id="headingOne">
-					<h4 class="panel-title">Curated Tweets</h4>
-				</div>
-			</a>
-			<!-- END PANEL LABEL -->
-
-			<!-- BEGIN TWEETS -->
-			<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne" style="max-width: 800px; margin: auto;">
-				<div class="panel-body">
-					<hr>
-					{% for tweet in tweets %}
-						<div class="container-fluid">
-							<div class="col-sm-10">
-								<p>
-									<strong style="color: 55acee;"> @{{ tweet.user_screen_name }} </strong>
-									&nbsp; <small style="color: grey;"> {{ tweet.created_at }} </small>
-								</p>
-								<p>{{tweet.text}}</p>
-								<p>
-									<span class="glyphicon glyphicon-heart" style="color: red;"></span>
-									{{ tweet.favorite_count }} &nbsp; &nbsp;
-									<span class="glyphicon glyphicon-share" style="color: #55acee;"></span>
-									{{ tweet.retweet_count }} &nbsp; &nbsp;
-									{% if tweet.location and tweet.location != '' %}
-										<span class="glyphicon glyphicon-map-marker"></span>
-									{{ tweet.location }}
-									{% endif %}
-								</p>
-							</div>
-							<div class="col-sm-2">
-								{% if tweet.sentiment_score < 5 %}
-									<h4 class="align-right" style="color: red;"> {{ tweet.sentiment_score }} </h4>
-								{% else %}
-									<h4 class="align-right" style="color: green;"> {{ tweet.sentiment_score }} </h4>
-								{% endif %}
-							</div>
-						</div>
-						<hr>
-					{% endfor %}
-				</div>
-			</div>
-			<!-- END TWEETS -->
-
-		</div>
-	</div>
 </div>
 
 <script>
@@ -194,7 +259,7 @@
     // Begin Line Chart
 
     var lineChartCtx = $('#line-chart');
-    var lineChart = new Chart(lineChartCtx,{
+    var lineChart = new Chart(lineChartCtx, {
         type: 'line',
         data: {
             datasets: [ {
@@ -225,7 +290,7 @@
                 title: {
                     display: true,
                     fontSize: 26,
-                    text: 'Average Senitment Intensity Over Time'
+                    text: 'Average Sentiment Intensity Over Time'
                 },
                 scales: {
                     xAxes: [{
@@ -236,8 +301,12 @@
                     }],
                     yAxes: [{
                         ticks: {
-                            max: 100,
+                            max: 10,
                             min: 0,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Sentiment Intensity'
                         }
                     }]
                 }
@@ -247,7 +316,7 @@
     // Begin Bubble Chart
 
 	var chart1Ctx = $('#bubble-chart');
-   	var chart = new Chart(chart1Ctx,{
+   	var bubbleChart = new Chart(chart1Ctx,{
    		type: 'bubble',
    		data: { datasets: [ {
    					   label: 'Negative Tweets',
@@ -268,8 +337,13 @@
    					   backgroundColor: "#00DD99",
    					   hoverBackgroundColor: "#00DD99"
    				   } ]
-   			   },
-   		options: {
+                },
+       		options: {
+                title: {
+                    display: true,
+                    fontSize: 26,
+                    text: 'Individual Tweet Sentiment Score Over Time'
+                },
    				tooltips: {
    					enabled: true,
    					mode: 'single',
@@ -282,7 +356,6 @@
    						}
    					}
    				},
-
    				scales: {
    					xAxes: [{
    						type: 'time',
@@ -292,13 +365,16 @@
    					}],
    					yAxes: [{
    						ticks: {
-   							max: 100,
+   							max: 10,
    							min: 0,
-   						}
+   						},
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Sentiment Score'
+                        }
    					}]
    				}
    			}
-
    	});
 
     // Begin Pie Chart
@@ -328,7 +404,7 @@
                     "#0099FF",
                     "#00DD99",
                 ],
-                label: 'Senitment Scores'
+                label: 'Sentiment Scores'
             }]
         },
         options: {
@@ -337,6 +413,6 @@
                 fontSize: 20,
                 text: 'Tweets by Senitment'
             }
-        },
+        }
     });
 </script>

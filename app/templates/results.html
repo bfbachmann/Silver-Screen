@@ -52,7 +52,7 @@
                 url: "{% url 'get_data' %}",
                 type: 'get',
                 data: {query: "{{query}}"},
-                success : function(data) {
+                success: function(data) {
                     $('.loader').addClass('hidden')
                     $('#loading').addClass('hidden')
                     $('.content').replaceWith(data)

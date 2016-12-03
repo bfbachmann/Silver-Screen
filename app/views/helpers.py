@@ -1,6 +1,54 @@
 from app.models.models import *
 from django.db.models import Avg
+from django.shortcuts import render
 import datetime
+import difflib
+
+
+## A singleton class for caching successful responses
+class ResponseCache:
+    class __ResponseCache:
+        def __init__(self, most_recent_response):
+            self.most_recent_response = most_recent_response
+
+    instance = None
+
+    def __init__(self, most_recent_response):
+        if not ResponseCache.instance:
+            ResponseCache.instance = ResponseCache.__ResponseCache(most_recent_response)
+        else:
+            print('CACHING RESPONSE: ' + most_recent_response['movie'].Title)
+            ResponseCache.instance.most_recent_response = most_recent_response
+
+    def get_most_recent(self):
+        return ResponseCache.instance.most_recent_response
+
+cache = ResponseCache(None)
+
+## =============================================================================
+
+## Handles sending an error message to the user when their request has failed
+def error_response(request, message):
+    previous_result = cache.get_most_recent()
+
+    if not previous_result:
+        print('RETURNING ONLY ERROR RESPONSE')
+        return render(request, 'error.html', {'error_message' : message})
+
+    previous_result['error_message'] = message
+    print('RETURNING ERROR RESPONSE WITH CACHED CONTENT')
+    return render(request, 'data.html', previous_result)
+
+## =============================================================================
+
+## Autocorrect poorly formed search terms based on current titles in db
+def autocorrect_search_term(search_term):
+    search_term = search_term.replace('&amp;', '&').title()
+    movie_titles = Movie.objects.all().values_list('Title')
+    matches = difflib.get_close_matches(search_term, movie_titles, n=1)
+    if len(matches) == 0:
+        return search_term
+    return matches[0]
 
 ## =============================================================================
 
@@ -32,7 +80,10 @@ def prepare_movie_data_for_render(request, clean_tweets, movie):
                         'positive_avgs' : positive_avgs,
                         'negative_avgs' : negative_avgs,
                     }
+    cache = ResponseCache(data_to_render)
     return data_to_render
+
+## =============================================================================
 
 ## Processes overview data and returns a summary of data to render
 def prepare_overview_data_for_render(request):
@@ -47,8 +98,6 @@ def prepare_overview_data_for_render(request):
     avg_sentiment_num = Sentiment.objects.all().aggregate(Avg('sentimentScore'))['sentimentScore__avg']
     avg_sentiment = str(round(avg_sentiment_num, 2))
 
-
-
     ## Prepare data to render on results page
     data_to_render = { 'worst_movie'     : worst_movie,
                        'best_movie'      : best_movie,
@@ -60,7 +109,7 @@ def prepare_overview_data_for_render(request):
 
 ## =============================================================================
 
-## Create a chart that displays the sentiment scores for the tweets associated with a movie
+## Create datasets for chart that displays the sentiment scores for each tweet
 def create_chart_datasets(clean_tweets):
     negative_data = []
     positive_data = []
@@ -75,7 +124,7 @@ def create_chart_datasets(clean_tweets):
                 r = 10
 
             data = {
-                        'y': round(abs(score)*100,1),
+                        'y': round((score+1)*5,1),
                         'x': str(tweet.created_at),
                         'r': 5 + r,
                         'tweet': tweet.text,
@@ -101,7 +150,7 @@ def get_daily_avgs(clean_tweets):
     negative_avgs = []
 
     for tweet in clean_tweets:
-        day = datetime.datetime.date(tweet.created_at)
+        day = datetime.datetime.date(tweet.created_at).isoformat()
 
         if tweet.sentiment_score < 0:
             try:
@@ -115,10 +164,10 @@ def get_daily_avgs(clean_tweets):
                 positive_data[day] = [tweet.sentiment_score]
 
     for (day, scores) in positive_data.items():
-        positive_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+        positive_avgs.append({ 'x' : day, 'y' : round((sum(scores) / len(scores)) * 10, 1)})
 
     for (day, scores) in negative_data.items():
-        negative_avgs.append({ 'x' : day, 'y' : (sum(scores) / len(scores) + 1) * 50})
+        negative_avgs.append({ 'x' : day, 'y' : round((sum(scores) / len(scores)) * (-10), 1)})
 
     positive_avgs.sort(key=lambda entry: entry['x'])
     negative_avgs.sort(key=lambda entry: entry['x'])

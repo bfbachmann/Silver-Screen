@@ -24,36 +24,48 @@ class QueryForm(forms.Form):
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    tomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
-    Genres = models.CharField(max_length=1024, null=True, blank=True)
+    Genre = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
-    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
-    tomatoUserRating = models.CharField(max_length=32, null=True, blank=True)
-    plot = models.CharField(max_length=2048, null=True, blank=True)
+    tomatoRating = models.FloatField(null=True, blank=True)
+    tomatoUserRating = models.FloatField(null=True, blank=True)
+    Plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
     imdbID = models.CharField(max_length=1024)
     recentVisits = models.IntegerField(default=0)
+    Writer = models.CharField(max_length=1024, null=True, blank=True)
+    Rated = models.CharField(max_length=1024, null=True, blank=True)
+    Awards = models.CharField(max_length=2048, null=True, blank=True)
+    Country = models.CharField(max_length=1024, null=True, blank=True)
+    Production = models.CharField(max_length=1024, null=True, blank=True)
+    Released = models.CharField(max_length=1024, null=True, blank=True)
 
     param_defaults = {
         'Title': None,
         'Year': None,
-        'TomatoURL': None,
+        'tomatoURL': None,
         'Actors': None,
         'BoxOffice': None,
-        'Genres': None,
+        'Genre': None,
         'Director': None,
         'imdbRating': None,
         'tomatoRating': None,
         'tomatoUserRating': None,
-        'plot': None,
+        'Plot': None,
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
         'recentVisits': None,
+        'Writer': None,
+        'Rated': None,
+        'Awards': None,
+        'Country': None,
+        'Production': None,
+        'Released': None,
     }
 
     def __unicode__(self):
@@ -70,7 +82,7 @@ class Movie(models.Model):
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
-                    if key == 'imdbRating' and not isinstance(value, float):
+                    if 'Rating' in key:
                         try:
                             value = float(value)
                         except:
@@ -182,7 +194,7 @@ class Tweet(models.Model):
             self.linkedMovies.add(movie)
             self.save()
         except:
-            print("Failed to save invalid tweet: " + str(self.tweetID))
+            pass
 
         return self
 
