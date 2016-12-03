@@ -1,10 +1,11 @@
 from app.models.models import *
+from django.db.models import Avg
 import datetime
 
 ## =============================================================================
 
 ## Processes clean_tweets and returns dictionary of data to render
-def prepare_data_for_render(request, clean_tweets, movie):
+def prepare_movie_data_for_render(request, clean_tweets, movie):
     ## Chart sentiment scores of tweets
     overall_score = get_overall_sentiment_score(clean_tweets)
     polarity = get_polarity(clean_tweets)
@@ -31,6 +32,30 @@ def prepare_data_for_render(request, clean_tweets, movie):
                         'positive_avgs' : positive_avgs,
                         'negative_avgs' : negative_avgs,
                     }
+    return data_to_render
+
+## Processes overview data and returns a summary of data to render
+def prepare_overview_data_for_render(request):
+    ## Chart sentiment scores of tweets
+
+    worst_movie = Movie.objects.get(imdbID = Sentiment.objects.earliest('sentimentScore').imdbID)
+    best_movie = Movie.objects.get(imdbID = Sentiment.objects.latest('sentimentScore').imdbID)
+
+    num_tweets = Tweet.objects.count()
+    num_movies = Movie.objects.count()
+
+    avg_sentiment_num = Sentiment.objects.all().aggregate(Avg('sentimentScore'))['sentimentScore__avg']
+    avg_sentiment = str(round(avg_sentiment_num, 2))
+
+
+
+    ## Prepare data to render on results page
+    data_to_render = { 'worst_movie'     : worst_movie,
+                       'best_movie'      : best_movie,
+                       'num_tweets'      : num_tweets,
+                       'num_movies'      : num_movies,
+                       'avg_sentiment'   : avg_sentiment,
+                       }
     return data_to_render
 
 ## =============================================================================

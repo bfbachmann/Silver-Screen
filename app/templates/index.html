@@ -17,14 +17,18 @@
 </head>
 
 <body>
+
     <div class="align-right" style="margin: 5px">
+	  <a href="overview.html" class="btn btn-default">Overview</a>
       <a href="about.html" class="btn btn-default">About</a>
     </div>
 
     {% if messages %}
         {% for message in messages %}
             <div{% if message.tags %} class="trending text-center alert alert-{{ message.tags }}"{% endif %}>
+				{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                 <span class="glyphicon glyphicon-fire"></span>&nbsp; {{ message }}
+				{% endif %}
             </div>
         {% endfor %}
     {% endif %}

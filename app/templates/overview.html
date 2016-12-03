@@ -3,13 +3,11 @@
 
     {# Load stylesheets #}
     {% load static %}
-
     <link rel="stylesheet" type="text/css" href="{% static "style.css" %}" />
-    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
 
     {# Load Chart.js #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
-    <script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
 
     {# Load the tag library #}
     {% load bootstrap3 %}
@@ -40,24 +38,60 @@
 			<a href="{% url 'overview' %}" class="navbar-text navbar-right" style="margin-right: 5px;">Overview</a>
         </div>
     </nav>
-    <div class="center-on-page">
-        <div class="loader"></div><br>
-        <h4 id="loading" class="align-center heading" style="color: grey;">Loading</h4>
+
+    <div class="container-fluid" style="max-width: 2000px;">
+	
+		<div class="row equal">
+	   <div class="container">
+  <div class="row flex ">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+	         <div class="panel-body" id="overview-body">
+				<img class="img-responsive" src="{{best_movie.Poster}}" alt="{{best_movie.Title}}">
+			</div>
+			<div class="panel-footer">
+				<h4>Highest Rated Movie</h4>
+				<h4><b>{{best_movie.Title}}</b></h4>
+			</div> 
+		</div>
     </div>
-    <div class="content"></div>
-    <script>
-        $(function() {
-            // Initial data fetching after user submitted form on index.html
-            $.ajax({
-                url: "{% url 'get_data' %}",
-                type: 'get',
-                data: {query: "{{query}}"},
-                success : function(data) {
-                    $('.loader').addClass('hidden')
-                    $('#loading').addClass('hidden')
-                    $('.content').replaceWith(data)
-                }
-            })
-        })
-    </script>
+    <div class="col-md-4">
+      <div class="panel panel-default" id="overview">
+	         <div class="panel-body" id="overview-body">
+				<img class="img-responsive" src="{{worst_movie.Poster}}" alt="{{worst_movie.Title}}">
+			</div>
+			<div class="panel-footer">
+				<h4>Lowest Rated Movie</h4>
+				<h4><b>{{worst_movie.Title}}</b></h4>
+			</div> 
+		</div>
+    </div>
+	  <div class="col-md-4"  style="min-width=100%">
+		<div class="row">
+			<div class="well text-center">
+				<h4>Number of Movies Analysed</h4>
+				<h2><b>{{num_movies}}</b></h4>
+			</div>
+			<div class="well text-center">
+				<h4>Number of Tweets Analysed</h4>
+				<h2><b>{{num_tweets}}</b></h4>
+			</div>
+			<div class="well text-center">
+				<h4>Average Sentiment Score</h4>
+				<h2><b>{{avg_sentiment}}</b></h4>
+			</div>
+		</div>
+    </div>
+  </div>
+  </div>
+  
+
+</div>
+
+</div>
+	   
+	   
+    </div>
+
+
 </body>

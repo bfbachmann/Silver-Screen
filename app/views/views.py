@@ -161,7 +161,7 @@ def results(request):
             data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.'
             return render(request, 'error.html', data_to_render)
 
-        data_to_render = prepare_data_for_render(request, clean_tweets, movie)
+        data_to_render = prepare_movie_data_for_render(request, clean_tweets, movie)
         return render(request, 'data.html', data_to_render)
 
     ## Otherwise return METHOD NOT ALLOWED
@@ -171,6 +171,16 @@ def results(request):
 ## =============================================================================
 
 ## Respond to request for about page
+def overview(request):
+
+    data_to_render = prepare_overview_data_for_render(request)
+
+    return render(request, 'overview.html', data_to_render)
+
+
+## =============================================================================
+
+## Respond to request for overview page
 def about(request):
     return render(request, 'about.html')
 
