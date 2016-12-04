@@ -105,6 +105,10 @@ img.rating-icon {
     padding: 0px !important;
 }
 
+a.navbar-text.navbar-right {
+    margin: 0;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -129,25 +133,14 @@ img.rating-icon {
 }
 
 #id-query {
-    width: 445px;
+    min-width: 300px;
 }
 
-.flex, .flex > div[class*='col-'] {  
+.flex, .flex > div[class*='col-'] {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
     flex:1 0 auto;
-}
-
-#overview {
-   display: flex;
-   flex-direction:column;
-   align-content:stretch; 
-}
-
-#overview-body {
-   display: flex;
-   flex-grow:1;
 }

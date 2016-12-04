@@ -24,6 +24,8 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/index">SilverScreen</a>
+            </div>
+            <ul class="nav navbar-nav">
                 <form class="form navbar-form navbar-left" id="query-form" action="/results/" method="post">
                     {% csrf_token %}
                     <div class="input-group">
@@ -35,11 +37,14 @@
                         </span>
                     </div>
                 </form>
-            </div>
-            <a href="{% url 'about' %}" class="navbar-text navbar-right" style="margin-right: 5px;">About</a>
-			<a href="{% url 'overview' %}" class="navbar-text navbar-right" style="margin-right: 5px;">Overview</a>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'about' %}" class="navbar-text navbar-right" style="margin-right: 5px;">About</a></li>
+    			<li><a href="{% url 'overview' %}" class="navbar-text navbar-right" style="margin-right: 5px;">Overview</a></li>
+            </ul>
         </div>
     </nav>
+
     <div class="center-on-page">
         <div class="loader"></div><br>
         <h4 id="loading" class="align-center heading" style="color: grey;">Loading</h4>
@@ -52,7 +57,7 @@
                 url: "{% url 'get_data' %}",
                 type: 'get',
                 data: {query: "{{query}}"},
-                success : function(data) {
+                success: function(data) {
                     $('.loader').addClass('hidden')
                     $('#loading').addClass('hidden')
                     $('.content').replaceWith(data)

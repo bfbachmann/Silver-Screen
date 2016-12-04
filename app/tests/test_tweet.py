@@ -25,19 +25,25 @@ class TweetTest(TestCase):
         Movie.objects.create(
             Title= 'A great movie',
             Year= None,
-            TomatoURL= None,
+            tomatoURL= None,
             Actors= None,
             BoxOffice= None,
-            Genres= None,
+            Genre= None,
             Director= None,
             imdbRating= None,
             tomatoRating= None,
             tomatoUserRating= None,
-            plot= None,
+            Plot= None,
             tomatoConsensus= None,
             Poster= None,
             imdbID= '123456',
             recentVisits= 0,
+            Awards= 'Golden Globe award',
+            Country= 'Canada',
+            Production= 'Lighthouse',
+            Rated= 'PG-13',
+            Released= 'December 12, 2014',
+            Writer= 'Fancy Pants'
         )
 
 
