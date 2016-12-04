@@ -89,17 +89,26 @@ def prepare_movie_data_for_render(request, clean_tweets, movie):
 def prepare_overview_data_for_render(request):
     ## Chart sentiment scores of tweets
 
-    worst_movie = Movie.objects.get(imdbID = Sentiment.objects.earliest('sentimentScore').imdbID)
-    best_movie = Movie.objects.get(imdbID = Sentiment.objects.latest('sentimentScore').imdbID)
+    try:
+        worst_movie = Movie.objects.get(imdbID = Sentiment.objects.earliest('sentimentScore').imdbID)
+        best_movie = Movie.objects.get(imdbID = Sentiment.objects.latest('sentimentScore').imdbID)
+    except:
+        worst_movie = best_movie = None
 
-    best_score = Sentiment.objects.earliest('sentimentScore')
-    worst_score = Sentiment.objects.latest('sentimentScore')
+    try:
+        best_score = Sentiment.objects.earliest('sentimentScore')
+        worst_score = Sentiment.objects.latest('sentimentScore')
+    except:
+        best_score = worst_score = None
 
     num_tweets = Tweet.objects.count()
     num_movies = Movie.objects.count()
 
-    avg_sentiment_num = Sentiment.objects.all().aggregate(Avg('sentimentScore'))['sentimentScore__avg']
-    avg_sentiment = str(round(avg_sentiment_num, 2))
+    try:
+        avg_sentiment_num = Sentiment.objects.all().aggregate(Avg('sentimentScore'))['sentimentScore__avg']
+        avg_sentiment = str(round(avg_sentiment_num, 2))
+    except:
+        avg_sentiment = avg_sentiment_num = None
 
     ## Prepare data to render on results page
     data_to_render = { 'worst_movie'     : worst_movie,

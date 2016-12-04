@@ -35,7 +35,7 @@ class Movie(models.Model):
     Plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
-    imdbID = models.CharField(max_length=1024)
+    imdbID = models.CharField(max_length=1024, unique=True, null=False, blank=False)
     recentVisits = models.IntegerField(default=0)
     Writer = models.CharField(max_length=1024, null=True, blank=True)
     Rated = models.CharField(max_length=1024, null=True, blank=True)
@@ -79,6 +79,15 @@ class Movie(models.Model):
         :return self:   this movie, udpated with the relevant data from the given jsonObject if it is valid
                         otherwise returns None
         """
+        ## Just return the movie we have in the db if it is already there
+        try:
+            movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
+        except:
+            movie_in_db = None
+
+        if movie_in_db:
+            return movie_in_db
+
         if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():

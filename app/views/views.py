@@ -90,7 +90,7 @@ def results(request):
 
         ## Try get the movie from the database
         try:
-            movie = Movie.objects.get(Title = search_term)
+            movie = Movie.objects.get(Title = search_term.title())
 
         ## If the movie is not in the db search OMDb
         except:
