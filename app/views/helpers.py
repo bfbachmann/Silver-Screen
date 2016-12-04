@@ -96,8 +96,8 @@ def prepare_overview_data_for_render(request):
         worst_movie = best_movie = None
 
     try:
-        best_score = Sentiment.objects.earliest('sentimentScore')
-        worst_score = Sentiment.objects.latest('sentimentScore')
+        worst_score = Sentiment.objects.earliest('sentimentScore')
+        best_score = Sentiment.objects.latest('sentimentScore')
     except:
         best_score = worst_score = None
 
