@@ -319,6 +319,9 @@
 
     // Begin Bubble Chart
 
+	var pointNegBackgroundColors = [];
+	var pointPosBackgroundColors = [];
+
 	var chart1Ctx = $('#bubble-chart');
    	var bubbleChart = new Chart(chart1Ctx,{
    		type: 'bubble',
@@ -329,8 +332,9 @@
    								{ x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
    						   {% endfor %}
    					   ],
-   					   backgroundColor:"#FF6384",
-   					   hoverBackgroundColor: "#FF6384",
+   					   hoverBackgroundColor: pointNegBackgroundColors,
+					   backgroundColor: pointNegBackgroundColors
+
    				   }, {
    					   label: 'Positive Tweets',
    					   data: [
@@ -338,11 +342,44 @@
    								{ x: "{{ datum.x }}", y: {{ datum.y }}, r: {{ datum.r }} },
    						   {% endfor %}
    					   ],
-   					   backgroundColor: "#00DD99",
-   					   hoverBackgroundColor: "#00DD99"
+   					   backgroundColor: pointPosBackgroundColors,
+   					   hoverBackgroundColor: pointPosBackgroundColors,
+
    				   } ]
                 },
        		options: {
+				legend: {
+					labels: {
+					  generateLabels: function(chart) {
+							var helpers = Chart.helpers;
+							var data = chart.data;
+							return helpers.isArray(data.datasets) ? data.datasets.map(function(dataset, i) {
+								if(i==0){
+									desColor="rgba(255,99,132,1)"
+								}
+								else{
+									desColor="rgba(0,221,153,1)"
+								}
+								
+								return {
+									text: dataset.label,
+									fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : desColor),
+									hidden: !chart.isDatasetVisible(i),
+									lineCap: dataset.borderCapStyle,
+									lineDash: dataset.borderDash,
+									lineDashOffset: dataset.borderDashOffset,
+									lineJoin: dataset.borderJoinStyle,
+									lineWidth: dataset.borderWidth,
+									strokeStyle: dataset.borderColor,
+									pointStyle: dataset.pointStyle,
+
+									// Below is extra data used for toggling the datasets
+									datasetIndex: i
+								};
+							}, this) : [];
+						}
+					}
+				  },
                 title: {
                     display: true,
                     fontSize: 26,
@@ -381,6 +418,28 @@
    			}
    	});
 
+	for (i = 0; i < bubbleChart.data.datasets[0].data.length; i++) {
+		var val = bubbleChart.data.datasets[0].data[i].y
+		
+		hue = Math.floor(18.5*val+347);
+		lum = 44
+		if(val<4){
+			lum = lum + 25*(10-val)/10
+		}
+		pointNegBackgroundColors.push("hsl("+hue+",100%,"+lum+"%)");
+		
+		console.log("hsl("+hue+",100%,100%)")
+	}
+	
+	for (i = 0; i < bubbleChart.data.datasets[1].data.length; i++) {
+		var val = bubbleChart.data.datasets[1].data[i].y
+		
+		hue = Math.floor(18.5*val+347);
+
+		pointPosBackgroundColors.push("hsl("+hue+",100%,44%)");
+	}
+	bubbleChart.update();
+	
     // Begin Pie Chart
 
     var pieChartCtx = $('#pie-chart');
