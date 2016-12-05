@@ -27,3 +27,6 @@ db.*
 
 # Ignore data
 **/*.xml
+
+# Ignore coverage.py files
+.coverage
