@@ -81,22 +81,25 @@ class Movie(models.Model):
                         otherwise returns None
         """
         ## Just return the movie we have in the db if it is already there
-        try:
-            movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'].strip())
-        except:
-            movie_in_db = None
+        if jsonObject:
+            try:
+                movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
+            except Exception as exc:
+                if isinstance(exc, KeyError):
+                    return None
+                movie_in_db = None
 
-        if movie_in_db:
-            return movie_in_db
+            if movie_in_db:
+                print('OMDbAPI found movie in DB')
+                return movie_in_db
 
-        if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
                     if 'Rating' in key:
                         try:
                             value = float(value)
                         except:
-                            value = None # TODO: we'll have to handle this upstream
+                            value = None
 
                     if isinstance(value, str):
                         if value == "N/A":
@@ -105,7 +108,12 @@ class Movie(models.Model):
                             value = value.strip()
                     setattr(self, key, value)
 
-            self.save()
+            try:
+                self.save()
+            except Exception as exc:
+                print(str(exc))
+                return None
+
             return self
         else:
             return None

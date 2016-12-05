@@ -19,7 +19,7 @@ class TwitterAPI(object):
     def __init__(self):
         ## Load the API keys
         try:
-            stream = open("scripts/twitter_api/api_keys.yml", 'r')
+            stream = open("app/models/api_keys.yml", 'r')
             keys = yaml.load(stream)
         except:
             print('Failed to load Twitter API keys from file, falling back on environment variables')
@@ -118,7 +118,7 @@ class OMDbAPI(object):
         matches = difflib.get_close_matches(title.title(), self.known_omdb_titles, n=1)
 
         ## If we aready know what the movie title is then we can request it immediately
-        if len(matches) > 0:
+        if len(matches) > 0 and not '-' in matches and not '-' in title:
             print('AUTOCORRECTED TITLE \"' + title + '\" TO \"' + matches[0] + '\"')
 
             try:

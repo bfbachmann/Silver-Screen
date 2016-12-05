@@ -18,6 +18,8 @@ Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlV
 
 Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
 
+Testing Plan: [here](https://docs.google.com/document/d/1KTpPY8q_gpljrQ3FbQaI5MdFmHCtp00v8KOeBLbci-Q/edit?usp=sharing) or in `docs/TestingPlan.pdf`
+
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
 [OMDb documentation](https://github.com/dgilland/omdb.py)

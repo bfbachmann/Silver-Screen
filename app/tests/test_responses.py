@@ -3,7 +3,7 @@ from django.forms.forms import DeclarativeFieldsMetaclass
 from app.models.models import *
 from django.db import transaction
 
-class TestRequests(TestCase):
+class TestResponses(TestCase):
 
     def test_valid_results_get_request(self):
         client = Client(enforce_csrf_checks=True)
@@ -17,7 +17,7 @@ class TestRequests(TestCase):
         response = client.post('/results/', {'query': 'Waterboy'})
 
         self.assertTrue(response.status_code == 200)
-        self.assertEqual(response.context['query'], 'Waterboy')
+        self.assertEqual(response.context['query'], 'The Waterboy')
 
     def test_invalid_results_request(self):
         client = Client(enforce_csrf_checks=True)

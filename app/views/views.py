@@ -59,7 +59,7 @@ def index(request):
 ## the request is a GET, otherwise takes the user back to 'index'
 def get_results_page(request):
     if request.method == 'POST':
-        search_term = autocorrect_search_term(request.POST['query'])
+        search_term= autocorrect_search_term(request.POST['query'])
         return render(request, 'results.html', {'query': search_term})
     elif request.method == 'GET':
         return render(request, 'index.html', {'form': QueryForm})

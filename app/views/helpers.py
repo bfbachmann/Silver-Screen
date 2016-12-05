@@ -25,6 +25,7 @@ class ResponseCache:
         return ResponseCache.instance.most_recent_response
 
 cache = ResponseCache(None)
+titles = [title.strip() for title in open('static/titles.txt', 'r').readlines()]
 
 ## =============================================================================
 
@@ -45,8 +46,7 @@ def error_response(request, message):
 ## Autocorrect poorly formed search terms based on current titles in db
 def autocorrect_search_term(search_term):
     search_term = html.unescape(search_term).title()
-    movie_titles = Movie.objects.all().values_list('Title')
-    matches = difflib.get_close_matches(search_term, movie_titles, n=1)
+    matches = difflib.get_close_matches(search_term, titles, cutoff=0.1)
     if len(matches) == 0:
         return search_term
     return matches[0]
