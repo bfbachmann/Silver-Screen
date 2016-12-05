@@ -21,7 +21,7 @@
 
             <!-- BEGIN MOVIE POSTER -->
             <div class="col-sm-3 align-center">
-                <a href="{{movie.tomatoURL}}" title="Rotten Tomatoes Page">
+                <a href="{{movie.tomatoURL}}" title="Rotten Tomatoes Page" target="_blank">
                     <img src="{{ movie.Poster }}" class ="center-block img-responsive" />
                 </a>
                 <h3 class="info-header align-center">
@@ -360,7 +360,7 @@
 								else{
 									desColor="rgba(0,221,153,1)"
 								}
-								
+
 								return {
 									text: dataset.label,
 									fillStyle: (!helpers.isArray(dataset.backgroundColor) ? dataset.backgroundColor : desColor),
@@ -420,25 +420,25 @@
 
 	for (i = 0; i < bubbleChart.data.datasets[0].data.length; i++) {
 		var val = bubbleChart.data.datasets[0].data[i].y
-		
+
 		hue = Math.floor(18.5*val+347);
 		lum = 44
 		if(val<4){
 			lum = lum + 25*(10-val)/10
 		}
-		
+
 		pointNegBackgroundColors.push("hsl("+hue+",100%,"+lum+"%)");
 	}
-	
+
 	for (i = 0; i < bubbleChart.data.datasets[1].data.length; i++) {
 		var val = bubbleChart.data.datasets[1].data[i].y
-		
+
 		hue = Math.floor(18.5*val+347);
 
 		pointPosBackgroundColors.push("hsl("+hue+",100%,44%)");
 	}
 	bubbleChart.update();
-	
+
     // Begin Pie Chart
 
     var pieChartCtx = $('#pie-chart');

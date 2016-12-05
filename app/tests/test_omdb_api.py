@@ -4,7 +4,7 @@ from app.models.helpers import OMDbAPI
 import omdb
 import json
 
-class TwitterAPITest(TestCase):
+class OMDbAPITest(TestCase):
 
     def test_search_valid_movie(self):
         response = OMDbAPI().search('shutter island')

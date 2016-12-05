@@ -9,6 +9,7 @@ from django import forms
 from django.db import models
 from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
+import html
 
 ## =============================================================================
 ##  QueryForm
@@ -81,7 +82,7 @@ class Movie(models.Model):
         """
         ## Just return the movie we have in the db if it is already there
         try:
-            movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
+            movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'].strip())
         except:
             movie_in_db = None
 
@@ -176,7 +177,7 @@ class Tweet(models.Model):
             tweet.lang = tweet.user.lang
 
         ## Values from API request
-        self.text=tweet.text.replace('&amp;', '&')
+        self.text=html.unescape(tweet.text)
         self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang

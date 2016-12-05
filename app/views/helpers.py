@@ -3,6 +3,7 @@ from django.db.models import Avg
 from django.shortcuts import render
 import datetime
 import difflib
+import html
 
 
 ## A singleton class for caching successful responses
@@ -43,7 +44,7 @@ def error_response(request, message):
 
 ## Autocorrect poorly formed search terms based on current titles in db
 def autocorrect_search_term(search_term):
-    search_term = search_term.replace('&amp;', '&').title()
+    search_term = html.unescape(search_term).title()
     movie_titles = Movie.objects.all().values_list('Title')
     matches = difflib.get_close_matches(search_term, movie_titles, n=1)
     if len(matches) == 0:

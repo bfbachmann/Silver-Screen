@@ -14,6 +14,7 @@ from django.contrib import messages
 from imdbpie import Imdb
 from django.views.decorators.cache import never_cache
 import random
+import html
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -77,7 +78,7 @@ def results(request):
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term
-        search_term = request.GET['query'].replace('&amp;', '&')
+        search_term = html.unescape(request.GET['query'])
 
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
