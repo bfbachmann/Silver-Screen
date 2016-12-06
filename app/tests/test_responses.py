@@ -17,7 +17,7 @@ class TestResponses(TestCase):
         response = client.post('/results/', {'query': 'Waterboy'})
 
         self.assertTrue(response.status_code == 200)
-        self.assertEqual(response.context['query'], 'The Waterboy')
+        self.assertEqual(response.context['query'], 'Waterboy')
 
     def test_invalid_results_request(self):
         client = Client(enforce_csrf_checks=True)
