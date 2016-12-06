@@ -20,6 +20,8 @@ Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLys
 
 Testing & Validation Document: [here](https://docs.google.com/document/d/1KTpPY8q_gpljrQ3FbQaI5MdFmHCtp00v8KOeBLbci-Q/edit?usp=sharing)
 
+Project Reflection: [here](https://docs.google.com/document/d/1_LVNWD_2xoRsEA4SJeiiKWelgbjET4xww1VGy-y2dXc/edit?usp=sharing)
+
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
 [OMDb documentation](https://github.com/dgilland/omdb.py)
