@@ -14,6 +14,7 @@ from django.contrib import messages
 from imdbpie import Imdb
 from django.views.decorators.cache import never_cache
 import random
+import html
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -58,7 +59,7 @@ def index(request):
 ## the request is a GET, otherwise takes the user back to 'index'
 def get_results_page(request):
     if request.method == 'POST':
-        search_term = autocorrect_search_term(request.POST['query'])
+        search_term= autocorrect_search_term(request.POST['query'])
         return render(request, 'results.html', {'query': search_term})
     elif request.method == 'GET':
         return render(request, 'index.html', {'form': QueryForm})
@@ -77,7 +78,7 @@ def results(request):
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term
-        search_term = request.GET['query'].replace('&amp;', '&')
+        search_term = html.unescape(request.GET['query'])
 
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':

@@ -8,5 +8,7 @@ django-jquery
 psycopg2==2.6.2
 imdbpie
 python-memcached
+django-nose
+coverage
 dj-database-url
 whitenoise

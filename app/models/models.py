@@ -9,6 +9,7 @@ from django import forms
 from django.db import models
 from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
+import html
 
 ## =============================================================================
 ##  QueryForm
@@ -80,22 +81,25 @@ class Movie(models.Model):
                         otherwise returns None
         """
         ## Just return the movie we have in the db if it is already there
-        try:
-            movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
-        except:
-            movie_in_db = None
+        if jsonObject:
+            try:
+                movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
+            except Exception as exc:
+                if isinstance(exc, KeyError):
+                    return None
+                movie_in_db = None
 
-        if movie_in_db:
-            return movie_in_db
+            if movie_in_db:
+                print('OMDbAPI found movie in DB')
+                return movie_in_db
 
-        if jsonObject is not None:
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
                     if 'Rating' in key:
                         try:
                             value = float(value)
                         except:
-                            value = None # TODO: we'll have to handle this upstream
+                            value = None
 
                     if isinstance(value, str):
                         if value == "N/A":
@@ -104,7 +108,12 @@ class Movie(models.Model):
                             value = value.strip()
                     setattr(self, key, value)
 
-            self.save()
+            try:
+                self.save()
+            except Exception as exc:
+                print(str(exc))
+                return None
+
             return self
         else:
             return None
@@ -156,15 +165,16 @@ class Tweet(models.Model):
         ## Do not create a new Tweet object for this tweet if it is invalid
         if tweet is None or movie is None or not isinstance(tweet, twitter.Status):
             return None
+        try:
+            existingTweet = Tweet.objects.get(tweetID=tweet.id)
 
-        existingTweets = Tweet.objects.filter(tweetID=tweet.id)
+            ## If a Tweet object for this tweet exists, append its linkedMovies list
 
-        ## If a Tweet object for this tweet exists, append its linkedMovies list
-        if existingTweets:
-            for eTweet in existingTweets:
-                eTweet.linkedMovies.add(movie)
-                eTweet.save()
-                return eTweet
+            existingTweet.linkedMovies.add(movie)
+            existingTweet.save()
+            return existingTweet
+        except:
+            pass
 
         ## Assume the Tweet is in the users location if we have no info
         if not isinstance(tweet.location, str):
@@ -175,7 +185,7 @@ class Tweet(models.Model):
             tweet.lang = tweet.user.lang
 
         ## Values from API request
-        self.text=tweet.text.replace('&amp;', '&')
+        self.text=html.unescape(tweet.text)
         self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
