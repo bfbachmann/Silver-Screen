@@ -513,6 +513,7 @@ class TweetSentiment(object):
 
 if __name__ == '__main__':
     demo("I hate Michael Bay films, but this one rules love it best sublime superb")
+    demo("I htae Michael bay films, and this one scks")
     demo("I hate Michael Bay films")
     demo("I htae Michael bay films, and this one scks")
     demo("I never loved it")
