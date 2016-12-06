@@ -1,7 +1,7 @@
 # Silver Screen [![Build Status](https://travis-ci.org/bfbachmann/Silver-Screen.svg?branch=dev)](https://travis-ci.org/bfbachmann/Silver-Screen)
 ## Twitter sentiment mining and analysis application
 
-CPEN 321 Project Sept 2016 - Nov 2016
+CPEN 321 Project Sept 2016 - Dec 2016
 
 The live version of Silver Screen can be found [here](https://silverscrn.herokuapp.com/).
 
@@ -18,6 +18,8 @@ Project Plan/Backlog: [here](https://docs.google.com/spreadsheets/d/1o6x0yL5FPlV
 
 Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLysgsNNTds0RgeEN0csd7kU/edit)
 
+Testing & Validation Document: [here](https://docs.google.com/document/d/1KTpPY8q_gpljrQ3FbQaI5MdFmHCtp00v8KOeBLbci-Q/edit?usp=sharing)
+
 [Python-twitter documentation](https://github.com/bear/python-twitter)
 
 [OMDb documentation](https://github.com/dgilland/omdb.py)
@@ -25,6 +27,10 @@ Requirements: [here](https://docs.google.com/document/d/1CNddmEScitOrEP2MNHRjLys
 [Chart.js documentation](http://www.chartjs.org/docs/#bubble-chart-introduction)
 
 ## Repository Structure
+
+### Master vs Dev Distinction
+
+It is important to note that the code present on the ```master``` branch has been configured to be deployed on Heroku, not on a local development platform (there are distinct differences between database initialization which must be reflected in the settings files). The installation instructions provided below are for a local installation, and should be performed on the code from the ```dev``` branch.
 
 ### Sentiment Analysis
 
@@ -98,7 +104,7 @@ from the project directory in Vagrant.
     ```
     This will take a while, it's installing a lot.
 
-8. Now let set up Postgres.... WHEEOOOO!
+8. Now lets setup Postgres
 
     Switch to user postgres and create the SilverScreen database:
     ```shell
@@ -158,8 +164,22 @@ from the project directory in Vagrant.
     ```shell
     $ sudo service postgresql restart
     ```
+    
+9. Silver Screen requires API access from Twitter to operate. Twitter API keys are free and can be acquired [here](https://apps.twitter.com/). 
+    
+    Once you have acquired your keys, create a file named ```api_keys.yml``` in the ```scripts/twitter_api/``` folder. Format the file as follows:
+    
+    ```
+    consumer_key: <<YOUR CONSUMER_KEY>>
+    consumer_secret: <<YOUR CONSUMER_SECRET>>
 
-    WE'RE DONE!! You should now be able to run the server with
+    access_token_key: <<YOUR ACCESS_TOKEN_KEY>>
+    access_token_secret: <<YOUR ACCESS_TOKEN_SECRET>>
+    ```
+    
+    replacing the values in angle brackets with the keys you acquired from Twitter.
+    
+10. WE'RE DONE!! You should now be able to run the server with
     ```shell
     $ cd /vagrant
     $ sudo pip install -r requirements.txt # if you don't already have the requirements installed
@@ -168,3 +188,7 @@ from the project directory in Vagrant.
     ```
 
     ......wasn't that easy?
+
+### Note about Heroku Deployments
+
+As previously mentioned, the above installation instructions are designed for local installations only. To install Silver Screen on Heroku, follow the directions on the [Heroku dashboard](https://dashboard.heroku.com/apps). Rather than supplying API keys through the ```api_keys.yml``` file, set the keys under the ```Config Variables``` heading in the ```Settings``` tab.
