@@ -115,45 +115,31 @@ class OMDbAPI(object):
         :return movie: if at least one movie with a similar title is found, this is a Movie object
                       created from the most relevant result returned by OMDb, otherwise it is empty list
         """
-        matches = difflib.get_close_matches(title.title(), self.known_omdb_titles, n=1)
+        ## Search for all movies with similar titles
+        try:
+            matching_movies = omdb.search_movie(title)
+        except:
+            raise ConnectionError
 
-        ## If we aready know what the movie title is then we can request it immediately
-        if len(matches) > 0 and not '-' in matches and not '-' in title:
-            print('AUTOCORRECTED TITLE \"' + title + '\" TO \"' + matches[0] + '\"')
+        ## Return most relevant movie
+        highestIMDB = 0
+
+        if matching_movies:
+            movie = matching_movies.pop(0)
+            print("MOVIE: " + movie.title)
 
             try:
-                response = omdb.request(t=matches[0], tomatoes=True, type='movie').json()
-            except:
-                raise ConnectionError
+                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
+            except Movie.DoesNotExist:
+                movieObj = None
 
-            return Movie().fillWithJsonObject(response)
-
-        else:
-            ## Search for all movies with similar titles
-            try:
-                matching_movies = omdb.search_movie(title)
-            except:
-                raise ConnectionError
-
-            ## For now, only return most popular movie
-            highestIMDB = 0
-
-            if matching_movies:
-                movie = matching_movies.pop(0)
-                print("MOVIE: " + movie.title)
-
-                try:
-                    movieObj = Movie.objects.get(imdbID=movie.imdb_id)
-                except Movie.DoesNotExist:
-                    movieObj = None
-
+            if not movieObj:
+                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
+                movieObj = Movie().fillWithJsonObject(response)
                 if not movieObj:
-                    response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-                    movieObj = Movie().fillWithJsonObject(response)
-                    if not movieObj:
-                        return None
+                    return None
 
-                self.known_omdb_titles.append(movieObj.Title)
-                return movieObj
-            else:
-                return None
+            self.known_omdb_titles.append(movieObj.Title)
+            return movieObj
+        else:
+            return None

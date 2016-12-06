@@ -46,10 +46,7 @@ def error_response(request, message):
 ## Autocorrect poorly formed search terms based on current titles in db
 def autocorrect_search_term(search_term):
     search_term = html.unescape(search_term).title()
-    matches = difflib.get_close_matches(search_term, titles, cutoff=0.1)
-    if len(matches) == 0:
-        return search_term
-    return matches[0]
+    return search_term
 
 ## =============================================================================
 

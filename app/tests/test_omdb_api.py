@@ -42,7 +42,7 @@ class OMDbAPITest(TestCase):
         self.assertEqual(response.tomatoURL, 'http://www.rottentomatoes.com/m/the_good_the_bad_and_the_ugly/')
 
     def test_autocorrect_title(self):
-        response = OMDbAPI().search('the borne altimatum')
+        response = OMDbAPI().search('the bourne ultimatum')
 
         self.assertTrue(isinstance(response, Movie))
         self.assertEqual(response.Title, 'The Bourne Ultimatum')
