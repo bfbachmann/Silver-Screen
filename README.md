@@ -164,11 +164,11 @@ from the project directory in Vagrant.
     ```shell
     $ sudo service postgresql restart
     ```
-    
-9. Silver Screen requires API access from Twitter to operate. Twitter API keys are free and can be acquired [here](https://apps.twitter.com/). 
-    
+
+9. Silver Screen requires API access from Twitter to operate. Twitter API keys are free and can be acquired [here](https://apps.twitter.com/).
+
     Once you have acquired your keys, create a file named ```api_keys.yml``` in the ```scripts/twitter_api/``` folder. Format the file as follows:
-    
+
     ```
     consumer_key: <<YOUR CONSUMER_KEY>>
     consumer_secret: <<YOUR CONSUMER_SECRET>>
@@ -176,9 +176,9 @@ from the project directory in Vagrant.
     access_token_key: <<YOUR ACCESS_TOKEN_KEY>>
     access_token_secret: <<YOUR ACCESS_TOKEN_SECRET>>
     ```
-    
+
     replacing the values in angle brackets with the keys you acquired from Twitter.
-    
+
 10. WE'RE DONE!! You should now be able to run the server with
     ```shell
     $ cd /vagrant

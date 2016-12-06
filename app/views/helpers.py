@@ -3,6 +3,7 @@ from django.db.models import Avg
 from django.shortcuts import render
 import datetime
 import difflib
+import html
 
 
 ## A singleton class for caching successful responses
@@ -24,6 +25,7 @@ class ResponseCache:
         return ResponseCache.instance.most_recent_response
 
 cache = ResponseCache(None)
+titles = [title.strip() for title in open('static/titles.txt', 'r').readlines()]
 
 ## =============================================================================
 
@@ -43,9 +45,8 @@ def error_response(request, message):
 
 ## Autocorrect poorly formed search terms based on current titles in db
 def autocorrect_search_term(search_term):
-    search_term = search_term.replace('&amp;', '&').title()
-    movie_titles = Movie.objects.all().values_list('Title')
-    matches = difflib.get_close_matches(search_term, movie_titles, n=1)
+    search_term = html.unescape(search_term).title()
+    matches = difflib.get_close_matches(search_term, titles, cutoff=0.1)
     if len(matches) == 0:
         return search_term
     return matches[0]
@@ -96,8 +97,8 @@ def prepare_overview_data_for_render(request):
         worst_movie = best_movie = None
 
     try:
-        best_score = Sentiment.objects.earliest('sentimentScore')
-        worst_score = Sentiment.objects.latest('sentimentScore')
+        worst_score = Sentiment.objects.earliest('sentimentScore')
+        best_score = Sentiment.objects.latest('sentimentScore')
     except:
         best_score = worst_score = None
 
