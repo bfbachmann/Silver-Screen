@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^about', views.about, name='about'),
     url(r'^results', views.get_results_page, name='results'),
     url(r'^get_data', views.results, name='get_data'),
+    url(r'^overview', views.overview, name='overview'),
 ]

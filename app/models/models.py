@@ -3,17 +3,13 @@
 ## =============================================================================
 ## - Manage data
 
-from django import forms
-import twitter
-import yaml
-import os
-import omdb
 import datetime
 import twitter
 from django import forms
 from django.db import models
 from django.utils import timezone
 from sentimentanalysis.analyzer import TweetSentiment
+import html
 
 ## =============================================================================
 ##  QueryForm
@@ -29,36 +25,48 @@ class QueryForm(forms.Form):
 class Movie(models.Model):
     Title = models.CharField(max_length=128)
     Year = models.IntegerField(null=True, blank=True)
-    TomatoURL = models.CharField(max_length=1024, null=True, blank=True)
+    tomatoURL = models.CharField(max_length=1024, null=True, blank=True)
     Actors = models.CharField(max_length=1024, null=True, blank=True)
     BoxOffice = models.CharField(max_length=1024, null=True, blank=True)
-    Genres = models.CharField(max_length=1024, null=True, blank=True)
+    Genre = models.CharField(max_length=1024, null=True, blank=True)
     Director = models.CharField(max_length=1024, null=True, blank=True)
     imdbRating = models.FloatField(null=True, blank=True)
-    tomatoRating = models.CharField(max_length=32, null=True, blank=True)
-    tomatoUserRating = models.CharField(max_length=32, null=True, blank=True)
-    plot = models.CharField(max_length=2048, null=True, blank=True)
+    tomatoRating = models.FloatField(null=True, blank=True)
+    tomatoUserRating = models.FloatField(null=True, blank=True)
+    Plot = models.CharField(max_length=2048, null=True, blank=True)
     tomatoConsensus = models.CharField(max_length=1024, null=True, blank=True)
     Poster = models.CharField(max_length=1024, null=True, blank=True)
-    imdbID = models.CharField(max_length=1024)
+    imdbID = models.CharField(max_length=1024, unique=True, null=False, blank=False)
     recentVisits = models.IntegerField(default=0)
+    Writer = models.CharField(max_length=1024, null=True, blank=True)
+    Rated = models.CharField(max_length=1024, null=True, blank=True)
+    Awards = models.CharField(max_length=2048, null=True, blank=True)
+    Country = models.CharField(max_length=1024, null=True, blank=True)
+    Production = models.CharField(max_length=1024, null=True, blank=True)
+    Released = models.CharField(max_length=1024, null=True, blank=True)
 
     param_defaults = {
         'Title': None,
         'Year': None,
-        'TomatoURL': None,
+        'tomatoURL': None,
         'Actors': None,
         'BoxOffice': None,
-        'Genres': None,
+        'Genre': None,
         'Director': None,
         'imdbRating': None,
         'tomatoRating': None,
         'tomatoUserRating': None,
-        'plot': None,
+        'Plot': None,
         'tomatoConsensus': None,
         'Poster': None,
         'imdbID': None,
         'recentVisits': None,
+        'Writer': None,
+        'Rated': None,
+        'Awards': None,
+        'Country': None,
+        'Production': None,
+        'Released': None,
     }
 
     def __unicode__(self):
@@ -72,14 +80,26 @@ class Movie(models.Model):
         :return self:   this movie, udpated with the relevant data from the given jsonObject if it is valid
                         otherwise returns None
         """
-        if jsonObject is not None:
+        ## Just return the movie we have in the db if it is already there
+        if jsonObject:
+            try:
+                movie_in_db = Movie.objects.get(imdbID=jsonObject['imdbID'])
+            except Exception as exc:
+                if isinstance(exc, KeyError):
+                    return None
+                movie_in_db = None
+
+            if movie_in_db:
+                print('OMDbAPI found movie in DB')
+                return movie_in_db
+
             for (key, value) in jsonObject.items():
                 if key in self.param_defaults.keys():
-                    if key == 'imdbRating' and not isinstance(value, float):
+                    if 'Rating' in key:
                         try:
                             value = float(value)
                         except:
-                            value = None # TODO: we'll have to handle this upstream
+                            value = None
 
                     if isinstance(value, str):
                         if value == "N/A":
@@ -88,7 +108,12 @@ class Movie(models.Model):
                             value = value.strip()
                     setattr(self, key, value)
 
-            self.save()
+            try:
+                self.save()
+            except Exception as exc:
+                print(str(exc))
+                return None
+
             return self
         else:
             return None
@@ -113,7 +138,7 @@ class Tweet(models.Model):
     user_name = models.CharField(max_length=256)
     user_screen_name = models.CharField(max_length=256)
     user_verified = models.BooleanField()
-    imdbID =  models.CharField(max_length=1024)
+    linkedMovies = models.ManyToManyField(Movie)
     sentiment_score = models.FloatField(null=True, blank=True)
 
     param_defaults = {
@@ -127,19 +152,29 @@ class Tweet(models.Model):
         'user_screen_name' : None,
         'user_verified' : False,
         'sentiment_score' : False,
-        'imdbID': False,
+        'linkedMovies' : False,
         'tweetID': False,
     }
 
     ## Populate the current twitter object with values returned from a Twitter API request
-    def fillWithStatusObject(self, tweet, movie_title):
+    def fillWithStatusObject(self, tweet, movie):
         """
         :param tweet: an object of the class twitter.Status (returnd by Twitter API)
         :return updated_tweet: this tweet, updated with the data from the given tweet
         """
-        ## Do not create a new Tweet object for this tweet if it is invalid or already exists in our db
-        if tweet is None or not isinstance(tweet, twitter.Status) or Tweet.objects.filter(tweetID=tweet.id):
+        ## Do not create a new Tweet object for this tweet if it is invalid
+        if tweet is None or movie is None or not isinstance(tweet, twitter.Status):
             return None
+        try:
+            existingTweet = Tweet.objects.get(tweetID=tweet.id)
+
+            ## If a Tweet object for this tweet exists, append its linkedMovies list
+
+            existingTweet.linkedMovies.add(movie)
+            existingTweet.save()
+            return existingTweet
+        except:
+            pass
 
         ## Assume the Tweet is in the users location if we have no info
         if not isinstance(tweet.location, str):
@@ -150,7 +185,7 @@ class Tweet(models.Model):
             tweet.lang = tweet.user.lang
 
         ## Values from API request
-        self.text=tweet.text.replace('&amp;', '&')
+        self.text=html.unescape(tweet.text)
         self.created_at=timezone.make_aware(datetime.datetime.strptime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y'))
         self.favorite_count=tweet.favorite_count
         self.lang=tweet.lang
@@ -160,11 +195,10 @@ class Tweet(models.Model):
         self.user_screen_name=tweet.user.screen_name
         self.user_verified=tweet.user.verified
         self.tweetID=tweet.id
-        self.imdbID=tweet.imdbID
 
         ## Remove words in movie title from tweet body so they don't influence sentiment score
         filtered_text = self.text.lower().split()
-        for word in movie_title.lower().split():
+        for word in movie.Title.lower().split():
             if word in filtered_text:
                 filtered_text.remove(word)
 
@@ -176,8 +210,10 @@ class Tweet(models.Model):
         ## Try save the tweet to the database
         try:
             self.save()
+            self.linkedMovies.add(movie)
+            self.save()
         except:
-            print("Failed to save invalid tweet: " + str(self.tweetID))
+            pass
 
         return self
 
@@ -189,7 +225,7 @@ class Tweet(models.Model):
 ## =============================================================================
 
 class Sentiment(models.Model):
-   Title = models.CharField(max_length=128) # TODO: remove this
+   Title = models.CharField(max_length=128)
    imdbID = models.CharField(max_length=1024)
    sentimentDate = models.DateTimeField(default=None, null=True)
    sentimentScore = models.FloatField(null=True, blank=True)

@@ -14,6 +14,7 @@ from django.contrib import messages
 from imdbpie import Imdb
 from django.views.decorators.cache import never_cache
 import random
+import html
 
 ## Initialize api objects
 omdb = OMDbAPI()
@@ -54,11 +55,14 @@ def index(request):
 
 ## =============================================================================
 
-## Takes the user to a loading page that waits for results from the server
+## Takes the user to a loading page that waits for results from the server if
+## the request is a GET, otherwise takes the user back to 'index'
 def get_results_page(request):
     if request.method == 'POST':
-        return render(request, 'results.html', {'query': request.POST['query']})
-
+        search_term= autocorrect_search_term(request.POST['query'])
+        return render(request, 'results.html', {'query': search_term})
+    elif request.method == 'GET':
+        return render(request, 'index.html', {'form': QueryForm})
     return HttpResponse(status=403)
 
 ## =============================================================================
@@ -74,12 +78,7 @@ def results(request):
     ## If its a post request we need to process it
     if request.method == 'GET':
         ## Extract the search term
-        search_term = request.GET['query'].replace('&amp;', '&')
-        movie = Movie()
-        blank_form = QueryForm()
-        data_to_render = {'error_message': ''}
-        sum_scores = 0
-        num_nonzero = 1
+        search_term = html.unescape(request.GET['query'])
 
         ## If no search term was given, pick a random one
         if not search_term or search_term == '':
@@ -92,7 +91,7 @@ def results(request):
 
         ## Try get the movie from the database
         try:
-            movie = Movie.objects.get(Title = search_term)
+            movie = Movie.objects.get(Title = search_term.title())
 
         ## If the movie is not in the db search OMDb
         except:
@@ -103,14 +102,12 @@ def results(request):
             # if we couldn't get the movie from OMDB raise ConnectionError
             except ConnectionError:
                 print('ERROR: Cannot connect to OMDb')
-                data_to_render['error_message'] = 'Sorry, connection to the Open Movie Database failed. Please try again later.'
-                return render(request, 'error.html', data_to_render)
+                return error_response(request, 'Sorry, connection to the Open Movie Database failed. Please try again later.')
 
         ## If no movie object was reaturned by OMDB or the database raise error
         if not movie or not movie.Title:
             print('ERROR: No matching movie')
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find a movie related to ' + search_term
-            return render(request, 'error.html', data_to_render)
+            return error_response(request, 'Sorry, we couldn\'t find a movie related to ' + search_term)
         else:
             movie.updateViews()
 
@@ -122,7 +119,7 @@ def results(request):
             print("No sentiment found in database for this movie")
 
         ## Now we have a valid movie object, so try fetch tweets about this movie from the database
-        clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(imdbID = movie.imdbID)]
+        clean_tweets = [clean_tweet for clean_tweet in Tweet.objects.filter(linkedMovies__imdbID=movie.imdbID)]
 
         ## If we have too few tweets about the movie, or our sentiment is outdated, get more from Twitter
         if not clean_tweets or len(clean_tweets) < 50 or (mostRecentSentiment and mostRecentSentiment[0].sentimentDate < timezone.now() - datetime.timedelta(days=7)):
@@ -137,31 +134,30 @@ def results(request):
             except Exception as error:
                 if type(error) is ValueError:
                     print('ERROR: Rate limit exceeded')
-                    data_to_render['error_message'] = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
+                    message = 'Sorry, SilverScreen\'s Twitter API rate limit has been exceeded. Please try a different movie, or try again later.'
                 else:
                     print('ERROR: cannot connect to Twitter: ' + str(error))
-                    data_to_render['error_message'] = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
-                return render(request, 'error.html', data_to_render)
+                    message = 'Sorry, connection to Twitter failed. The Twitter API might be down. Please try again later.'
+
+                return error_response(request, message)
 
 
             ## If we have no raw tweets to process raise error
             if not raw_tweets or len(raw_tweets) == 0:
                 print('ERROR: No tweets found')
-                data_to_render['error_message'] = 'Sorry, we couldn\'t find tweets about ' + movie.Title
-                return render(request, 'error.html', data_to_render)
+                return error_response(request, 'Sorry, we couldn\'t find tweets about ' + movie.Title)
             else:
-                clean_tweets += get_clean_tweets(raw_tweets, movie.Title)
+                clean_tweets += get_clean_tweets(raw_tweets, movie)
 
         if ':' in movie.Title:
             messages.add_message(request, messages.INFO,
                                  "We couldn't find enough tweets about " + movie.Title + " so we're showing results for " + movie.Title.split(':')[0] + " instead.")
 
         ## If there aren't enough tweets to display tell the user
-        if len(clean_tweets) < 5:
-            data_to_render['error_message'] = 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.'
-            return render(request, 'error.html', data_to_render)
+        if len(clean_tweets) < 10:
+            return error_response(request, 'Sorry, we couldn\'t find enough tweets about ' + movie.Title + ' movie for analysis.')
 
-        data_to_render = prepare_data_for_render(request, clean_tweets, movie)
+        data_to_render = prepare_movie_data_for_render(request, clean_tweets, movie)
         return render(request, 'data.html', data_to_render)
 
     ## Otherwise return METHOD NOT ALLOWED
@@ -171,5 +167,12 @@ def results(request):
 ## =============================================================================
 
 ## Respond to request for about page
+def overview(request):
+    data_to_render = prepare_overview_data_for_render(request)
+    return render(request, 'overview.html', data_to_render)
+
+## =============================================================================
+
+## Respond to request for overview page
 def about(request):
     return render(request, 'about.html')

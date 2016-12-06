@@ -1,4 +1,5 @@
 from app.models.models import Tweet
+from app.models.models import Movie
 from django.test import TestCase
 from django.utils import timezone
 from datetime import datetime
@@ -18,9 +19,32 @@ class TweetTest(TestCase):
                 user_name='sara',
                 user_screen_name='sarita',
                 user_verified=True,
-                imdbID=57839,
                 sentiment_score=0.2647,
             )
+
+        Movie.objects.create(
+            Title= 'A great movie',
+            Year= None,
+            tomatoURL= None,
+            Actors= None,
+            BoxOffice= None,
+            Genre= None,
+            Director= None,
+            imdbRating= None,
+            tomatoRating= None,
+            tomatoUserRating= None,
+            Plot= None,
+            tomatoConsensus= None,
+            Poster= None,
+            imdbID= '123456',
+            recentVisits= 0,
+            Awards= 'Golden Globe award',
+            Country= 'Canada',
+            Production= 'Lighthouse',
+            Rated= 'PG-13',
+            Released= 'December 12, 2014',
+            Writer= 'Fancy Pants'
+        )
 
 
     def test_fill_with_valid_status(self):
@@ -42,8 +66,10 @@ class TweetTest(TestCase):
                 retweet_count=8,
                 favorite_count=0
             )
-        sample_status.imdbID = 947502
-        tweet=Tweet().fillWithStatusObject(sample_status, 'Random Movie')
+
+        movie = Movie.objects.get(imdbID="123456")
+        tweet=Tweet().fillWithStatusObject(sample_status, movie)
+
         resulting_time = datetime.strftime(tweet.created_at, '%a %b %d %H:%M:%S +0000 %Y')
         expected_time = datetime.strftime(current_datetime, '%a %b %d %H:%M:%S +0000 %Y')
 
@@ -58,7 +84,7 @@ class TweetTest(TestCase):
         self.assertEqual(tweet.user_screen_name, 'kesuke')
         self.assertEqual(tweet.user_verified, sample_user.verified)
         self.assertTrue(tweet.sentiment_score >= -1 and tweet.sentiment_score <= 1)
-        self.assertEqual(tweet.imdbID, 947502)
+        self.assertEqual(tweet.linkedMovies.count(), 1)
 
 
     def test_fill_with_invalid_status(self):
@@ -77,12 +103,12 @@ class TweetTest(TestCase):
         sample_status=twitter.Status(
                 created_at=datetime.strftime(timezone.make_aware(datetime.now()), '%a %b %d %H:%M:%S +0000 %Y'),
                 id=1234567,
-                text='Hello world',
+                text='Hello world, again!',
                 user=sample_user,
                 retweet_count=1,
                 favorite_count=5,
             )
-        sample_status.imdbID = 57839
-        duplicate_tweet = Tweet().fillWithStatusObject(sample_status, 'Random Movie')
+        movie = Movie.objects.get(imdbID="123456")
+        duplicate_tweet = Tweet().fillWithStatusObject(sample_status, movie)
 
-        self.assertEqual(duplicate_tweet, None)
+        self.assertEqual(duplicate_tweet.text, 'Hello world')

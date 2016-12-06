@@ -3,6 +3,7 @@ import yaml
 import omdb
 import os
 import datetime
+import difflib
 import concurrent.futures
 from django.utils import timezone
 from app.models.models import Movie, Tweet
@@ -17,7 +18,19 @@ class TwitterAPI(object):
     ## Initialisation
     def __init__(self):
         ## Load the API keys
-        self.api = twitter.Api(consumer_key=os.environ['consumer_key'], consumer_secret=os.environ['consumer_secret'], access_token_key=os.environ['access_token_key'],  access_token_secret=os.environ['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
+        try:
+            stream = open("app/models/api_keys.yml", 'r')
+            keys = yaml.load(stream)
+        except:
+            print('Failed to load Twitter API keys from file, falling back on environment variables')
+            keys = {
+                'consumer_key': os.environ['consumer_key'],
+                'consumer_secret': os.environ['consumer_secret'],
+                'access_token_key': os.environ['access_token_key'],
+                'access_token_secret': os.environ['access_token_secret'],
+            }
+
+        self.api = twitter.Api(consumer_key=keys['consumer_key'], consumer_secret=keys['consumer_secret'], access_token_key=keys['access_token_key'],  access_token_secret=keys['access_token_secret'], sleep_on_rate_limit=False) # NOTE: setting sleep_on_rate_limit to True here means the application will sleep when we hit the API rate limit. It will sleep until we can safely make another API call. Making this False will make the API throw a hard error when the rate limit is hit.
 
     ## Request tweets for a given movie
     def search_movie(self, movie):
@@ -80,6 +93,9 @@ class TwitterAPI(object):
         elif '-' in title:
             title = title.split('-')[0]
 
+        if len(title.split(' ')) < 3:
+            title = '\"' + title + '\"' + ' \"movie\"'
+
         return title
 
 ## =============================================================================
@@ -90,7 +106,7 @@ class TwitterAPI(object):
 class OMDbAPI(object):
 
     def __init__(self):
-        pass
+        self.known_omdb_titles = [title.strip() for title in open('static/titles.txt', 'r').readlines()]
 
     ## Search the OMDb database for movies with titles that match the requested movie
     def search(self, title):
@@ -99,30 +115,45 @@ class OMDbAPI(object):
         :return movie: if at least one movie with a similar title is found, this is a Movie object
                       created from the most relevant result returned by OMDb, otherwise it is empty list
         """
-        ## Search for all movies with similar titles
-        try:
-            matching_movies = omdb.search_movie(title)
-        except:
-            raise ConnectionError
+        matches = difflib.get_close_matches(title.title(), self.known_omdb_titles, n=1)
 
-        ## For now, only return most popular movie
-        highestIMDB = 0
-
-        if matching_movies:
-            movie = matching_movies.pop(0)
-            print("MOVIE: " + movie.title)
+        ## If we aready know what the movie title is then we can request it immediately
+        if len(matches) > 0 and not '-' in matches and not '-' in title:
+            print('AUTOCORRECTED TITLE \"' + title + '\" TO \"' + matches[0] + '\"')
 
             try:
-                movieObj = Movie.objects.get(imdbID=movie.imdb_id)
-            except Movie.DoesNotExist:
-                movieObj = None
+                response = omdb.request(t=matches[0], tomatoes=True, type='movie').json()
+            except:
+                raise ConnectionError
 
-            if not movieObj:
-                response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
-                movieObj = Movie().fillWithJsonObject(response)
-                if not movieObj:
-                    return None
+            return Movie().fillWithJsonObject(response)
 
-            return movieObj
         else:
-            return None
+            ## Search for all movies with similar titles
+            try:
+                matching_movies = omdb.search_movie(title)
+            except:
+                raise ConnectionError
+
+            ## For now, only return most popular movie
+            highestIMDB = 0
+
+            if matching_movies:
+                movie = matching_movies.pop(0)
+                print("MOVIE: " + movie.title)
+
+                try:
+                    movieObj = Movie.objects.get(imdbID=movie.imdb_id)
+                except Movie.DoesNotExist:
+                    movieObj = None
+
+                if not movieObj:
+                    response = omdb.request(i=movie.imdb_id, tomatoes=True, type='movie').json()
+                    movieObj = Movie().fillWithJsonObject(response)
+                    if not movieObj:
+                        return None
+
+                self.known_omdb_titles.append(movieObj.Title)
+                return movieObj
+            else:
+                return None

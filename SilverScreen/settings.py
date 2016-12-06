@@ -42,6 +42,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap3',
     'jquery',
+    'django_nose',
+]
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'app'
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=app',
+    '--exclude=app/admin.py,app/apps.py',
 ]
 
 MIDDLEWARE = [
@@ -86,10 +97,27 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
     }
 }
-
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+
+# Use dummy cache for development and testing
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    'deployment': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+# Cache for half a day
+CACHE_MIDDLEWARE_SECONDS = 0
+
+if DEBUG:
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'default'
+else:
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'deployment'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
